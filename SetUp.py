@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Enable interactive mode
-plt.ion()
+# plt.ion()
 
 # Generate test data using numpy
 x = np.linspace(0, 10, 100)  # 100 points from 0 to 10
