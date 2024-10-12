@@ -1,6 +1,6 @@
 import array
 import numpy as np
-file_path = '2015\Data Files\Day2_wrapping_paper.txt'
+file_path = '2015\DataFiles\Day2_wrapping_paper.txt'
 # Read the file and print its content
 with open(file_path) as file:
     wrapping_paper = file.read()

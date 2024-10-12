@@ -3,17 +3,12 @@ import numpy as np
 import os
 
 # Define the directory and file name
-directory = r'C:\Users\User\Documents\AdventofCode\2015\DataFiles'
-test = os.path.dirname("15Day5.py")
-print(test)
+directory = r'C:\Users\User\Documents\AdventofCode\2015\6'
 
-file_name = 'Day6_lights.txt'
+D6_file = 'Day6_lights.txt'
+D6_file_path = os.path.join(directory, D6_file)
 
-# Create the full file path
-file_path = os.path.join(directory, file_name)
-print(file_path)
-# Now you can open the file
-with open(file_path) as file:
+with open(D6_file_path) as file:
     lights_inst = file.read()
 
 lights_inst = lights_inst.splitlines()
@@ -58,14 +53,14 @@ for n in range(len(lights_inst)):
     else:
         action = -1  # Need to absolute it
     
-    x1 = instruction_n[1]
-    y1 = instruction_n[2]
-    x2 = instruction_n[3]
-    y2 = instruction_n[4]
-    # print(f"x={x2-x1},y={y2-y1}")
+    x1 = int(instruction_n[1])
+    y1 = int(instruction_n[2])
+    x2 = int(instruction_n[3])
+    y2 = int(instruction_n[4])
+    print(f"x={x2-x1},y={y2-y1}")
     
     
-# print(instruction_matrix[n])
+print(D6_file_path)
     
 
 # toggle   = -1 and then absolute

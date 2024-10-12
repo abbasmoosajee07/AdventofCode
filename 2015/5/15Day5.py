@@ -2,7 +2,7 @@ import array
 import re
 import numpy as np
 
-file_path = '2015\Data Files\Day5_naughtylist.txt'
+file_path = '2015\DataFiles\Day5_naughtylist.txt'
 # Read the file and print its content
 with open(file_path) as file:
     naughty_list = file.read()
