@@ -1,44 +1,32 @@
-import sys 
-import os 
-
-script_directory = os.path.dirname(os.path.abspath(__file__))
-
-# Set the working directory to the script's directory
-os.chdir(script_directory)
-print(script_directory)
+import os
 
 D1_file = 'Day1_Floors.txt'
-D1_file_path = os.path.join(script_directory, D1_file)
-print(D1_file_path)
+D1_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), D1_file)
 
-print(os.path.dirname(os.path.abspath(__file__)))
+with open(D1_file_path) as file:
+    apt = file.read()
 
-# # Read the file and print its content
-# with open(D1_file_path) as file:
-#     apt = file.read()
-    
-# floor_list = list(apt)
-    
-# total_floors = len(apt)
+floor_list = list(apt)
+total_floors = len(apt)
 
-# # Initialize a counter at ground floor = 0
-# floor_i = 0
-# basement_indices = []
+# Initialize a counter at ground floor = 0
+floor_i = 0
+basement_indices = []
 
-# # Iterate through the whole apartment counting the floors as it goes along
-# for i in range(total_floors):
+# Iterate through the whole apartment counting the floors as it goes along
+for i in range(total_floors):
 
-#     if floor_i == -1:
-#         basement_indices.append(i)
+    if floor_i == -1:
+        basement_indices.append(i)
 
-#     # Check if the bracket is (
-#     if floor_list[i] == '(': 
-#         floor_i += 1
-#     else:
-#         floor_i += -1
+    # Check if the bracket is (
+    if floor_list[i] == '(': 
+        floor_i += 1
+    else:
+        floor_i += -1
     
 
-# print(f"Instructions direct Santa to Floor {floor_i}.")
+print(f"Instructions direct Santa to Floor {floor_i}.")
 
-# print(f"Santa first enters basement at position {basement_indices[0]}.")
+print(f"Santa first enters basement at position {basement_indices[0]}.")
 

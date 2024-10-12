@@ -1,10 +1,12 @@
+import os 
 import array
 import re
 import numpy as np
 
-file_path = '2015\DataFiles\Day5_naughtylist.txt'
-# Read the file and print its content
-with open(file_path) as file:
+D5_file = 'Day5_naughtylist.txt'
+D5_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), D5_file)
+
+with open(D5_file_path) as file:
     naughty_list = file.read()
 
 naughty_list = naughty_list.split()

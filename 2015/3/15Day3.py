@@ -1,9 +1,11 @@
+import os 
 import array
 import numpy as np
-file_path = '2015\Data Files\Day3_delivery.txt'
 
-# Read the file and print its content
-with open(file_path) as file:
+D3_file = 'Day3_delivery.txt'
+D3_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), D3_file)
+
+with open(D3_file_path) as file:
     delivery = file.read()
 
 delivery_schedule = list(delivery)
@@ -81,5 +83,5 @@ def count_houses_with_presents(directions):
     # Return the number of unique houses visited
     return len(visited_houses)
 
-print(count_houses_with_presents(delivery))  # Output: 3
+print(f'Revised Delivery req for unique houses: {count_houses_with_presents(delivery)}')  # Output: 3
 

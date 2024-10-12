@@ -1,12 +1,9 @@
+import os
 import re
 import numpy as np
-import os
-
-# Define the directory and file name
-directory = r'C:\Users\User\Documents\AdventofCode\2015\6'
 
 D6_file = 'Day6_lights.txt'
-D6_file_path = os.path.join(directory, D6_file)
+D6_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), D6_file)
 
 with open(D6_file_path) as file:
     lights_inst = file.read()
@@ -60,9 +57,6 @@ for n in range(len(lights_inst)):
     print(f"x={x2-x1},y={y2-y1}")
     
     
-print(D6_file_path)
-    
-
 # toggle   = -1 and then absolute
 # turn on  == 1
 # turn off == 0

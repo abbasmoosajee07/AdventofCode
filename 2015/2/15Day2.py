@@ -1,8 +1,11 @@
+import os 
 import array
 import numpy as np
-file_path = '2015\DataFiles\Day2_wrapping_paper.txt'
-# Read the file and print its content
-with open(file_path) as file:
+
+D2_file = 'Day2_wrapping_paper.txt'
+D2_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), D2_file)
+
+with open(D2_file_path) as file:
     wrapping_paper = file.read()
 
 wrapping_paper = wrapping_paper.split()

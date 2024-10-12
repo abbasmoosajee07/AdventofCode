@@ -1,3 +1,6 @@
+import os 
+import sys
+
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -17,3 +20,24 @@ plt.ylabel('Y-axis (sin(x) + noise)')
 plt.legend()
 plt.grid(True)
 plt.show()  # Display the plot inline in VS Code's interactive window
+
+
+
+def read_file_in_script_directory(filename):
+    # Get the script directory
+    script_directory = os.path.dirname(os.path.abspath(__file__))
+    # Set the working directory to the script's directory
+    os.chdir(script_directory)
+    
+    # Construct the full file path
+    file_path = os.path.join(script_directory, filename)
+
+    
+    # Read and return the file content
+    try:
+        with open(file_path, 'r') as file:
+            content = file.read()
+            return content
+    except FileNotFoundError:
+        return f"Error: {filename} not found in {script_directory}"
+
