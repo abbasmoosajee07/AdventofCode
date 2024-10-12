@@ -1,24 +1,28 @@
 import hashlib
 
-def find_md5_with_leading_zeros(prefix, count):
-    results = []
-    num = 0
+def find_advent_coin(secret_key,zero_start):
+    number = 1  # Start from the first positive integer
 
-    while len(results) < count:
-        # Create a string representation of the number
-        input_str = str(num).encode()  # Encode the string to bytes
-        # Calculate MD5 hash
+    while True:
+        # Combine the secret key with the current number
+        input_str = f"{secret_key}{number}".encode()  # Encode to bytes
+        # Calculate the MD5 hash
         md5_hash = hashlib.md5(input_str).hexdigest()
-        # Check if the hash starts with the required number of zeroes
-        if md5_hash.startswith(prefix):
-            results.append((num, md5_hash))
-            print(f"Found: {num} -> {md5_hash}")
-        num += 1
+        
+        # Check if the hash starts with five zeroes
+        if md5_hash.startswith(zero_start):
+            return number, md5_hash  # Return the number and corresponding hash
+        
+        number += 1  # Increment the number
 
-    return results
+# Your puzzle input
+secret_key = "ckczppom"
 
-# Find MD5 hashes that start with at least five zeroes
-prefix = '00000'
-count = 1  # Specify how many hashes you want to find
-results = find_md5_with_leading_zeros(prefix, count)
-# ckczppom
+result_number_5, result_hash_5 = find_advent_coin(secret_key,"00000")
+
+print(f"The lowest positive number that produces an MD5 hash starting with five zeroes is: {result_number_5}")
+print(f"The corresponding MD5 hash is: {result_hash_5}")
+
+result_number_6, result_hash_6 = find_advent_coin(secret_key,"000000")
+print(f"The lowest positive number that produces an MD5 hash starting with six zeroes is: {result_number_6}")
+print(f"The corresponding MD5 hash is: {result_hash_6}")
