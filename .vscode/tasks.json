@@ -1,0 +1,13 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "ruby",
+			"task": "Install Debug Gem",
+			"problemMatcher": [
+				"$ruby"
+			],
+			"label": "ruby: Install Debug Gem"
+		}
+	]
+}
