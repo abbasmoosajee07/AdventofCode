@@ -36,6 +36,6 @@ result_all = sum_numbers(data)
 print("Sum of all numbers:", result_all)
 
 # Calculate the sum of all numbers, ignoring any color as defined in remove_color
-remove_color = "red"
+remove_color = "b"
 result_sans_red = sum_numbers(data, ignore_color=True, color = remove_color)
 print(f"Sum of all numbers, ignoring {remove_color}: {result_sans_red}")
