@@ -2,6 +2,9 @@ from sys import path
 from itertools import permutations, combinations_with_replacement
 import re
 
+def parse_ingredients(ingredient_inputs):
+    pattern = re.compile(r'(-*\d)')
+    return [re.findall(pattern, ingredient) for ingredient in ingredient_inputs]
 
 def ingredient_score(teaspoon_list, ingredient_list):
     combined_list = zip(teaspoon_list, ingredient_list)
@@ -22,38 +25,47 @@ def ingredient_score(teaspoon_list, ingredient_list):
             break
     return final_score
 
+def maximize_cookie_score(ingredient_list):
+   starting_point = 110 / len(ingredient_list)
+   score = 0
+   original_teaspoons = [starting_point for ingredient in ingredient_list]
+   teaspoons = original_teaspoons.copy()
+   amount_to_increase = len(ingredient_list) - 1
+   for x in range(0, len(teaspoons)-1):
+       while teaspoons[x] <= 100:
+           teaspoons[x] += amount_to_increase
 
-def parse_ingredients(ingredient_inputs):
-    pattern = re.compile(r'(-*\d)')
-    return [re.findall(pattern, ingredient) for ingredient in ingredient_inputs]
+def count_calories(teaspoon_list, ingredient_list):
+    return sum(
+        teaspoon_list[x] * int(ingredient_list[x][-1])
+        for x in range(len(ingredient_list))
+    )
 
-
-#def maximize_cookie_score(ingredient_list):
-#    starting_point = 110 / len(ingredient_list)
-#    score = 0
-#    original_teaspoons = [starting_point for ingredient in ingredient_list]
-#    teaspoons = original_teaspoons.copy()
-#    amount_to_increase = len(ingredient_list) - 1
-#    for x in range(0, len(teaspoons)-1):
-#        while teaspoons[x] <= 100:
-#            teaspoons[x] += amount_to_increase
-#            for y in range()
-
-
-def brute_force_cookie_score(ingredient_list):
+def brute_force_cookie_score(ingredient_list, max_calorie):
+    # Generate ingredient combinations where the sum of teaspoons is 100
     ingredient_combos = [
         element
-        for element in permutations(
-            range(1, 100), len(ingredient_list)
-        )
+        for element in permutations(range(1, 100), len(ingredient_list))
         if sum(element) == 100
     ]
-    score = 0
+    
+    max_score = 0
+    max_score_with_calories = 0
+    
     for ingredient_combination in ingredient_combos:
+        # Calculate the score for the current combination
         combo_score = ingredient_score(ingredient_combination, ingredient_list)
-        if combo_score > score:
-            score = combo_score
-    return score
+        calorie_score = count_calories(ingredient_combination, ingredient_list)
+        
+        # Update max score without calorie restriction
+        if combo_score > max_score:
+            max_score = combo_score
+        
+        # Update max score with calorie restriction of exactly as defined
+        if combo_score > max_score_with_calories and calorie_score == max_calorie:
+            max_score_with_calories = combo_score
+    
+    return max_score, max_score_with_calories
 
 input = [
   "Frosting: capacity 4, durability -2, flavor 0, texture 0, calories 5",
@@ -61,8 +73,8 @@ input = [
   "Butterscotch: capacity -1, durability 0, flavor 5, texture 0, calories 6",
   "Sugar: capacity 0, durability 0, flavor -2, texture 2, calories 1"
 ]
-if __name__ == "__main__":
-    cookie_list = input
-    ingredients = parse_ingredients(cookie_list)
-    cookie_score = brute_force_cookie_score(ingredients)
-    print(f"The cookie score is {cookie_score}")
+
+ingredients = parse_ingredients(input)
+max_score, max_score_with_calories = brute_force_cookie_score(ingredients, 500)
+print(f"The maximum cookie score is {max_score}")
+print(f"The maximum cookie score with 500 calories is {max_score_with_calories}")
