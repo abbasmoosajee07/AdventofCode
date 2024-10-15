@@ -81,16 +81,22 @@ max_reindeer = max(final_results, key=lambda x: x[1])
 print(f"The reindeer with the maximum distance is {max_reindeer[0]} with {max_reindeer[1]} km.")
 
 
-# New scoring system 
-x_df,y_df = full_timeline.shape 
-# print(full_timeline)
-total_flight = full_timeline
-for xn in range(x_df):
-    flight_x = full_timeline.iloc[xn]
-    # flight_x = pd.DataFrame(flight_x)
-    for yn in range(y_df):
-        # print((flight_x))
-        flight_xy_sum = sum(flight_x[0:yn,])
-        total_flight[yn][xn] = flight_xy_sum
+total_flight = full_timeline.cumsum(axis=1)  # axis=1 for row-wise cumulative sum
+# print(total_flight)
 
-print(total_flight)
+points_df = pd.DataFrame(0, index=total_flight.index, columns=total_flight.columns)
+
+# Assign points based on the largest value in each column
+for column in total_flight.columns:
+    max_value = total_flight[column].max()  # Find the maximum value in the column
+    # Identify all rows with the maximum value and assign points
+    points_df[column] = (total_flight[column] == max_value).astype(int)  # Assign 1 point for max values
+
+# Display the points DataFrame
+total_points = points_df.cumsum(axis=1)  # axis=1 for row-wise cumulative sum
+
+final_df = pd.DataFrame(final_results, columns=['Reindeer', 'OG'])
+final_df['New'] = total_points.iloc[:, -1]
+
+print(final_df)
+
