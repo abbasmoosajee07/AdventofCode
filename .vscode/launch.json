@@ -41,8 +41,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
-      "cwd": "c:/Users/User/Documents/AdventofCode/2015/20",
-      "program": "c:/Users/User/Documents/AdventofCode/2015/20/build/Debug/outDebug",
+      "cwd": "c:/Users/User/Documents/AdventofCode",
+      "program": "c:/Users/User/Documents/AdventofCode/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [
