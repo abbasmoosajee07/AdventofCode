@@ -23,11 +23,11 @@ happy_seating <- function(seating_matrix, starting_person, number_of_people) {
   # Get the set of guests apart from the starting person
   vertex <- setdiff(1:number_of_people, starting_person)
   # Get all permutations of seating arrangements
-  total_permutations <- permutations(length(vertex), length(vertex), vertex)
+  total_permutations <- permutations(length(vertex), length(vertex), vertex) # nolint: object_usage_linter.
   max_happiness <- 0
   
   # Iterate over all permutations and calculate happiness
-  for (permutation in 1:nrow(total_permutations)) {
+  for (permutation in 1:nrow(total_permutations)) { # nolint: seq_linter.
     current_happiness <- 0
     outer_array_index <- starting_person
     
