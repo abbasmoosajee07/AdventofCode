@@ -5,10 +5,10 @@ D24_file = 'Day24_packages.txt'
 D24_file_path = Pathname.new(__FILE__).dirname + D24_file
 
 # Read the contents of the file
-packages = File.readlines(D24_file_path).map(&:chomp)
+packages_input = File.readlines(D24_file_path).map(&:chomp)
 
 
-packages_input = [1,2,3,7,11,13,17,19,23,31,37,41,43,47,53,59,61,67,71,73,79,83,89,97,101,103,107,109,113]
+# packages_input = [1,2,3,7,11,13,17,19,23,31,37,41,43,47,53,59,61,67,71,73,79,83,89,97,101,103,107,109,113]
 
 def create_package_combo(packages, group_no)
   packages = packages.map{|x| x.to_i}
