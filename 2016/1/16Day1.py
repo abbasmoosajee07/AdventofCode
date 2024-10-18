@@ -73,9 +73,6 @@ for n in range(len(directions)):
             coords_n = pd.DataFrame([coords], columns = ['x', 'y'])
             full_trace = pd.concat([full_trace, coords_n], ignore_index=True)
         coord_x -= magnitude_n
- 
- 
-
 
     location_n = pd.DataFrame([[direction_n, magnitude_n, coord_x, coord_y, heading]], 
                               columns=['dir', 'mag', 'x', 'y', 'heading'])

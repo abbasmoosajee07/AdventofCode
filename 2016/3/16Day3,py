@@ -104,5 +104,4 @@ def check_triangles_2(data):
 
 
 triangles = check_triangles_2(num_list)
-    
 print(f"Part 2: No. of Possible Listed Triangles: {triangles}")
