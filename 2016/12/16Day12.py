@@ -6,7 +6,7 @@ D12_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), D12_fil
 # Read input file
 with open(D12_file_path) as file:
     input_lines = file.read().splitlines()
-print(input_lines)
+# print(input_lines)
     
 
 # cpy x y copies x (either an integer or the value of a register) into register y.
@@ -84,15 +84,15 @@ def program(assembly, reg_a, reg_b, reg_c, reg_d):
 
     return reg_a, reg_b, reg_c, reg_d
 
-a1, b1, c1, d1 = program(input_lines, 0, 0, 0, 0)
 print(f"----------------Part 1----------------")           
+a1, b1, c1, d1 = program(input_lines, 0, 0, 0, 0)
 print(f"When it's all done, the value in a1 = {a1}")
 print(f"When it's all done, the value in b1 = {b1}")
 print(f"When it's all done, the value in c1 = {c1}")
 print(f"When it's all done, the value in d1 = {d1}")
 
-a2, b2, c2, d2 = program(input_lines, 0, 0, 1, 0)
 print(f"----------------Part 2----------------")           
+a2, b2, c2, d2 = program(input_lines, 0, 0, 1, 0)
 print(f"When it's all done, the value in a2 = {a2}")
 print(f"When it's all done, the value in b2 = {b2}")
 print(f"When it's all done, the value in c2 = {c2}")
