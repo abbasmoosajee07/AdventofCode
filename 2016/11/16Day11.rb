@@ -248,3 +248,6 @@ input[0].concat((0...4).map { |x| x + (elements.size << TYPE_BITS) })
 # adding the two generators to floor 1 would immediately fry the two chips there,
 # so there's no point in doing part 2 for the example input
 solve[input, elements] unless part_1_only
+
+# P1=47
+# P2=71

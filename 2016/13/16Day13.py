@@ -69,7 +69,7 @@ def bfs1(start, goal):
     return None  # No path found
 
 # Define start and goal positions (you can modify these)
-start = (1, 1)  # Starting point (row, column)
+start = (1, 1)    # Starting point (row, column)
 goal = (39, 31)   # Goal point (row, column)
 
 # Find the shortest path
@@ -100,7 +100,6 @@ def bfs2(start, max_steps):
     return visited  # Return all distinct positions visited
 
 # Define starting position and maximum steps
-start = (1, 1)  # Starting point (row, column)
 max_steps = 50   # Maximum number of steps allowed
 
 # Find distinct locations that can be visited

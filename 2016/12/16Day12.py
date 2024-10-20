@@ -9,11 +9,7 @@ with open(D12_file_path) as file:
 # print(input_lines)
     
 
-# cpy x y copies x (either an integer or the value of a register) into register y.
-# inc x increases the value of register x by one.
-# dec x decreases the value of register x by one.
-# jnz x y jumps to an instruction y away (positive means forward; 
-#         negative means backward), but only if x is not zero.
+
 def get_value(val, reg_a, reg_b, reg_c, reg_d):
     if val == "a":
         return reg_a
@@ -30,6 +26,7 @@ def program(assembly, reg_a, reg_b, reg_c, reg_d):
     counter = 0
     while counter < len(assembly):
         instructions = assembly[counter].split()
+        # cpy x y copies x (either an integer or the value of a register) into register y.
         if instructions[0] == "cpy":
             
             if instructions[1] == "a":
@@ -53,6 +50,7 @@ def program(assembly, reg_a, reg_b, reg_c, reg_d):
                 reg_d = x
             counter += 1
         
+        # inc x increases the value of register x by one.
         elif instructions[0] == "inc":
             if instructions[1] == "a":
                 reg_a += 1
@@ -63,7 +61,8 @@ def program(assembly, reg_a, reg_b, reg_c, reg_d):
             elif instructions[1] == "d":
                 reg_d += 1
             counter += 1
-        
+    
+        # dec x decreases the value of register x by one.       
         elif instructions[0] == "dec":
             if instructions[1] == "a":
                 reg_a -= 1
@@ -75,6 +74,8 @@ def program(assembly, reg_a, reg_b, reg_c, reg_d):
                 reg_d -= 1
             counter += 1
 
+        # jnz x y jumps to an instruction y away (positive means forward; 
+        #         negative means backward), but only if x is not zero.
         elif instructions[0] == "jnz":
             x = get_value(instructions[1], reg_a, reg_b, reg_c, reg_d)
             if x != 0:
