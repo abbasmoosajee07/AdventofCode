@@ -7,8 +7,6 @@ D12_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), D12_fil
 with open(D12_file_path) as file:
     input_lines = file.read().splitlines()
 # print(input_lines)
-    
-
 
 def get_value(val, reg_a, reg_b, reg_c, reg_d):
     if val == "a":
