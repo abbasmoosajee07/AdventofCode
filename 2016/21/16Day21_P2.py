@@ -2,7 +2,7 @@ import os, re
 import itertools
 import numpy as np
 
-# Example file name (adjust the path as needed)
+# Different approach taken from Part 1 of the question, more brute force
 D21_file = 'Day21_input.txt'
 D21_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), D21_file)
 
