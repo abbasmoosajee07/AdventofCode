@@ -100,10 +100,10 @@ def create_node_grid(node_df):
         
         Avail = (node['Avail'])
         label_n = f"{Used}T/{Size}T"
-        node_grid[node_y][node_x] = str(Used)
+        node_grid[node_y][node_x] = "."
         
-        # if Used >= 93:
-            # node_grid[node_y][node_x] = "#"      
+        if Used >= 93:
+            node_grid[node_y][node_x] = "#"      
               
         if Used == 0:
             node_grid[node_y][node_x] = 'E'
