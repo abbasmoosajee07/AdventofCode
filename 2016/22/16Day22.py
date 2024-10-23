@@ -124,4 +124,3 @@ for row in node_grid:
 node_array = np.array(node_grid)
 # print(node_array)
 
-test = 5 + 35
