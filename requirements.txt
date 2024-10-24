@@ -18,13 +18,15 @@ jedi==0.19.1
 jupyter_client==8.6.3
 jupyter_core==5.7.2
 kiwisolver==1.4.7
+llvmlite==0.43.0
 main-function==1.0.6
 main-imports==1.0.1
 matplotlib==3.9.2
 matplotlib-inline==0.1.7
 nest-asyncio==1.6.0
 networkx==3.4.1
-numpy==2.1.2
+numba==0.60.0
+numpy==2.0.2
 packaging==24.1
 panda==0.3.1
 pandas==2.2.3
@@ -41,6 +43,7 @@ pytz==2024.2
 pywin32==307
 pyzmq==26.2.0
 requests==2.32.3
+scipy==1.14.1
 setuptools==75.1.0
 six==1.16.0
 stack-data==0.6.3
