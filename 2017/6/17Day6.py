@@ -1,6 +1,6 @@
 import os
 import numpy as np
-from collections import Counter
+
 # Load the input file
 D6_file = 'Day6_input.txt'
 D6_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), D6_file)
