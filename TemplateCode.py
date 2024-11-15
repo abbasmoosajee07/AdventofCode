@@ -6,10 +6,10 @@
 import os, sys
 
 # Default values for the arguments
-DEFAULT_DAY = 2  # Default Day as '01'
-DEFAULT_YEAR = 2024
+DEFAULT_DAY = 1  # Default Day as '01'
+DEFAULT_YEAR = 2019
 DEFAULT_YEAR_SOLVE = 2024
-DEFAULT_AUTHOR = 'author'
+DEFAULT_AUTHOR = 'abbasmoosajee07'
 
 # Filter out unwanted arguments (e.g., those that come from Jupyter or IDE)
 valid_args = [arg for arg in sys.argv if not arg.startswith('--')]
@@ -48,9 +48,9 @@ python_file_path = os.path.join(base_dir, f'{Year}Day{padded_day}.py')
 # Check if the Python script file already exists
 if not os.path.exists(python_file_path):
     # Define the content of the Python script with dynamic day and year
-    python_script_content = f'''# Challenge - Day {Day}, Year {Year}
+    python_script_content = f'''# Advent of Code - Day {Day}, Year {Year}
 # Solved in {Year_Solve}
-# Puzzle Link: https://challenge.com/{Year}/day/{Day}  # Web link without padding
+# Puzzle Link: https://adventofcode.com/{Year}/day/{Day}  # Web link without padding
 # Solution by: [{Author}]
 # Brief: [Code/Problem Description]
 
