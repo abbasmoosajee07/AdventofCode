@@ -2,8 +2,9 @@
 # Create Template Script for Python
 # python TemplateCode.py 00 2010 2024 abbasmoosajee07
 
+#!/usr/bin/env python3
 
-import os, sys
+import os, sys, time
 
 # Default values for the arguments
 DEFAULT_DAY = 1  # Default Day as '01'
@@ -35,6 +36,13 @@ padded_day = str(Day).zfill(2)  # Pads day numbers to two digits (e.g., '01', '0
 # Define the path for the new subfolder using the padded day and year variables
 base_dir = os.path.join(str(Year), padded_day)
 
+# Get the current local time
+current_time = time.localtime()
+# Extract the time
+month = time.strftime('%b', current_time)
+day = current_time.tm_mday
+year = current_time.tm_year
+
 # Check if the subfolder already exists, if not, create it
 if not os.path.exists(base_dir):
     os.makedirs(base_dir)
@@ -49,7 +57,7 @@ python_file_path = os.path.join(base_dir, f'{Year}Day{padded_day}.py')
 if not os.path.exists(python_file_path):
     # Define the content of the Python script with dynamic day and year
     python_script_content = f'''# Advent of Code - Day {Day}, Year {Year}
-# Solved in {Year_Solve}
+# Solution Started: {month} {day}, {year}
 # Puzzle Link: https://adventofcode.com/{Year}/day/{Day}  # Web link without padding
 # Solution by: [{Author}]
 # Brief: [Code/Problem Description]
