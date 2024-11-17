@@ -7,7 +7,7 @@
 import os, sys, time
 
 # Default values for the arguments
-DEFAULT_DAY = 3  # Default Day as '01'
+DEFAULT_DAY = 5  # Default Day as '01'
 DEFAULT_YEAR = 2019
 DEFAULT_YEAR_SOLVE = 2024
 DEFAULT_AUTHOR = 'abbasmoosajee07'
@@ -58,7 +58,7 @@ if not os.path.exists(python_file_path):
     # Define the content of the Python script with dynamic day and year
     python_script_content = f'''# Advent of Code - Day {Day}, Year {Year}
 # Solution Started: {month} {day}, {year}
-# Puzzle Link: https://adventofcode.com/{Year}/day/{Day}  # Web link without padding
+# Puzzle Link: https://adventofcode.com/{Year}/day/{Day}
 # Solution by: [{Author}]
 # Brief: [Code/Problem Description]
 

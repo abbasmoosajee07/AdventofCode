@@ -5,10 +5,10 @@ This repository contains coding solutions for the 2019 Advent of Code. Each day'
 ## Day-by-Day Coding Overview
 
 1. **Day 1 - The Tyranny of the Rocket Equation**: Use recursive calculations to compute fuel requirements based on mass.
-2. **Day 2 - 1202 Program Alarm**: Implement a simple Intcode computer, focusing on list manipulation and opcode handling.
+2. **Day 2 - 1202 Program Alarm**: Implement a simple Intcode computer, focusing on list manipulation and opcode handling. `IntCode Computer P1`
 3. **Day 3 - Crossed Wires**: Find intersection points on a grid, emphasizing coordinate mapping and distance calculations.
 4. **Day 4 - Secure Container**: Use constraints on digit sequences to filter potential passwords.
-5. **Day 5 - Sunny with a Chance of Asteroids**: Extend Intcode to handle parameters with multiple modes.
+5. **Day 5 - Sunny with a Chance of Asteroids**: Extend Intcode to handle parameters with multiple modes. `IntCode Computer P2`
 6. **Day 6 - Universal Orbit Map**: Build a tree structure to represent orbits and calculate distances between nodes.
 7. **Day 7 - Amplification Circuit**: Chain Intcode programs with feedback loops to maximize signal output.
 8. **Day 8 - Space Image Format**: Parse layered image data, focusing on frequency counting and grid rendering.

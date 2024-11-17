@@ -1,6 +1,6 @@
 # Advent of Code - Day 1, Year 2019
 # Solution Started: Nov 17, 2024
-# Puzzle Link: https://adventofcode.com/2019/day/1  # Web link without padding
+# Puzzle Link: https://adventofcode.com/2019/day/1
 # Solution by: [abbasmoosajee07]
 # Brief: [Fuel Calculator]
 

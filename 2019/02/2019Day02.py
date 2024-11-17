@@ -1,6 +1,6 @@
 # Advent of Code - Day 2, Year 2019
 # Solution Started: Nov 17, 2024
-# Puzzle Link: https://adventofcode.com/2019/day/2  # Web link without padding
+# Puzzle Link: https://adventofcode.com/2019/day/2
 # Solution by: [abbasmoosajee07]
 # Brief: [IntCode Computer P1]
 
