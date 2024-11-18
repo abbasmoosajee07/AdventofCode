@@ -2,7 +2,7 @@
 # Solution Started: Nov 17, 2024
 # Puzzle Link: https://adventofcode.com/2019/day/5
 # Solution by: [abbasmoosajee07]
-# Brief: [Code/Problem Description]
+# Brief: [IntCode Computer P3]
 
 #!/usr/bin/env python3
 
