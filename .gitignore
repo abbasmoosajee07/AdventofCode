@@ -1,2 +1,4 @@
 **/Day??_input.txt
 *.exe
+
+# git rm --cached *.exe remove existing files

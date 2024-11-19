@@ -2,7 +2,7 @@
 # Solved in 2024
 # Puzzle Link: https://adventofcode.com/2018
 # Solution by: [abbasmoosajee07]
-# Brief: [Run all 2018 scripts]
+# Brief: [Run all 2019 scripts]
 
 
 #!/usr/bin/env python3
@@ -274,3 +274,4 @@ if __name__ == "__main__":
     Year = 2019
     Challenge = 'Advent of Code'
     main(Challenge, Year, light_blue)
+
