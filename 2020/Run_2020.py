@@ -265,7 +265,7 @@ neon_yellow = "#FFFF00"   # Neon Yellow
 
 # Blue shades
 dark_blue = '#303F9F'     # Dark Blue
-light_blue = '#4682B4'    # Light Blue
+light_blue = '#1F75FE'    # Light Blue
 
 # Neutral colors
 black = '#212121'         # Black
