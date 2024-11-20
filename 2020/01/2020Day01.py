@@ -2,7 +2,7 @@
 # Solution Started: Nov 19, 2024
 # Puzzle Link: https://adventofcode.com/2020/day/1
 # Solution by: [abbasmoosajee07]
-# Brief: [Code/Problem Description]
+# Brief: [Add Numbers]
 
 #!/usr/bin/env python3
 
