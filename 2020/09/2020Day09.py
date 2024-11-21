@@ -2,7 +2,7 @@
 # Solution Started: Nov 20, 2024
 # Puzzle Link: https://adventofcode.com/2020/day/9
 # Solution by: [abbasmoosajee07]
-# Brief: [Code/Problem Description]
+# Brief: [Num Sum w/ preambles]
 
 #!/usr/bin/env python3
 
