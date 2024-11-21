@@ -15,7 +15,7 @@ containers = File.readlines(D17_file_path).map(&:chomp)
 
 # Convert strings to integers
 containers = containers.map(&:to_i)
-eggnog = 25
+eggnog = 150
 
 # Initialize a list to hold valid combinations
 valid_combinations = []
