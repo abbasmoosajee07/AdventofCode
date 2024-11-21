@@ -6,7 +6,7 @@
 
 #!/usr/bin/env python3
 
-import os, re, copy, math
+import os, re, copy
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -52,9 +52,6 @@ def get_visible_seats(grid, pos, diagonals=True):
 
     for dr, dc in directions:
         row, col = pos
-
-        # Use GCD to determine step size for diagonal directions
-        g = math.gcd(dr, dc)
 
         # Move in the direction (dr, dc) by steps of GCD
         while True:
