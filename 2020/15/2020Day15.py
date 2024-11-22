@@ -2,7 +2,7 @@
 # Solution Started: Nov 21, 2024
 # Puzzle Link: https://adventofcode.com/2020/day/15
 # Solution by: [abbasmoosajee07]
-# Brief: [Code/Problem Description]
+# Brief: [Forming number sequences]
 
 #!/usr/bin/env python3
 
