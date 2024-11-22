@@ -30,6 +30,10 @@ This repository contains coding solutions for the 2020 Advent of Code, with prob
 24. **Day 24 - Lobby Layout**: Model hexagonal grid changes based on a sequence of moves, using set-based toggling.
 25. **Day 25 - Combo Breaker**: Implement the Diffie-Hellman key exchange protocol for cryptographic handshakes.
 
+**Revisit later: take too long to run rn**
+- Day 11 takes around 30s in Python
+- Day 15 takes around 20s in Python
+- Day 20 P2, reconsider approach
 ---
 
 The 2020 challenges explore recursion, state management, and set operations, with several puzzles on grid traversal and sequence manipulations.
