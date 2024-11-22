@@ -40,5 +40,5 @@ def count_answers(answer_list):
     return count_p1, count_p2
 
 ans_p1, ans_p2 = count_answers(input_data)
-print("Part 1", ans_p1)
-print("Part 2", ans_p2)
+print("Part 1:", ans_p1)
+print("Part 2:", ans_p2)

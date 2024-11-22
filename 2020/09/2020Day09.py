@@ -64,4 +64,4 @@ def find_contiguous_sum(nums, target):
 
     return None  # No valid range found
 min_max = find_contiguous_sum(num_list, target)
-print("Part 1:", min_max)
+print("Part 2:", min_max)
