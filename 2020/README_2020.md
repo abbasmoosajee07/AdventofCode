@@ -37,3 +37,5 @@ This repository contains coding solutions for the 2020 Advent of Code, with prob
 ---
 
 The 2020 challenges explore recursion, state management, and set operations, with several puzzles on grid traversal and sequence manipulations.
+
+![2020 Advent Calendar](<2020 Advent Calendar.png>)
