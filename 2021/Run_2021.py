@@ -180,10 +180,10 @@ def main(challenge, Year, center_color="#4CAF50"):  # Now you only need to speci
 
         # Generate the gradient based on the specified center color
         color_gradient = generate_gradient_around_color(center_color)
-        
+
         # Create a colormap from the generated gradient
         cmap = mcolors.LinearSegmentedColormap.from_list("custom_gradient", color_gradient)
-        
+
         # Normalize and apply color gradient to bars
         norm = mcolors.Normalize(vmin=min(percentages), vmax=max(percentages))
         bar_colors = [cmap(norm(p)) for p in percentages]
