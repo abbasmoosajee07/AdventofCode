@@ -1,6 +1,6 @@
-# Advent of Code - 2018
+# Advent of Code - 2020
 # Solved in 2024
-# Puzzle Link: https://adventofcode.com/2018
+# Puzzle Link: https://adventofcode.com/2020
 # Solution by: [abbasmoosajee07]
 # Brief: [Run all 2020 scripts]
 

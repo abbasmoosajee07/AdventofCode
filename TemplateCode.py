@@ -7,8 +7,8 @@
 import os, sys, time
 
 # Default values for the arguments
-DEFAULT_DAY = 13
-DEFAULT_YEAR = 2020
+DEFAULT_DAY = 4
+DEFAULT_YEAR = 2021
 DEFAULT_YEAR_SOLVE = 2024
 DEFAULT_AUTHOR = 'abbasmoosajee07'
 
