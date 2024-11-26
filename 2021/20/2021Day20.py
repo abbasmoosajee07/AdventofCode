@@ -2,7 +2,7 @@
 # Solution Started: Nov 26, 2024
 # Puzzle Link: https://adventofcode.com/2021/day/20
 # Solution by: [abbasmoosajee07]
-# Brief: [Code/Problem Description]
+# Brief: [Image Decoding]
 
 #!/usr/bin/env python3
 
