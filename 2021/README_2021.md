@@ -33,3 +33,4 @@ This repository contains coding solutions for the 2021 Advent of Code challenges
 ---
 
 These 2021 challenges emphasize efficient simulations, advanced parsing, and optimization in multi-dimensional grids and spaces.
+![2021 Advent](<2021 Advent Calendar.png>)
