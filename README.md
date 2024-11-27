@@ -23,8 +23,8 @@ In this repository, you’ll find:
 | 2024 |       |                 |                  | [GitHub](https://github.com/abbasmoosajee07/AdventofCode) |
 | 2023 |       |                 |                  | [GitHub](https://github.com/abbasmoosajee07/AdventofCode) |
 | 2022 | 2\*   |                 |                  | [GitHub](https://github.com/abbasmoosajee07/AdventofCode) |
-| 2021 | 40\*  | 39.81 s| Python/Ruby/C    | [GitHub](https://github.com/abbasmoosajee07/AdventofCode) |
-| 2020 | 50\*  |125.88 s| Python/Ruby/C    | [GitHub](https://github.com/abbasmoosajee07/AdventofCode) |
+| 2021 | 50\*  | 36.55 s| Python/Ruby/C    | [GitHub](https://github.com/abbasmoosajee07/AdventofCode/tree/main/2021) |
+| 2020 | 50\*  |125.88 s| Python/Ruby/C    | [GitHub](https://github.com/abbasmoosajee07/AdventofCode/tree/main/2020) |
 | 2019 | 24\*  | 10.22 s| Python/Ruby/C    | [GitHub](https://github.com/abbasmoosajee07/AdventofCode/tree/main/2019) |
 | 2018 | 50\*  |145.62 s| Python/Ruby/C    | [GitHub](https://github.com/abbasmoosajee07/AdventofCode/tree/main/2018) |
 | 2017 | 50\*  |136.12s | Python/Ruby/C    | [GitHub](https://github.com/abbasmoosajee07/AdventofCode/tree/main/2017) |
