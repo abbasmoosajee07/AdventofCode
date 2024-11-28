@@ -1,4 +1,4 @@
 **/Day??_input.txt
 *.exe
-
+__pycache__/
 # git rm --cached *.exe remove existing files
