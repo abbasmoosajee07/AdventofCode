@@ -22,7 +22,7 @@ In this repository, you’ll find:
 |------|-------|-----------------|------------------|------------|
 | 2024 |       |                 |                  | [GitHub](https://github.com/abbasmoosajee07/AdventofCode) |
 | 2023 |       |                 |                  | [GitHub](https://github.com/abbasmoosajee07/AdventofCode) |
-| 2022 | 2\*   |                 |                  | [GitHub](https://github.com/abbasmoosajee07/AdventofCode) |
+| 2022 | 4\*   |  2.27 s|Julia/Python| [GitHub](https://github.com/abbasmoosajee07/AdventofCode) |
 | 2021 | 50\*  | 36.55 s| Python/Ruby/C    | [GitHub](https://github.com/abbasmoosajee07/AdventofCode/tree/main/2021) |
 | 2020 | 50\*  |125.88 s| Python/Ruby/C    | [GitHub](https://github.com/abbasmoosajee07/AdventofCode/tree/main/2020) |
 | 2019 | 24\*  | 10.22 s| Python/Ruby/C    | [GitHub](https://github.com/abbasmoosajee07/AdventofCode/tree/main/2019) |
