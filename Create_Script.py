@@ -1,7 +1,5 @@
 
-import sys
-import os
-import time
+import sys, os, time
 
 # Import individual setup functions for each language
 from Polyglot_Setups.Setup_C import create_c_script
@@ -11,20 +9,18 @@ from Polyglot_Setups.Setup_Ruby import create_ruby_script
 from Polyglot_Setups.Setup_Txt import create_txt_file
 
 # Define default values for the Advent of Code challenge
-advent_day = 6
+advent_day = 1
 advent_year = 2022
 author_name = "abbasmoosajee07"
+selected_language = "ruby"  # Options: "python", "c", "julia", "ruby"
 
 # Dictionary mapping language names to their corresponding setup functions
 language_script_create_functions = {
-    "python": create_python_script,
     "c": create_c_script,
-    "julia": create_julia_script,
     "ruby": create_ruby_script,
+    "julia": create_julia_script,
+    "python": create_python_script,
 }
-
-# Define the selected programming language for the setup (change this value as needed)
-selected_language = "python"  # Options: "python", "c", "julia", "ruby"
 
 # Get the directory of the current script
 repo_dir = os.path.dirname(os.path.abspath(__file__))
