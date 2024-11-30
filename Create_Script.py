@@ -9,10 +9,10 @@ from Polyglot_Setups.Setup_Ruby import create_ruby_script
 from Polyglot_Setups.Setup_Txt import create_txt_file
 
 # Define default values for the Advent of Code challenge
-advent_day = 1
+advent_day = 10
 advent_year = 2022
 author_name = "abbasmoosajee07"
-selected_language = "ruby"  # Options: "python", "c", "julia", "ruby"
+selected_language = "julia"  # Options: "python", "c", "julia", "ruby"
 
 # Dictionary mapping language names to their corresponding setup functions
 language_script_create_functions = {
