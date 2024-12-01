@@ -1,0 +1,7 @@
+Day   Time (s)    Percentage     Lang        Line Count  
+------------------------------------------------------------
+1     0.13        100.00         .rb         44          
+------------------------------------------------------------
+Total Time: 0.13 seconds
+Average Time: 0.13 seconds
+Median Time: 0.13 seconds
