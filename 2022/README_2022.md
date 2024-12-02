@@ -14,7 +14,7 @@ This repository contains coding solutions for the 2022 Advent of Code, focusing 
 8. **Day 8 - Treetop Tree House**: Identify local maximums on a 2D grid for visibility.
 9. **Day 9 - Rope Bridge**: Simulate movement with relative positioning of segments.
 10. **Day 10 - Cathode-Ray Tube**: Render patterns from parsed signal cycles.
-11. **Day 11 - Monkey in the Middle**: Calculate object inspections and trajectory adjustments.
+11. **Day 11 - Monkey in the Middle**: Calculate object inspections and trajectory adjustments. *50x speed up when switched from python to ruby*
 12. **Day 12 - Hill Climbing Algorithm**: Apply pathfinding in a grid with elevation constraints.
 13. **Day 13 - Distress Signal**: Parse and order complex lists based on custom rules.
 14. **Day 14 - Regolith Reservoir**: Simulate particle behavior in a 2D grid environment.
