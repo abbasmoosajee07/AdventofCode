@@ -3,7 +3,7 @@ Advent of Code - Day 1, Year 2024
 Solution Started: Dec 1, 2024
 Puzzle Link: https://adventofcode.com/2024/day/1
 Solution by: abbasmoosajee07
-Brief: [Code/Problem Description]
+Brief: [Sort Numbers]
 =end
 
 #!/usr/bin/env ruby
