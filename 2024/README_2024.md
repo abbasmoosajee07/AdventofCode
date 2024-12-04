@@ -7,3 +7,4 @@ This repository contains coding solutions for the 2024 Advent of Code. Its the f
 1. **Day 1- Historian Hysteria**: *Ruby* Sort number lists and count their differences. Pretty simple overall, provided i didn't make reading mistakes, but life goes on
 2. **Day 2- Red-Nosed Reports** *Julia* Validate number lists according to different criteria, Part 1 was simple, complicated Part 2 way too much initially.
 3. **Day 3- Activating multiplication**: *Python* Used regex to find presence of all valid multiples, and then evaluate them. Seemed complicated originally until, you calm down and think of a clearer approach
+4. **Day 4- Word Search**: *Ruby* Used a bfs type search to create a word search algorithm in a letter grid. Adapted some Everybody Codes Quest code for this and then converted that to ruby
