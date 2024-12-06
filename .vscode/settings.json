@@ -1,3 +1,7 @@
 {
-    "julia.packageServer": "https://juliahub.com/"
+    "julia.packageServer": "https://juliahub.com/",
+    "cSpell.words": [
+        "logspace",
+        "ncol"
+    ]
 }

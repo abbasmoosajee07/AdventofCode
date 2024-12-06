@@ -1,0 +1,10 @@
+LICENSE.txt
+README.md
+setup.py
+Benchmark/Functions.py
+Benchmark/__init__.py
+Benchmark/analyze_aoc.py
+MainRepo.egg-info/PKG-INFO
+MainRepo.egg-info/SOURCES.txt
+MainRepo.egg-info/dependency_links.txt
+MainRepo.egg-info/top_level.txt
