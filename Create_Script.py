@@ -2,23 +2,23 @@
 import sys, os, time
 
 # Import individual setup functions for each language
-from Polyglot_Setups.Setup_C import create_c_script
-from Polyglot_Setups.Setup_Julia import create_julia_script
+from Polyglot_Setups.Setup_C      import create_c_script
+from Polyglot_Setups.Setup_Txt    import create_txt_file
+from Polyglot_Setups.Setup_Ruby   import create_ruby_script
+from Polyglot_Setups.Setup_Julia  import create_julia_script
 from Polyglot_Setups.Setup_Python import create_python_script
-from Polyglot_Setups.Setup_Ruby import create_ruby_script
-from Polyglot_Setups.Setup_Txt import create_txt_file
 
 # Define default values for the Advent of Code challenge
-advent_day = 10
-advent_year = 2022
+advent_day  = 6
+advent_year = 2024
 author_name = "abbasmoosajee07"
-selected_language = "julia"  # Options: "python", "c", "julia", "ruby"
+selected_language = "python"  # Options: "python", "c", "julia", "ruby"
 
 # Dictionary mapping language names to their corresponding setup functions
 language_script_create_functions = {
-    "c": create_c_script,
-    "ruby": create_ruby_script,
-    "julia": create_julia_script,
+    "c"     : create_c_script,
+    "ruby"  : create_ruby_script,
+    "julia" : create_julia_script,
     "python": create_python_script,
 }
 
