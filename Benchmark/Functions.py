@@ -1,8 +1,4 @@
-# Advent of Code - 2022
-# Solved in 2024
-# Puzzle Link: https://adventofcode.com/2022
-# Solution by: [abbasmoosajee07]
-# Brief: [Run all 2022 scripts]
+# Functions for Benchmarking
 
 #!/usr/bin/env python3
 import os, subprocess, glob, time, sys, re, psutil
@@ -94,7 +90,7 @@ def run_script(file_path):
         print(f"Error executing {file_name}: {e}")
         return None
 
-def create_table(file_info, times_taken, peak_memory_usage, num_iterations, year, repo_dir):
+def create_table(file_info, times_taken, peak_memory_usage, num_iterations, year):
     """
     Generates a table summarizing iterations and statistics for available days.
     Saves the table to a file and creates a DataFrame with the data.
@@ -105,8 +101,6 @@ def create_table(file_info, times_taken, peak_memory_usage, num_iterations, year
         peak_memory_usage (dict): Contains memory usage for each day.
         num_iterations (int): Number of iterations the tests ran.
         year (int): The year of the event.
-        repo_dir (str): Directory to save the table file.
-
     Returns:
         pandas.DataFrame: DataFrame containing the summary table data.
     """
@@ -216,13 +210,6 @@ def create_table(file_info, times_taken, peak_memory_usage, num_iterations, year
     table_lines.append("\n")
     table_lines.append(f"Year: {year}, Iterations: {num_iterations}")
 
-    # Save the table to a text file
-    output_file = os.path.join(repo_dir, f"{year}_Run_Summary.txt")
-    with open(output_file, 'w') as f:
-        for line in table_lines:
-            f.write(line + "\n")
-    print(f"Summary saved to {output_file}")
-
     # Create a DataFrame from the collected data
     df = pd.DataFrame(data_for_df, columns=headers)
 
@@ -233,9 +220,9 @@ def create_table(file_info, times_taken, peak_memory_usage, num_iterations, year
         "N/A", total_lines_of_code
     ]
     print(df)
-    return df
+    return df, table_lines
 
-def create_plot(df, challenge, Year, center_color="#4CAF50", scale='linear'):
+def create_plot(df, challenge, Year, Iters, save_dir, center_color="#4CAF50", scale='linear'):
     """
     Create a plot for average times with dynamic scaling and annotations.
 
@@ -243,6 +230,8 @@ def create_plot(df, challenge, Year, center_color="#4CAF50", scale='linear'):
         df (DataFrame): Input data with columns ['Day', 'Avg(s)', 'STD(s)', 'Lang', 'Lines', 'Avg(MB)'].
         challenge (str): Challenge name (e.g., 'Advent of Code').
         Year (int): Year of the challenge.
+        Iters (int): Num of iterations.
+        save_dir (str): save to directory
         center_color (str): Base color for the gradient (default: "#4CAF50").
         scale (str): Y-axis scaling ('linear' or 'log'). Default is 'linear'.
 
@@ -349,7 +338,7 @@ def create_plot(df, challenge, Year, center_color="#4CAF50", scale='linear'):
     # Add custom information to the legend (using proxy artists)
     custom_lines = [
         plt.Line2D([0], [0], color='white', label=f"Scale: {scale.capitalize()}"),
-        plt.Line2D([0], [0], color='white', label=f"Iterations: {num_iterations}"),
+        plt.Line2D([0], [0], color='white', label=f"Iterations: {Iters}"),
         plt.Line2D([0], [0], color='white', label=f"Peak Memory Use: {total_mem:.2f} MB"),
         plt.Line2D([0], [0], color='white', label=f"Avg Year Run Time: {total_time:.2f}s"),
     ]
@@ -375,8 +364,7 @@ def create_plot(df, challenge, Year, center_color="#4CAF50", scale='linear'):
     cbar.set_label(f'Relative Percentage of Total Peak Memory (%)', fontsize=12)
 
     # Save and show the plot
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    plot_path = os.path.join(script_dir, f"{Year}_{scale.capitalize()}_plot.png")
+    plot_path = os.path.join(save_dir, f"{Year}_{scale.capitalize()}_plot.png")
     plt.savefig(plot_path, bbox_inches='tight')
     plt.show()
 
@@ -454,18 +442,120 @@ def main(challenge, Year, days_to_run, num_iterations=5, center_color="#4CAF50")
     # Use averaged times for the table and plot
     run_df = create_table(file_info, times_taken, peak_memory_usage, num_iterations, Year, repo_dir)
 
-    # Create plot
-    create_plot(run_df, challenge, Year, center_color, scale='linear')
-    create_plot(run_df, challenge, Year, center_color, scale='log')
+
+    print(f"\nTotal script execution time over {num_iterations} iterations saved to table and plotted.")
+
+    return run_df
+
+def execute_challenge_scripts(challenge, Year, days_to_run, base_dir, num_iterations=5, center_color="#4CAF50"):
+    """
+    Execute challenge scripts, aggregate performance statistics, and generate results.
+
+    This function runs all scripts associated with a coding challenge (e.g., Advent of Code) for specified days 
+    over multiple iterations. It measures execution time, counts lines of code, and tracks peak memory usage. 
+    Results are aggregated and used to generate a summary table and performance plots.
+
+    Parameters:
+        challenge (str): The name of the challenge (e.g., "Advent of Code").
+        Year (int): The year of the challenge (e.g., 2024).
+        days_to_run (list): A list of integers specifying the days of the challenge to execute (e.g., [1, 2, 3]).
+        base_dir (str): Base Directory where all challenge scripts are saved
+        num_iterations (int): Number of iterations to execute each day's scripts (default is 5).
+        center_color (str): The base color for gradients in plots (default is "#4CAF50").
+    Returns:
+        DataFrame: A Pandas DataFrame containing aggregated results, including:
+                    - Day numbers
+                    - Average execution times
+                    - Standard deviations
+                    - Peak memory usage
+                    - Line counts
+                    - Languages used.
+    """
+    print(f"\n{challenge} - {Year}")
+    print(f"Running scripts for days: {min(days_to_run)} to {max(days_to_run)} over {num_iterations} iterations.")
+
+    # repo_dir = os.path.dirname(os.path.abspath(__file__))
+    if not os.path.isdir(base_dir):
+        print(f"Directory '{base_dir}' does not exist.")
+        return
+
+    # Data structures for storing results
+    times_taken = {day: [] for day in days_to_run}  # Store times for each day across iterations
+    file_info = {}  # Store script info for each day
+    peak_memory_usage = {day: [] for day in days_to_run}  # Store peak memory usage for each day
+
+    # Loop through iterations
+    for iteration in range(num_iterations):
+        print(f"\nIteration {iteration + 1}/{num_iterations}...")
+
+        for day_dir in os.listdir(base_dir):
+            day_path = os.path.join(base_dir, day_dir)
+            if os.path.isdir(day_path) and day_dir.isdigit():
+                day_number = int(day_dir)
+                if day_number in days_to_run:
+                    print(f"\nProcessing Day {day_number}...")
+                    day_time, day_lines, day_peak_memory = 0, 0, 0
+                    languages = set()
+
+                    # Execute all scripts for the day
+                    for script_file in glob.glob(f"{day_path}/*"):
+                        match = re.search(rf"{Year}Day(\d+)(?:_P\d+)?", os.path.basename(script_file))
+                        script_day = int(match.group(1)) if match else None
+
+                        if script_day == day_number:
+                            result = run_script(script_file)
+                            if result:
+                                extension, line_count, elapsed_time, peak_memory = result
+                                day_time += elapsed_time
+                                day_lines += line_count
+                                day_peak_memory = max(day_peak_memory, peak_memory)  # Track highest memory usage
+                                languages.add(extension[1:])  # Store language/extension without dot
+
+                    # Collect results for this day
+                    if day_time > 0:
+                        languages_str = ", ".join(sorted(languages))
+                        times_taken[day_number].append(day_time)  # Add this iteration's time
+                        peak_memory_usage[day_number].append(day_peak_memory)
+                        if day_number not in file_info:
+                            file_info[day_number] = (f".{languages_str}", day_lines)
+
+    # Use averaged times for the table and plot
+    run_df, table_txt = create_table(file_info, times_taken, peak_memory_usage, num_iterations, Year)
+
+    # Save the table to a text file
+    output_file = os.path.join(base_dir, f"{Year}_Run_Summary.txt")
+    with open(output_file, 'w') as f:
+        for line in table_txt:
+            f.write(line + "\n")
+    print(f"Summary saved to {output_file}")
+
+    # Create plots
+    create_plot(run_df, challenge, Year, num_iterations, base_dir, center_color, scale='linear')
+    create_plot(run_df, challenge, Year, num_iterations, base_dir, center_color, scale='log')
 
     print(f"\nTotal script execution time over {num_iterations} iterations saved to table and plotted.")
 
     return run_df
 
 if __name__ == "__main__":
-    Year = 2022
+    Year = 2024
     Challenge = 'Advent of Code'
     days_to_run = range(1, 26)
-    color_2022 = "#FFA500"
+    color_2024 = "#673147"
     num_iterations = 3  # Number of iterations for benchmarking
-    run_2022 = main(Challenge, Year, days_to_run, num_iterations, color_2022)
+    repo_dir = os.path.dirname(os.path.abspath(__file__))
+    file_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), f"{Year}")
+    base_dir = os.path.abspath(os.path.join(os.getcwd(), f"{Year}"))
+    print(repo_dir)
+        # Get the directory of the current script
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    
+    # Navigate to the repository's root (assuming this script is located within the repo)
+    repo_dir = os.path.abspath(os.path.join(script_dir, ".."))  # Go one level up
+    selected_dir = os.path.join(repo_dir, f"{Year}")
+
+    run_2024 = execute_challenge_scripts(Challenge, Year, days_to_run, selected_dir, num_iterations, color_2024)
+
+    # Create plot
+    create_plot(run_2024, Challenge, Year, num_iterations, selected_dir, color_2024, scale='linear')
+    create_plot(run_2024, Challenge, Year, num_iterations, selected_dir, color_2024, scale='log')
