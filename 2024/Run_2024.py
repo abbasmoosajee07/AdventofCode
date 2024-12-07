@@ -5,7 +5,7 @@
 # Brief: [Run all 2024 scripts]
 
 
-#!/usr/bin/env python3#!/usr/bin/env python3
+#!/usr/bin/env python3
 import os
 from Benchmarks.execute_challenge import execute_challenge_scripts
 
