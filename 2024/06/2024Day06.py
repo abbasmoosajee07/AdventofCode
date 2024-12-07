@@ -2,7 +2,7 @@
 Solution Started: Dec 6, 2024
 Puzzle Link: https://adventofcode.com/2024/day/6
 Solution by: abbasmoosajee07
-Brief: [Code/Problem Description]
+Brief: [Guard Movements]
 """
 
 #!/usr/bin/env python3
