@@ -2,7 +2,7 @@
 
 Pretty fun overall, last 5 were definitely some of the toughest ones yet but past examples helped out quite a bit. Continuing with expanding to C and Ruby for faster code.
 
-![2017 Full Run Time Plot](2017_RunTime_plot.png)
+![2017 Full Run Time Plot](2017_Log_plot.png)
 
 ## Day-by-Day Coding Overview
 
