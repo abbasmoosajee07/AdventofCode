@@ -1,7 +1,7 @@
 # Advent of Code 2020 - Coding Challenge Summaries
 
 This repository contains coding solutions for the 2020 Advent of Code, with problems emphasizing recursion, state management, and efficient data structures.
-![2020 RunTime](2020_RunTime_plot.png)
+![2020 RunTime](2020_Log_plot.png)
 ## Day-by-Day Coding Overview
 
 1. **Day 1 - Report Repair**: Use two-pointer or hashing techniques to find entries summing to a target value.

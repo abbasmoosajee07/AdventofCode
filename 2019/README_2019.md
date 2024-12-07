@@ -1,7 +1,7 @@
 # Advent of Code 2019 - Coding Challenge Summaries
 
 This repository contains coding solutions for the 2019 Advent of Code. Each day's problem involves complex simulations, graph theory, and optimization techniques.
-![2019 Run Time](2019_RunTime_plot.png)
+![2019 Run Time](2019_Log_plot.png)
 ## Day-by-Day Coding Overview
 
 1. **Day 1 - The Tyranny of the Rocket Equation**: Use recursive calculations to compute fuel requirements based on mass.
