@@ -9,10 +9,10 @@ from Polyglot_Setups.Setup_Julia  import create_julia_script
 from Polyglot_Setups.Setup_Python import create_python_script
 
 # Define default values for the Advent of Code challenge
-advent_day  = 6
+advent_day  = 7
 advent_year = 2024
 author_name = "abbasmoosajee07"
-selected_language = "python"  # Options: "python", "c", "julia", "ruby"
+selected_language = "ruby"  # Options: "python", "c", "julia", "ruby"
 
 # Dictionary mapping language names to their corresponding setup functions
 language_script_create_functions = {
