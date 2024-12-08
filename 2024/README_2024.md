@@ -11,3 +11,4 @@ This repository contains coding solutions for the 2024 Advent of Code. Its the f
 5. **Day 5- Print Queue**: *Julia* | Validating lists of numbers to match a set of rules, Fairly simple Part 1, Part 2 felt complicated until I looked at the megathread and found a different approach
 6. **Day 6- Guard Gallivant**: *Ruby* | Pretty simple question overall with regards to the logic, but optimising it proved to be a fun challenge
 7. **Day 7- Bridge Repair**: *Python* | Various permutations to build a target number with different blocks using the operators '+','*' and then '||'. Pretty simple once I realised i didn't have to permutate through all the operators
+8. **Day 8- Resonant Collinearity**: *Ruby* | Find antinodes for any given antenna, Weird Wording which made the question really hard to understand
