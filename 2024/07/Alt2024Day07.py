@@ -2,7 +2,7 @@
 Solution Started: Dec 7, 2024
 Puzzle Link: https://adventofcode.com/2024/day/7
 Solution by: abbasmoosajee07
-Brief: [Code/Problem Description]
+Brief: [Build Numbers]
 """
 
 #!/usr/bin/env python3
