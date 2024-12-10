@@ -12,4 +12,5 @@ This repository contains coding solutions for the 2024 Advent of Code. Its the f
 6. **Day 6- Guard Gallivant**: *Ruby* | Pretty simple question overall with regards to the logic, but optimising it proved to be a fun challenge
 7. **Day 7- Bridge Repair**: *Ruby* | Various permutations to build a target number with different blocks using the operators '+','*' and then '||'. Pretty simple once I realised i didn't have to permutate through all the operators
 8. **Day 8- Resonant Collinearity**: *Ruby* | Find antinodes for any given antenna, Weird Wording which made the question really hard to understand
-9. **Day 9- Disk Fragmenter**: ** | Free up disk space by removing empty space and rearranging files. 
+9. **Day 9- Disk Fragmenter**: *Ruby* | Free up disk space by removing empty space and rearranging files.
+10. **Day 10- Hoof it**: *Python* | Simple BFS to find all valid paths on a 2d grid. Pretty standard algorithm that i adapted.
