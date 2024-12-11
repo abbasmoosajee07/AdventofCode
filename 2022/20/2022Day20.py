@@ -2,7 +2,7 @@
 Solution Started: Dec 9, 2024
 Puzzle Link: https://adventofcode.com/2022/day/20
 Solution by: abbasmoosajee07
-Brief: [Code/Problem Description]
+Brief: [Mixing and Decrypting Files]
 """
 
 #!/usr/bin/env python3
