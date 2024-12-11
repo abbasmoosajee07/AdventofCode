@@ -11,8 +11,7 @@ import os, re, copy, time, ast
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-import networkx as nx
-start_time = time.time()
+from sympy import symbols, Eq, solve
 
 # Load the input data from the specified file path
 D21_file = "Day21_input.txt"
@@ -23,21 +22,19 @@ with open(D21_file_path) as file:
     input_data = file.read().strip().split('\n')
     instruction_dict = {line.split(': ')[0]: line.split(': ')[1] for line in input_data}
 
-def evaluate_expression(expr):
-    # Base case: if the expression is a single number (string), return it as a number
+def parse_expression(expr):
+    """Recursively parse a nested list into a sympy expression."""
     if isinstance(expr, str):
-        return int(expr)
-    if isinstance(expr, int):
-        return expr
-
-    # Recursive case: if the expression is a list
+        if expr == "your_input":
+            return symbols("your_input")  # Treat 'your_input' as a variable
+        return int(expr)  # Convert numeric strings to integers
+    
     if isinstance(expr, list):
-        # The structure of the list is [left_operand, operator, right_operand]
-        left = evaluate_expression(expr[0])  # Evaluate the left operand
-        operator = expr[1]  # The operator as a string
-        right = evaluate_expression(expr[2])  # Evaluate the right operand
-
-        # Perform the operation based on the operator
+        left = parse_expression(expr[0])
+        operator = expr[1]
+        right = parse_expression(expr[2])
+        
+        # Build the sympy expression based on the operator
         if operator == '+':
             return left + right
         elif operator == '-':
@@ -45,10 +42,9 @@ def evaluate_expression(expr):
         elif operator == '*':
             return left * right
         elif operator == '/':
-            return left // right  # Integer division for simplicity
+            return left / right
         elif operator == '=':
-            if left == right:
-                return True
+            return Eq(left, right)
         else:
             raise ValueError(f"Unsupported operator: {operator}")
 
@@ -67,29 +63,24 @@ def find_monkey_call(instructions, start = 'root'):
                 new_equation.append(variable)
         return new_equation
 
-eq_p1 = find_monkey_call(instruction_dict)
-ans_p1 = evaluate_expression(eq_p1)
-print("Part 1:", (ans_p1))
+def match_monkey_call(instructions: dict):
+    root_instruction = re.sub(r'[+\-*/^]', '=', instructions['root'])
+    instructions['root'] = root_instruction
+    instructions['humn'] = 'your_input'
+    equation = find_monkey_call(instructions)
+    # Parse the equation into a sympy Eq object
+    lhs = parse_expression(equation[0])  # Left-hand side of the equation
+    rhs = parse_expression(equation[2])  # Right-hand side of the equation
+    eq = Eq(lhs, rhs)  # Create the equation
+    
+    # Solve for 'your_input'
+    your_input = symbols("your_input")
+    solution = solve(eq, your_input)
+    return round(solution[0])
 
-human_val = 301
-test_input = ['root: pppw = sjmn',
-    'dbpl: 5',
-    'cczh: sllz + lgvd',
-    'zczc: 2',
-    'ptdq: humn - dvpt',
-    'dvpt: 3',
-    'lfqf: 4',
-    f'humn: {human_val}',
-    'ljgn: 2',
-    'sjmn: drzm * dbpl',
-    'sllz: 4',
-    'pppw: cczh / lfqf',
-    'lgvd: ljgn * ptdq',
-    'drzm: hmdt - zczc',
-    'hmdt: 32'
-]
-instruction_dict1 = {line.split(': ')[0]: line.split(': ')[1] for line in test_input}
-eq_p2 = find_monkey_call(instruction_dict1)
-ans_p2= evaluate_expression(eq_p2)
-print("Part 2:", (ans_p2))
-print("Total Time", time.time()-start_time)
+eq_p1 = find_monkey_call(instruction_dict)
+ans_p1 = parse_expression(eq_p1)
+print("Part 1:", round(ans_p1))
+
+ans_p2 = match_monkey_call(instruction_dict)
+print("Part 2:", ans_p2)
