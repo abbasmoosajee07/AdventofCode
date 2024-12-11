@@ -14,3 +14,4 @@ This repository contains coding solutions for the 2024 Advent of Code. Its the f
 8. **Day 8- Resonant Collinearity**: *Ruby* | Find antinodes for any given antenna, Weird Wording which made the question really hard to understand
 9. **Day 9- Disk Fragmenter**: *Ruby* | Free up disk space by removing empty space and rearranging files.
 10. **Day 10- Hoof it**: *Python* | Simple BFS to find all valid paths on a 2d grid. Pretty standard algorithm that i adapted.
+11. **Day 11- Plutonian Pebbles**: *Python* | Exponentially increasing lists, that becomes way more easy to solve when you switch to dictionaries and counters.
