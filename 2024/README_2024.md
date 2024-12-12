@@ -15,3 +15,4 @@ This repository contains coding solutions for the 2024 Advent of Code. Its the f
 9. **Day 9- Disk Fragmenter**: *Ruby* | Free up disk space by removing empty space and rearranging files.
 10. **Day 10- Hoof it**: *Python* | Simple BFS to find all valid paths on a 2d grid. Pretty standard algorithm that i adapted.
 11. **Day 11- Plutonian Pebbles**: *Python* | Exponentially increasing lists, that becomes way more easy to solve when you switch to dictionaries and counters.
+12. **Day 12- Garden Groups**: ** | Pretty simple neighbour searching algorithm, with some added complexity for finding perimeter and areas, Part 2 was kinda tough but got it in the end
