@@ -2,7 +2,7 @@
 Solution Started: Dec 10, 2024
 Puzzle Link: https://adventofcode.com/2022/day/21
 Solution by: abbasmoosajee07
-Brief: []
+Brief: [Yelling Monkeys]
 """
 
 #!/usr/bin/env python3
