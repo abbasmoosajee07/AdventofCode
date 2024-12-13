@@ -20,16 +20,16 @@ In this repository, you’ll find:
 ## How to Use
 | Year | Stars | Time (s) | Languages        | Repository |
 |------|-------|-----------------|------------------|------------|
-| 2024 |16\*   |52.47 s |Julia/Python/Ruby| [GitHub](https://github.com/abbasmoosajee07/AdventofCode/tree/main/2024) |
+| 2024 |26\*   |19.97 s |Julia/Python/Ruby| [GitHub](https://github.com/abbasmoosajee07/AdventofCode/tree/main/2024) |
 | 2023 |       |                 |                  | [GitHub](https://github.com/abbasmoosajee07/AdventofCode) |
-| 2022 | 36\*  |135.67 s|Julia/Python/Ruby| [GitHub](https://github.com/abbasmoosajee07/AdventofCode/tree/main/2022) |
-| 2021 | 50\*  | 42.07 s| Python/Ruby/C    | [GitHub](https://github.com/abbasmoosajee07/AdventofCode/tree/main/2021) |
-| 2020 | 50\*  | 63.56 s| Python/Ruby/C    | [GitHub](https://github.com/abbasmoosajee07/AdventofCode/tree/main/2020) |
-| 2019 | 24\*  | 13.04 s| Python/Ruby/C    | [GitHub](https://github.com/abbasmoosajee07/AdventofCode/tree/main/2019) |
-| 2018 | 50\*  |172.5 s| Python/Ruby/C    | [GitHub](https://github.com/abbasmoosajee07/AdventofCode/tree/main/2018) |
-| 2017 | 50\*  |136.68 s| Python/Ruby/C    | [GitHub](https://github.com/abbasmoosajee07/AdventofCode/tree/main/2017) |
-| 2016 | 50\*  |194.85 s| Python/Ruby/C    | [GitHub](https://github.com/abbasmoosajee07/AdventofCode/tree/main/2016) |
-| 2015 | 50\*  |440.82 s| Python/Ruby/C/R  | [GitHub](https://github.com/abbasmoosajee07/AdventofCode/tree/main/2015) |
-| **Total** | **376\*** |                 |                  |            |
+| 2022 | 46\*  | 95.21 s|Julia/Python/Ruby| [GitHub](https://github.com/abbasmoosajee07/AdventofCode/tree/main/2022) |
+| 2021 | 50\*  | 40.67 s| Python/Ruby/C    | [GitHub](https://github.com/abbasmoosajee07/AdventofCode/tree/main/2021) |
+| 2020 | 50\*  | 72.70 s| Python/Ruby/C    | [GitHub](https://github.com/abbasmoosajee07/AdventofCode/tree/main/2020) |
+| 2019 | 24\*  | 13.31 s| Python/Ruby/C    | [GitHub](https://github.com/abbasmoosajee07/AdventofCode/tree/main/2019) |
+| 2018 | 50\*  |154.41 s| Python/Ruby/C    | [GitHub](https://github.com/abbasmoosajee07/AdventofCode/tree/main/2018) |
+| 2017 | 50\*  |131.25 s| Python/Ruby/C    | [GitHub](https://github.com/abbasmoosajee07/AdventofCode/tree/main/2017) |
+| 2016 | 50\*  |264.24 s| Python/Ruby/C    | [GitHub](https://github.com/abbasmoosajee07/AdventofCode/tree/main/2016) |
+| 2015 | 50\*  |530.01 s| Python/Ruby/C/R  | [GitHub](https://github.com/abbasmoosajee07/AdventofCode/tree/main/2015) |
+| **Total** | **396\*** |                 |                  |            |
 
 ![alt text](analyse_AOC/overall_summary.png)

@@ -11,7 +11,7 @@ from Benchmarks.execute_challenge import execute_challenge_scripts
 
 if __name__ == "__main__":
     # Define constants
-    YEAR = 2024
+    YEAR = 2021
     CHALLENGE_NAME = 'Advent of Code'
     DAYS_TO_RUN = range(1, 26)
     COLOR_2024 = "#228B22"
