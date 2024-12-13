@@ -38,19 +38,20 @@ def parse_runtime_file(file_path, year):
             continue
         
         # Assign values to variables
-        day, avg_time, std_time, rel_time, avg_mb, std_mb, rel_mb, *Lang, Lines = parts
+        day, avg_time, std_time, rel_time, avg_mb, std_mb, rel_mb, *Lang, file_size, Lines = parts
         
         # Append the row as a dictionary to the data list
         data.append({
             "Year": year,
             "Day": int(day),
-            "Avg_s": float(avg_time),
-            "STD_s": float(std_time),
-            "rel_s": float(rel_time.strip('%')),
+            "Avg_ms": float(avg_time),
+            "STD_ms": float(std_time),
+            "rel_ms": float(rel_time.strip('%')),
             "Avg_mb": float(avg_mb),
             "STD_mb": float(std_mb),
             "rel_mb": float(rel_mb.strip('%')),
             "Lang": ' '.join(Lang),  # Join language(s) into a single string
+            'Size_kb': float(file_size),
             "Lines": int(Lines)
         })
     
@@ -84,14 +85,14 @@ def analyze_data(dataframe):
     Analyzes the combined runtime data and prints a summary.
     """
     # Find slowest and fastest days
-    slowest = dataframe.sort_values('Avg_s', ascending=False).head(5)
-    fastest = dataframe.sort_values('Avg_s').head(5)
+    slowest = dataframe.sort_values('Avg_ms', ascending=False).head(5)
+    fastest = dataframe.sort_values('Avg_ms').head(5)
     
     print("\nSlowest Days:")
-    print(slowest[['Year', 'Day', 'Avg_s', 'STD_s', 'Avg_mb', 'Lang']])
+    print(slowest[['Year', 'Day', 'Avg_ms', 'STD_ms', 'Avg_mb', 'Lang']])
     
     print("\nFastest Days:")
-    print(fastest[['Year', 'Day', 'Avg_s', 'STD_s', 'Avg_mb', 'Lang']])
+    print(fastest[['Year', 'Day', 'Avg_ms', 'STD_ms', 'Avg_mb', 'Lang']])
 
 # Example usage
 repo_path = get_repository_path()
@@ -106,9 +107,9 @@ print(combined_data)
 def annual_summary(dataframe):
     # Summary by year
     summary = dataframe.groupby('Year').agg(
-        Total_Time=('Avg_s', 'sum'),
-        Average_Time=('Avg_s', 'mean'),
-        Median_Time=('Avg_s', 'median'),
+        Total_Time=('Avg_ms', 'sum'),
+        Average_Time=('Avg_ms', 'mean'),
+        Median_Time=('Avg_ms', 'median'),
         Total_memory=('Avg_mb', 'sum'),
     ).reset_index()  # Reset index to make 'Year' a column
 
@@ -155,6 +156,6 @@ def annual_summary(dataframe):
 # Example usage
 summary_df = annual_summary(combined_data)
 
-over_30s = combined_data[combined_data['Avg_s'] >= 30]
+over_30s = combined_data[combined_data['Avg_ms'] >= 30]
 
 print(over_30s)
