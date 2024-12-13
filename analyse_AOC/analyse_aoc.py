@@ -102,7 +102,7 @@ print(f"Repository path: {repo_path}")
 combined_data = read_all_runtime_tables(repo_path)
 print(combined_data)
 # Analyze the combined data
-# analyze_data(combined_data)
+analyze_data(combined_data)
 
 def annual_summary(dataframe):
     # Summary by year
@@ -124,7 +124,7 @@ def annual_summary(dataframe):
     fig, ax = plt.subplots(figsize=(10, 6))
 
     # Bar plot with color scale
-    bars = ax.bar(summary['Year'], summary['Total_Time'], color=colors, edgecolor='black',zorder =2)
+    bars = ax.bar(summary['Year'], summary['Total_Time']/1000, color=colors, edgecolor='black',zorder =2)
 
     # Add color bar for Total_memory
     sm = plt.cm.ScalarMappable(cmap='viridis', norm=norm)
@@ -156,6 +156,7 @@ def annual_summary(dataframe):
 # Example usage
 summary_df = annual_summary(combined_data)
 
-over_30s = combined_data[combined_data['Avg_ms'] >= 30]
+over_30s = combined_data.loc[combined_data['Avg_ms'] >= 30_000, ['Year', 'Day', 'Avg_ms']]
+over_30s.to_csv("problems_over_30s.txt", sep="\t", index=False)
 
 print(over_30s)
