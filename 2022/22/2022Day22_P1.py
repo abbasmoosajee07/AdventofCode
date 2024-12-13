@@ -28,15 +28,10 @@ def build_grid(multiline_str):
     padded_lines = [list(line.ljust(max_len)) for line in lines]
     return np.array(padded_lines, dtype=str)
 
-def find_row_boundaries(row):
-    """Find the first and last non-space indices in a row."""
+def find_boundaries(row):
+    """Find the first and last non-space indices in a row/col."""
     indices = [i for i, char in enumerate(row) if char != ' ']
     return (indices[0], indices[-1]) if indices else (0, len(row) - 1)
-
-def find_col_boundaries(grid, col):
-    """Find the first and last non-space indices in a column."""
-    indices = [i for i, char in enumerate(grid[:, col]) if char != ' ']
-    return (indices[0], indices[-1]) if indices else (0, len(grid) - 1)
 
 def move_on_grid(grid, movement, start):
     """Execute a movement on the grid."""
@@ -55,14 +50,14 @@ def move_on_grid(grid, movement, start):
         next_row, next_col = row + dr, col + dc
 
         # Handle wrapping in rows
-        row_start, row_end = find_row_boundaries(grid[row])
+        row_start, row_end = find_boundaries(grid[row])
         if next_col < row_start:
             next_col = row_end
         elif next_col > row_end:
             next_col = row_start
 
         # Handle wrapping in columns
-        col_start, col_end = find_col_boundaries(grid, col)
+        col_start, col_end = find_boundaries(grid[:, col])
         if next_row < col_start:
             next_row = col_end
         elif next_row > col_end:
