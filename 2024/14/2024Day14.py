@@ -123,11 +123,12 @@ for min in range(1, GRID_SIZE[0]*GRID_SIZE[1] * len(particles)):  # Start from 1
         grid[y][x] = '#'
 
     components = find_connected_components(grid)
-    visualize_particles(grid, min)
+    # visualize_particles(grid, min)
+
     # Track the minimum safety score and time step with fewer than 200 components
     if components <= 200:
         easter_egg = True
-        visualize_particles(grid, min, file_path= 'christmas_tree.txt')
+        # visualize_particles(grid, min, file_path= 'christmas_tree.txt')
         print(f"Part 2: {min}")
         break
     else:
