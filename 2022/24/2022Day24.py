@@ -95,10 +95,10 @@ example_2 = np.array([
     ['#', '#', '#', '#', '#', '#', '.', '#']
 ], dtype=object)
 
-init_map = example_2
+init_map = example_1
 new_map = init_map
 show_map(new_map)
-for minute in range(1,2):
+for minute in range(1,6):
     print(f"{minute=}")
     new_map = track_blizzards(new_map)
     show_map(new_map)
