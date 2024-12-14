@@ -103,12 +103,3 @@ for minute in range(1,2):
     new_map = track_blizzards(new_map)
     show_map(new_map)
 print(new_map)
-
-# # Step 1: Remove the file from the index
-# git rm --cached 2024/14/grid_output.txt
-
-# # Step 2: Commit the change (deletion of the file)
-# git commit -m "Remove grid_output.txt to reduce repository size"
-
-# # Step 3: Push the changes to the remote repository
-# git push origin main
