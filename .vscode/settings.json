@@ -1,7 +1,10 @@
 {
     "julia.packageServer": "https://juliahub.com/",
     "cSpell.words": [
+<<<<<<< HEAD
         "axvline",
+=======
+>>>>>>> 2230fda10c79e5310adcebdd2124fe33ec9aa236
         "logspace",
         "ncol"
     ],
