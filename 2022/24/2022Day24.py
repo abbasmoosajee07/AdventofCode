@@ -2,7 +2,7 @@
 Solution Started: Dec 13, 2024
 Puzzle Link: https://adventofcode.com/2022/day/24
 Solution by: abbasmoosajee07
-Brief: [Code/Problem Description]
+Brief: [Moving in a Blizzard]
 """
 
 #!/usr/bin/env python3
@@ -33,47 +33,47 @@ def show_map(map):
 
 DIRECTIONS =[(-1, 0), (1, 0), (0, -1), (0, 1)] # N, S, W, E
 
-def track_blizzards(map):
-    BLIZZARD_MOVEMENT = {'>': (0, 1), '<':(0, -1),
-                        'v':(1, 0),  '^':(-1, 0)}
-    wrap_around = {
-        '>': lambda r, c: (r, 1),  # Wrap to the first column
-        '<': lambda r, c: (r, total_cols - 1),  # Wrap to the last column
-        'v': lambda r, c: (1, c),  # Wrap to the first row
-        '^': lambda r, c: (total_rows - 1, c)  # Wrap to the last row
-    }
-    total_rows, total_cols = len(map), len(map[0])
-    next_map = copy.deepcopy(map)
-    for row_no, row in enumerate(map):
-        for col_no, all_blizzards in enumerate(row):
-            pos = (row_no, col_no)
-            blizzard_list = list(all_blizzards)
-            for point in blizzard_list:
-                if point in ['>','<','v','^']:
-                    dr, dc = BLIZZARD_MOVEMENT[point]
-                    new_row = row_no + dr
-                    new_col = col_no + dc
-                    new_pos = (new_row, new_col)
-                    next_old = map[new_pos]
-                    # Handle wrap-around logic if hitting a wall
-                    if next_old == '#':
-                        if point in wrap_around:
-                            new_row, new_col = wrap_around[point](row_no, col_no)
-                            new_pos = (new_row, new_col)
-                            next_old = map[new_pos]
 
-                    next_point = next_map[new_pos]
-                    original_point = next_map[pos]
-                    if next_point == '.':
-                        next_map[new_pos] = point
+def track_blizzards(map):
+    BLIZZARD_MOVEMENT = {'>': (0, 1), '<': (0, -1), 'v': (1, 0), '^': (-1, 0)}
+    
+    # Wrap-around logic for blizzards
+    def wrap_around(direction, r, c):
+        if direction == '>':  # Wrap to the first column
+            return (r, 1)
+        elif direction == '<':  # Wrap to the last column
+            return (r, len(map[0]) - 2)
+        elif direction == 'v':  # Wrap to the first row
+            return (1, c)
+        elif direction == '^':  # Wrap to the last row
+            return (len(map) - 2, c)
+
+    total_rows, total_cols = len(map), len(map[0])
+    next_map = [['.' for _ in range(total_cols)] for _ in range(total_rows)]
+    
+    # Copy walls ('#') from the original map to the new map
+    for r in range(total_rows):
+        for c in range(total_cols):
+            if map[r][c] == '#':
+                next_map[r][c] = '#'
+    
+    for row_no, row in enumerate(map):
+        for col_no, cell in enumerate(row):
+            if cell not in ['#', '.']:  # Cell contains blizzards
+                for point in cell:  # Handle multiple blizzards in one cell
+                    dr, dc = BLIZZARD_MOVEMENT[point]
+                    new_row, new_col = row_no + dr, col_no + dc
+
+                    # Handle wrap-around
+                    if map[new_row][new_col] == '#':
+                        new_row, new_col = wrap_around(point, row_no, col_no)
+
+                    # Move blizzard to the new position
+                    if next_map[new_row][new_col] in ['.', '#']:
+                        next_map[new_row][new_col] = point
                     else:
-                        next_point += point
-                        next_map[new_pos] = next_point
-                    if len(original_point) == 1:
-                        next_map[pos] = '.'
-                    else:
-                        next_map[pos] = original_point
-                    #show_map(next_map)
+                        next_map[new_row][new_col] += point
+
     return next_map
 
 example_1 = np.array([
@@ -95,11 +95,12 @@ example_2 = np.array([
     ['#', '#', '#', '#', '#', '#', '.', '#']
 ], dtype=object)
 
-init_map = example_1
+init_map = example_2
 new_map = init_map
 show_map(new_map)
-for minute in range(1,6):
+for minute in range(1,19):
     print(f"{minute=}")
     new_map = track_blizzards(new_map)
     show_map(new_map)
-print(new_map)
+
+# print(new_map)
