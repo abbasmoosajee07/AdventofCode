@@ -11,6 +11,7 @@ import os, re, copy
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+from collections import deque
 
 # Load the input data from the specified file path
 D24_file = "Day24_input.txt"
@@ -19,88 +20,159 @@ D24_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), D24_fil
 # Read and sort input data into a grid
 with open(D24_file_path) as file:
     input_data = file.read().strip().split('\n')
-    input_map  = np.array([list(row) for row in input_data], dtype=object)
 
-def show_map(map):
+def initialise_map(input_data):
+    grid_map  = np.array([list(row) for row in input_data], dtype=object)
+    total_rows, total_cols = len(grid_map), len(grid_map[0])
+    empty_map = [['.' for _ in range(total_cols)] for _ in range(total_rows)]
+    non_wall_cells = []
+
+    # Assuming start and end is on the border
+    for row_index, row in enumerate(grid_map):
+        for col_index, cell in enumerate(row):
+            if cell == '.':
+                non_wall_cells.append((row_index, col_index))
+            if grid_map[row_index][col_index] in ['#','S','T','E']:
+                empty_map[row_index][col_index] = grid_map[row_index][col_index]
+
+    # Define the start and target cells
+    start, target = non_wall_cells[0], non_wall_cells[-1]
+
+    # Mark start and target cells in both maps
+    grid_map[start] = 'S'
+    grid_map[target] = 'T'
+    empty_map[start[0]][start[1]] = 'S'
+    empty_map[target[0]][target[1]] = 'T'
+    return empty_map, grid_map, start, target
+
+#!/usr/bin/env python3
+
+import os
+import numpy as np
+from collections import deque
+
+# Load the input data from the specified file path
+D24_file = "Day24_input.txt"
+D24_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), D24_file)
+
+# Read the input data from file
+with open(D24_file_path) as file:
+    input_data = file.read().strip().split('\n')
+
+def show_map(map, pos=(0, 0)):
+    """
+    Display the map, marking the current position with 'E'.
+    """
+    map[pos[0]][pos[1]] = 'E'
     for row in map:
-        print_row = ''
-        for cell in row:
-            if len(cell) == 1:
-                print_row += cell[0]
-            else:
-                print_row += str(len(cell))
+        print_row = ''.join(str(len(cell)) if isinstance(cell, list) else cell for cell in row)
         print(print_row)
 
-DIRECTIONS =[(-1, 0), (1, 0), (0, -1), (0, 1)] # N, S, W, E
-
-
-def track_blizzards(map):
-    BLIZZARD_MOVEMENT = {'>': (0, 1), '<': (0, -1), 'v': (1, 0), '^': (-1, 0)}
+def initialise_map(input_data):
+    """
+    Initialize the map from the input data and find the start and target positions.
+    """
+    grid_map = np.array([list(row) for row in input_data], dtype=object)
+    total_rows, total_cols = len(grid_map), len(grid_map[0])
     
-    # Wrap-around logic for blizzards
-    def wrap_around(direction, r, c):
-        if direction == '>':  # Wrap to the first column
-            return (r, 1)
-        elif direction == '<':  # Wrap to the last column
-            return (r, len(map[0]) - 2)
-        elif direction == 'v':  # Wrap to the first row
-            return (1, c)
-        elif direction == '^':  # Wrap to the last row
-            return (len(map) - 2, c)
-
-    total_rows, total_cols = len(map), len(map[0])
-    next_map = [['.' for _ in range(total_cols)] for _ in range(total_rows)]
+    # Create an empty map with '.' representing empty spaces
+    non_wall_cells = []
     
-    # Copy walls ('#') from the original map to the new map
-    for r in range(total_rows):
-        for c in range(total_cols):
-            if map[r][c] == '#':
-                next_map[r][c] = '#'
+    # Identify non-wall cells and store their coordinates
+    for row_index, row in enumerate(grid_map):
+        for col_index, cell in enumerate(row):
+            if cell == '.':
+                non_wall_cells.append((row_index, col_index))
+
+    # Define the start and target positions
+    start, target = non_wall_cells[0], non_wall_cells[-1]
+
+    # Mark the start and target positions on both the grid_map and empty_map
+    grid_map[start] = 'S'
+    grid_map[target] = 'T'
     
-    for row_no, row in enumerate(map):
-        for col_no, cell in enumerate(row):
-            if cell not in ['#', '.']:  # Cell contains blizzards
-                for point in cell:  # Handle multiple blizzards in one cell
-                    dr, dc = BLIZZARD_MOVEMENT[point]
-                    new_row, new_col = row_no + dr, col_no + dc
+    return grid_map, start, target
 
-                    # Handle wrap-around
-                    if map[new_row][new_col] == '#':
-                        new_row, new_col = wrap_around(point, row_no, col_no)
+def calculate_bad_cells(grid_map, rows, cols):
+    """
+    Calculate the 'bad' cells where blizzards are present for each time step.
+    """
+    BAD_CELLS = {}
+    
+    # Precompute bad cells at each time step
+    for storm in range((rows - 2) * (cols - 2) + 1):
+        BAD = set()
+        for r in range(rows):
+            for c in range(cols):
+                if grid_map[r][c] == '>':
+                    BAD.add((r, 1 + ((c - 1 + storm) % (cols - 2))))  # Move right
+                elif grid_map[r][c] == 'v':
+                    BAD.add((1 + ((r - 1 + storm) % (rows - 2)), c))  # Move down
+                elif grid_map[r][c] == '<':
+                    BAD.add((r, 1 + ((c - 1 - storm) % (cols - 2))))  # Move left
+                elif grid_map[r][c] == '^':
+                    BAD.add((1 + ((r - 1 - storm) % (rows - 2)), c))  # Move up
+        BAD_CELLS[storm] = BAD
+    
+    return BAD_CELLS
 
-                    # Move blizzard to the new position
-                    if next_map[new_row][new_col] in ['.', '#']:
-                        next_map[new_row][new_col] = point
-                    else:
-                        next_map[new_row][new_col] += point
+def bfs_to_target(grid_map, start, rows, cols):
+    """
+    Perform BFS to find the shortest path to the target while avoiding blizzards.
+    """
+    # Get the precomputed bad cells for each time step
+    BAD_CELLS = calculate_bad_cells(grid_map, rows, cols)
+    
+    # Initialize the BFS queue and seen states
+    p1 = False
+    SEEN = set()
+    start_state = (start[0], start[1], 0, False, False)  # (r, c, time, reached_end, reached_start)
+    Q = deque([start_state])
+    
+    while Q:
+        r, c, storm, got_end, got_start = Q.popleft()
 
-    return next_map
+        # Skip invalid positions (walls or out of bounds)
+        if not (0 <= r < rows and 0 <= c < cols and grid_map[r][c] != '#'):
+            continue
+        
+        # If reached the target row (end)
+        if r == rows - 1 and got_end and got_start:
+            print("Part 2:", storm)
+            break
+        
+        # Handle reaching the target row for Part 1
+        if r == rows - 1 and not p1:
+            print("Part 1:", storm)
+            p1 = True
+        
+        # Update flags based on position
+        if r == rows - 1:
+            got_end = True
+        if r == 0 and got_end:
+            got_start = True
+        
+        # Skip if this state has already been seen (avoid revisiting)
+        if (r, c, storm, got_start, got_end) in SEEN:
+            continue
+        SEEN.add((r, c, storm, got_start, got_end))
+        
+        # Get the 'bad' cells for the next time step
+        BAD = BAD_CELLS[storm + 1]
 
-example_1 = np.array([
-    ['#', '.', '#', '#', '#', '#', '#'],
-    ['#', '.', '.', '.', '.', '.', '#'],
-    ['#', '>', '.', '.', '.', '.', '#'],
-    ['#', '.', '.', '.', '.', '.', '#'],
-    ['#', '.', '.', '.', 'v', '.', '#'],
-    ['#', '.', '.', '.', '.', '.', '#'],
-    ['#', '#', '#', '#', '#', '.', '#']
-], dtype=object)
+        # Explore the current position and adjacent cells
+        if (r, c) not in BAD:
+            Q.append((r, c, storm + 1, got_end, got_start))  # Stay in place
+        if (r + 1, c) not in BAD:
+            Q.append((r + 1, c, storm + 1, got_end, got_start))  # Move down
+        if (r - 1, c) not in BAD:
+            Q.append((r - 1, c, storm + 1, got_end, got_start))  # Move up
+        if (r, c + 1) not in BAD:
+            Q.append((r, c + 1, storm + 1, got_end, got_start))  # Move right
+        if (r, c - 1) not in BAD:
+            Q.append((r, c - 1, storm + 1, got_end, got_start))  # Move left
 
-example_2 = np.array([
-    ['#', '.', '#', '#', '#', '#', '#', '#'],
-    ['#', '>', '>', '.', '<', '^', '<', '#'],
-    ['#', '.', '<', '.', '.', '<', '<', '#'],
-    ['#', '>', 'v', '.', '>', '<', '>', '#'],
-    ['#', '<', '^', 'v', '^', '^', '>', '#'],
-    ['#', '#', '#', '#', '#', '#', '.', '#']
-], dtype=object)
-
-init_map = example_2
-new_map = init_map
-show_map(new_map)
-for minute in range(1,19):
-    print(f"{minute=}")
-    new_map = track_blizzards(new_map)
-    show_map(new_map)
-
-# print(new_map)
+# Initialize the map and start BFS
+grid_map, start, target = initialise_map(input_data)
+rows, cols = len(grid_map), len(grid_map[0])
+bfs_to_target(grid_map, start, rows, cols)
