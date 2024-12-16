@@ -16,9 +16,6 @@ This repository contains coding solutions for the 2024 Advent of Code. Its the f
 10. **Day 10- Hoof it**: *Python* | Simple BFS to find all valid paths on a 2d grid. Pretty standard algorithm that i adapted.
 11. **Day 11- Plutonian Pebbles**: *Python* | Exponentially increasing lists, that becomes way more easy to solve when you switch to dictionaries and counters.
 12. **Day 12- Garden Groups**: ** | Pretty simple neighbour searching algorithm, with some added complexity for finding perimeter and areas, Part 2 was kinda tough but got it in the end
-<<<<<<< HEAD
 13. **Day 13- Claw Contraption**: *Ruby* | Solving simultaneous equations, fairly simple ad could have solved it far faster if i simply used round instead of int from the start, but lesson learned
 14. **Day 14- Restroom Redoubt**: *Python* | Particle Tracking in a grid, which was fairly simple, but finding the easter egg convinced me I never looked for one
-=======
-13. **Day 13- Claw Contraption**: *Ruby* | Solving simultaneous equations, fairly simple ad could have solved it far faster if i simply used round instead of int from the start, but lesson learned
->>>>>>> 2230fda10c79e5310adcebdd2124fe33ec9aa236
+15. **Day 15- Warehouse Woes**: *Python* | Moving elements in a grid according to a set of instructions, seems complicated but fairly manageable, once you work out a couple of edge cases. Not the most elegant solution, but definitely one of my favourite ones overall.
