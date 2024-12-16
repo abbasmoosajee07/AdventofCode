@@ -19,3 +19,4 @@ This repository contains coding solutions for the 2024 Advent of Code. Its the f
 13. **Day 13- Claw Contraption**: *Ruby* | Solving simultaneous equations, fairly simple ad could have solved it far faster if i simply used round instead of int from the start, but lesson learned
 14. **Day 14- Restroom Redoubt**: *Python* | Particle Tracking in a grid, which was fairly simple, but finding the easter egg convinced me I never looked for one
 15. **Day 15- Warehouse Woes**: *Python* | Moving elements in a grid according to a set of instructions, seems complicated but fairly manageable, once you work out a couple of edge cases. Not the most elegant solution, but definitely one of my favourite ones overall.
+16. **Day 16- Reindeer Maze**: *Python* | A* search to find minimum path in a maze, adapted a fairly standard algorithm with the cost function.
