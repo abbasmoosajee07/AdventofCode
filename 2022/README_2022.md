@@ -33,3 +33,5 @@ This repository contains coding solutions for the 2022 Advent of Code, focusing 
 ---
 
 The 2022 challenges explore 2D/3D spatial reasoning, set manipulations, and creative string processing.
+
+![alt text](2022_Advent_Calendar.png)
