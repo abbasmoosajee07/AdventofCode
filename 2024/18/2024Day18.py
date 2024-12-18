@@ -58,7 +58,7 @@ def bfs_shortest_path(start, target, walls, grid_bounds):
 
         # Check if we reached the target
         if current == target:
-            return steps, True
+            return visited, steps
 
         # Explore neighbors
         for dx, dy in directions:
@@ -73,31 +73,48 @@ def bfs_shortest_path(start, target, walls, grid_bounds):
                 visited.add(neighbor)
 
     # If we exhaust the queue, no path exists
-    return -1, False
+    return -1, 0
 
-def find_blocking_wall(start, target, walls, grid_bounds):
+def find_blocking_wall(start, target, walls, grid_bounds, min_check = 1024):
+    # Add the first min walls initially
+    incremental_walls = set(walls[:min_check])
 
-    # Copy walls to simulate adding them incrementally
-    incremental_walls = set()
-    for wall in walls:
-        # Add the wall incrementally
-        incremental_walls.add(wall)
-        
-        # Check if the path is still reachable
-        _, wall_reached = bfs_shortest_path(start, target, incremental_walls, grid_bounds)
-        if not wall_reached:
-            return wall  # Return the first wall that blocks the path
+    # Define a helper function to check if a wall blocks the path
+    def is_path_blocked(wall_index):
+        # Add all walls up to the current index
+        current_walls = incremental_walls | set(walls[min_check:wall_index + 1])
+        _, wall_reached = bfs_shortest_path(start, target, current_walls, grid_bounds)
+        return wall_reached == 0
 
-    # If all walls are added and the path is never blocked
-    return None
+    # Perform binary search on the remaining walls
+    left, right = min_check, len(walls) - 1
+    blocking_wall = None
+
+    while left <= right:
+        mid = (left + right) // 2
+
+        if is_path_blocked(mid):
+            # If the path is blocked, this is a potential candidate
+            blocking_wall = walls[mid]
+            # Narrow the search to earlier walls
+            right = mid - 1
+        else:
+            # Otherwise, search in the later walls
+            left = mid + 1
+
+    return blocking_wall  # Return the first blocking wall found, or None if no wall blocks the path
 
 walls_p1 = all_walls[:1024]
+
 walls_p2 = all_walls  # Walls to simulate
 grid_bounds, start, goal = get_grid_bounds(all_walls)
 
 # Call BFS
-shortest_path_length, _ = bfs_shortest_path(start, goal, walls_p1, grid_bounds)
-print(f"Part 1: {shortest_path_length}")
+_, shortest_path_length = bfs_shortest_path(start, goal, walls_p1, grid_bounds)
+print(f"Part 1: {(shortest_path_length)}")
+
+
+
 
 # Find the first blocking wall
 blocking_wall = find_blocking_wall(start, goal, walls_p2, grid_bounds)
