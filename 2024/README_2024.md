@@ -21,3 +21,4 @@ This repository contains coding solutions for the 2024 Advent of Code. Its the f
 15. **Day 15- Warehouse Woes**: *Python* | Moving elements in a grid according to a set of instructions, seems complicated but fairly manageable, once you work out a couple of edge cases. Not the most elegant solution, but definitely one of my favourite ones overall.
 16. **Day 16- Reindeer Maze**: *Python* | A* search to find minimum path in a maze, adapted a fairly standard algorithm with the cost function.
 17. **Day 17- Chronospatial Computer**: *Python* | Build an assembly computer with 8 main functions
+18. **Day 18- RAM Run**: *Python* | Path finder in a 2D grid, using BFS algorithm. Probably look to optimise it later on
