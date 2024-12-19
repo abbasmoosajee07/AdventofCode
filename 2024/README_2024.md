@@ -22,3 +22,4 @@ This repository contains coding solutions for the 2024 Advent of Code. Its the f
 16. **Day 16- Reindeer Maze**: *Python* | A* search to find minimum path in a maze, adapted a fairly standard algorithm with the cost function.
 17. **Day 17- Chronospatial Computer**: *Python* | Build an assembly computer with 8 main functions. Create a sort of disassembler that brute forces the solution
 18. **Day 18- RAM Run**: *Python* | Path finder in a 2D grid, using BFS algorithm. Added a binary search to improve speed instead of initial brute force, resulting in a 8x speed up.
+19. **Day 19- Linen Layout**: *Python* | Building words in using a group of blocks, finished in python cos it was easy.
