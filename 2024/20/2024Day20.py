@@ -2,19 +2,18 @@
 Solution Started: Dec 20, 2024
 Puzzle Link: https://adventofcode.com/2024/day/20
 Solution by: abbasmoosajee07
-Brief: [Code/Problem Description]
+Brief: [Cheating in a race via teleportation]
 """
 
 #!/usr/bin/env python3
 
-import os, re, copy, time
+import os, re, copy
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from collections import deque
 from scipy.spatial import KDTree
 
-start_time = time.time()
 # Load the input data from the specified file path
 D20_file = "Day20_input.txt"
 D20_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), D20_file)
@@ -85,7 +84,7 @@ def test_cheat_codes(init_path: dict, cheat_code=2) -> int:
 
     # Build a KDTree for efficient nearest-neighbor queries
     tree = KDTree(pathway)
-    time_saved = 0
+    useful_cheats = 0
 
     for i, start in enumerate(pathway):
         # Query for all neighbors within cheat_code distance
@@ -98,19 +97,17 @@ def test_cheat_codes(init_path: dict, cheat_code=2) -> int:
                 close_portal = init_path[close]
                 time_diff = close_portal - open_portal - abs_dist
                 if time_diff >= 100:
-                    time_saved += 1
-    return time_saved
+                    useful_cheats += 1
+    return useful_cheats
 
 walls, start, goal, grid_bounds = parse_grid(input_data)
 base_path, full_time = bfs_shortest_path(start, goal, walls, grid_bounds)
 
 if base_path:
-    time_saved_p1 = test_cheat_codes(base_path)
-    print("Part 1:", time_saved_p1)
+    cheats_p1 = test_cheat_codes(base_path)
+    print("Part 1:", cheats_p1)
 
-    time_saved_p2 = test_cheat_codes(base_path, 20)
-    print("Part 2:", time_saved_p2)
+    cheats_p2 = test_cheat_codes(base_path, 20)
+    print("Part 2:", cheats_p2)
 else:
     print("No valid path found.")
-
-print(time.time() - start_time)
