@@ -23,3 +23,4 @@ This repository contains coding solutions for the 2024 Advent of Code. Its the f
 17. **Day 17- Chronospatial Computer**: *Python* | Build an assembly computer with 8 main functions. Create a sort of disassembler that brute forces the solution
 18. **Day 18- RAM Run**: *Python* | Path finder in a 2D grid, using BFS algorithm. Added a binary search to improve speed instead of initial brute force, resulting in a 8x speed up.
 19. **Day 19- Linen Layout**: *Python* | Building words in using a group of blocks, finished in python cos it was easy.
+20. **Day 20- Race Condition**: *Python* | Almost an inverse of Day 18, where I brute forced a solution for Part 1:, by removing individual walls, which worked but took almost 5 mins so switched approaches. Switching to the manhattan approach between start and end cheats, resulted in a 10x speed up. Adding the KDT function for iterating through times, further sped it up by 10x, for a 100x speed up overall.
