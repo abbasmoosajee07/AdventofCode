@@ -27,4 +27,4 @@ This repository contains coding solutions for the 2024 Advent of Code. Its the f
 21. **Day 21- Keypad Conundrum**: *Ruby* | While orignally I tried using a BFS to find path from each key to next, it became way tto memory intensive for the depths required in part 2, and switched to a more tailored algorithm focused on the absolute difference between two points
 22. **Day 22- Monkey Market**: *Python* | Essentially about finding patterns in a list of random numbers, which I ended up using a dictionary of lists to find the optimum point across all the 1600 lists.
 23. **Day 23- LAN Party**: *Python* | Used the gift of a library that is networkx, which may not be as elegant but it is a solution after all.
-24. **Day 24- Crossed Wires**: *Python* | Built a circuit network, fairly simple Part 1, Part 2 is taking quite long so needs to be optimised
+24. **Day 24- Crossed Wires**: *Python* | Built a circuit network, fairly simple Part 1, Found a relativey fast solution for Part 2 that works on my input, but seems to get stuck on the examples
