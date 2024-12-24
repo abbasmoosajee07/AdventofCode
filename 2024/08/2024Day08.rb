@@ -3,7 +3,7 @@ Advent of Code - Day 8, Year 2024
 Solution Started: Dec 8, 2024
 Puzzle Link: https://adventofcode.com/2024/day/8
 Solution by: abbasmoosajee07
-Brief: [Code/Problem Description]
+Brief: [Visible Antennaes]
 =end
 
 #!/usr/bin/env ruby

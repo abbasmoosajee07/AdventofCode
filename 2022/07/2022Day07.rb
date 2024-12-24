@@ -3,7 +3,7 @@ Advent of Code - Day 7, Year 2022
 Solution Started: Nov 30, 2024
 Puzzle Link: https://adventofcode.com/2022/day/7
 Solution by: abbasmoosajee07
-Brief: [Code/Problem Description]
+Brief: [Create File Tree]
 =end
 
 #!/usr/bin/env ruby

@@ -3,7 +3,7 @@ Advent of Code - Day 24, Year 2024
 Solution Started: Dec 24, 2024
 Puzzle Link: https://adventofcode.com/2024/day/24
 Solution by: abbasmoosajee07
-Brief: [Code/Problem Description]
+Brief: [Fixing Circuits]
 =end
 
 #!/usr/bin/env ruby

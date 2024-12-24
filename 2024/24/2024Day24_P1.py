@@ -2,7 +2,7 @@
 Solution Started: Dec 24, 2024
 Puzzle Link: https://adventofcode.com/2024/day/24
 Solution by: abbasmoosajee07
-Brief: [Code/Problem Description]
+Brief: [Building Circuits]
 """
 
 #!/usr/bin/env python3

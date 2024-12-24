@@ -2,7 +2,7 @@
 Solution Started: Dec 1, 2024
 Puzzle Link: https://adventofcode.com/2022/day/12
 Solution by: abbasmoosajee07
-Brief: [Code/Problem Description]
+Brief: [Pathfinding on a hill]
 """
 
 #!/usr/bin/env python3

@@ -2,7 +2,7 @@
 Solution Started: Dec 12, 2024
 Puzzle Link: https://adventofcode.com/2022/day/23
 Solution by: abbasmoosajee07
-Brief: [Code/Problem Description]
+Brief: [Moving Elves]
 """
 
 #!/usr/bin/env python3

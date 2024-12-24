@@ -3,7 +3,7 @@ Advent of Code - Day 4, Year 2024
 Solution Started: Dec 4, 2024
 Puzzle Link: https://adventofcode.com/2024/day/4
 Solution by: abbasmoosajee07
-Brief: [Code/Problem Description]
+Brief: [Word Search]
 =end
 
 #!/usr/bin/env ruby

@@ -2,7 +2,7 @@
 # Solution Started: Nov 24, 2024
 # Puzzle Link: https://adventofcode.com/2021/day/15
 # Solution by: [abbasmoosajee07]
-# Brief: [Code/Problem Description]
+# Brief: [Pathfinding in a cave]
 
 #!/usr/bin/env python3
 

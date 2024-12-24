@@ -2,7 +2,7 @@
 # Solved in 2024
 # Puzzle Link: https://adventofcode.com/2018/day/11
 # Solution by: [abbasmoosajee07]
-# Brief: [Code/Problem Description]
+# Brief: [Elven Power Grid]
 
 import numpy as np
 
