@@ -7,7 +7,7 @@ Brief: [Code/Problem Description]
 
 #!/usr/bin/env python3
 
-import os, re, copy, time
+import os, re, copy, time, graphlib
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -103,3 +103,80 @@ init_wires, gates = parse_input(input_data)
 wires_p1 = simulate_circuit(init_wires, gates)
 dec_num_p1 = find_wire_group(wires_p1)
 print("Part 1:", dec_num_p1)
+
+# Initialize gate dictionary
+g = {gate['out']: (gate['op'], gate['inp1'], gate['inp2']) for gate in gates}
+
+# Find maximum index for wire names
+c = max(int(wire[1:]) for wire in g if re.fullmatch(r"z[0-9]+", wire))
+m = 2 ** (c + 1) - 1
+
+# Cache the results of test1 and testn to avoid recomputation
+test1_cache = {}
+testn_cache = {}
+
+# Test function for gate evaluation with memoization
+def test1(e, x, y, s):
+    # Use a tuple to hash the state and avoid recomputation
+    cache_key = tuple(e), x, y, tuple(s.items())
+    if cache_key in test1_cache:
+        return test1_cache[cache_key]
+    
+    v = (
+        {f"x{i:02d}": (x >> i) & 1 for i in range(c)} |
+        {f"y{i:02d}": (y >> i) & 1 for i in range(c)}
+    )
+    for w in e:
+        o, a, b = g[s.get(w, w)]  # Getting the operation and operands
+        if o == "AND":
+            v[w] = v[a] & v[b]
+        elif o == "OR":
+            v[w] = v[a] | v[b]
+        elif o == "XOR":
+            v[w] = v[a] ^ v[b]
+    
+    for i in range(c + 1):
+        if v[f"z{i:02d}"] != ((x + y) >> i) & 1:
+            test1_cache[cache_key] = i
+            return i
+    test1_cache[cache_key] = c + 1
+    return c + 1
+
+# Test function for finding minimum test error with memoization
+def testn(s):
+    # Use a cache to store results of testn function
+    cache_key = tuple(s.items())
+    if cache_key in testn_cache:
+        return testn_cache[cache_key]
+    
+    try:
+        e = [
+            w for w in graphlib.TopologicalSorter(
+                {s.get(w, w): {a, b} for w, (o, a, b) in g.items()}
+            ).static_order() if w in g
+        ]
+        result = min(
+            test1(e, x, y, s)
+            for x, y in ((m, 0), (0, m), (m, 1), (1, m), (m, m))
+        )
+        testn_cache[cache_key] = result
+        return result
+    except graphlib.CycleError:
+        testn_cache[cache_key] = 0
+        return 0
+
+# Start solving the problem
+s = {}
+while len(s) < 8:
+    a, b = max(
+        ((a, b) for a in g for b in g if a < b and a not in s and b not in s),
+        key=lambda p: testn(s | {p[0]: p[1], p[1]: p[0]})
+    )
+    s.update({a: b, b: a})
+
+# Output the sorted result of wires that were updated
+swapped_wires = ",".join(sorted(s))
+print("Part 2:", swapped_wires)
+
+# Print the elapsed time
+print(time.time() - start_time)
