@@ -3,17 +3,16 @@ Solution Started: Dec 22, 2024
 Puzzle Link: https://adventofcode.com/2023/day/5
 Solution by: abbasmoosajee07
 Brief: [Creating a gardener's map]
-299285429 too low
-2448156885 too high
 """
 
 #!/usr/bin/env python3
 
-import os, re, copy
+import os, re, copy,time
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
+start_time = time.time()
 # Load the input data from the specified file path
 D05_file = "Day05_input.txt"
 D05_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), D05_file)
@@ -22,41 +21,55 @@ D05_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), D05_fil
 with open(D05_file_path) as file:
     input_data = file.read().strip().split('\n\n')
 
-def parse_almanac(input_almanac: list) -> tuple[list[int], dict[list]]:
+def parse_almanac(input_almanac: list) -> tuple[list[int], dict[str, list[dict]]]:
+    """
+    Parse the input almanac to extract seeds and mapping data.
+
+    Args:
+        input_almanac (list): List of strings representing the almanac data.
+
+    Returns:
+        tuple: A list of seed values and a dictionary of variable mappings.
+    """
     # Parse the seeds from the first line
-    seeds = {idx + 1: {'seed': int(num)} for idx, num in enumerate(input_almanac[0].strip('seeds: ').split(' '))}
+    seeds = [int(num) for num in input_almanac[0].strip('seeds: ').split(' ')]
 
-    # Initialize the map dictionary
-    map_dict = {}
+    # Initialize the mappings dictionary
+    mappings = {}
 
-    for variable_map in input_almanac[1:]:
-        map_type, values = variable_map.split(' map:\n')
-        loc_list = []
+    for mapping_entry in input_almanac[1:]:
+        map_type, mapping_values = mapping_entry.split(' map:\n')
+        mapping_list = []
 
-        # Parse the rows and create a list of tuples (dest_start, source_start, range_len)
-        row_list = [tuple(map(int, row.split(' '))) for row in values.split('\n')]
-
-        # Sort the rows based on the dest_start value (index 0 of each tuple)
-        sorted_rows = sorted(row_list, key=lambda x: (x[0], x[1]))
-
-        # Create loc_dict from the sorted rows
-        for row in row_list:
-            dest_start, source_start, range_len = row
-            loc_dict = {
-                'dest': (dest_start, dest_start + range_len - 1),
-                'source': (source_start, source_start + range_len - 1),
-                'range': range_len,
+        # Parse rows into a list of dictionaries
+        rows = [tuple(map(int, row.split(' '))) for row in mapping_values.split('\n')]
+        for dest_start, source_start, range_len in rows:
+            mapping_dict = {
+                'dest_range': (dest_start, dest_start + range_len),
+                'source_range': (source_start, source_start + range_len),
+                'range_length': range_len,
             }
-            loc_list.append(loc_dict)
+            mapping_list.append(mapping_dict)
 
-        # Add the map to the dictionary
-        map_dict[map_type] = loc_list
+        # Add the mapping to the dictionary
+        mappings[map_type] = mapping_list
 
-    return seeds, map_dict
+    return seeds, mappings
 
-def process_mappings(seed_dict: dict, variables_map: dict) -> dict:
-    result_dict = copy.deepcopy(seed_dict)
-    # Define the mapping order as a list of tuples
+def process_mappings(seed_properties: dict, mappings: dict) -> dict:
+    """
+    Apply a sequence of mappings to transform seed properties.
+
+    Args:
+        seed_properties (dict): Properties of a single seed.
+        mappings (dict): Dictionary containing mapping data.
+
+    Returns:
+        dict: Updated seed properties after all mappings.
+    """
+    result_properties = copy.deepcopy(seed_properties)
+
+    # Define the mapping order
     mapping_dict = {
         'seed': 'soil',
         'soil': 'fertilizer',
@@ -66,73 +79,137 @@ def process_mappings(seed_dict: dict, variables_map: dict) -> dict:
         'temperature': 'humidity',
         'humidity': 'location'
     }
-    # Process each mapping transformation in order
-    for from_loc, to_loc in mapping_dict.items():
-        if from_loc + '-to-' + to_loc in variables_map:
-            result_dict = map_locations(
-                variables_map[from_loc + '-to-' + to_loc],
-                result_dict,
-                from_loc,
-                to_loc
+
+    for from_type, to_type in mapping_dict.items():
+        mapping_key = f"{from_type}-to-{to_type}"
+        if mapping_key in mappings:
+            result_properties = apply_mapping(
+                mappings[mapping_key], result_properties, from_type, to_type
             )
-    return result_dict
 
-def find_min_prop(seed_dict: dict, target_prop:str ='location') -> int:
-    min_prop = float('inf')
-    for no, seed_props in seed_dict.items():
-        prop = seed_props[target_prop]
-        min_prop = min(min_prop, prop)
-    return min_prop
+    return result_properties
 
-def map_locations(variables_map: list[dict], seed_dict: dict, from_loc: str, to_loc: str) -> dict:
+def apply_mapping(mapping_list: list[dict], seed_properties: dict, from_type: str, to_type: str) -> dict:
+    """
+    Apply a single mapping transformation to seed properties.
 
-    dict_copy = copy.deepcopy(seed_dict)
+    Args:
+        mapping_list (list): List of mapping dictionaries.
+        seed_properties (dict): Properties of the seed.
+        from_type (str): Source property name.
+        to_type (str): Destination property name.
 
-    # Process each seed in the seed list
-    for seed_no, seed_props in seed_dict.items():
-        location = seed_props[from_loc]
-        mapped = False  # Track if the seed was mapped
-        total_range = 0
+    Returns:
+        dict: Updated seed properties after the mapping.
+    """
+    updated_properties = copy.deepcopy(seed_properties)
+    location = seed_properties[from_type]
+    mapped = False
 
-        for test_map in variables_map:
-            dest_range = test_map['dest']
-            source_range = test_map['source']
-            range_len = test_map['range']
+    for mapping in mapping_list:
+        dest_range = mapping['dest_range']
+        source_range = mapping['source_range']
 
-            # Check if the seed lies within the current dest range
-            if source_range[0] <= location <= source_range[1]:
-                diff_shift = dest_range[0] - source_range[0]
-                target_loc = location + diff_shift # Map to the corresponding source
-                # print(f"{location=} {dest_range=} {source_range=} {range_len=} {target_loc=}")
-                dict_copy[seed_no][to_loc] = target_loc
-                mapped = True
-                break  # Stop once the seed is mapped
-            total_range += range_len
-        # If seed is not found in any range, map it to itself
-        if not mapped:
-            dict_copy[seed_no][to_loc] = location  # Assign the seed itself
+        # Check if the location lies within the source range
+        if source_range[0] <= location < source_range[1]:
+            shift = dest_range[0] - source_range[0]
+            updated_properties[to_type] = location + shift
+            mapped = True
+            break
 
-    return dict_copy
+    if not mapped:
+        # If no mapping applies, retain the same value
+        updated_properties[to_type] = location
 
-test_input = ['seeds: 79 14 55 13',
-                'seed-to-soil map:\n50 98 2\n52 50 48',
-                'soil-to-fertilizer map:\n0 15 37\n37 52 2\n39 0 15',
-                'fertilizer-to-water map:\n49 53 8\n0 11 42\n42 0 7\n57 7 4',
-                'water-to-light map:\n88 18 7\n18 25 70',
-                'light-to-temperature map:\n45 77 23\n81 45 19\n68 64 13',
-                'temperature-to-humidity map:\n0 69 1\n1 0 69',
-                'humidity-to-location map:\n60 56 37\n56 93 4']
+    return updated_properties
 
-seeds_dict, variables_map = parse_almanac(input_data)
-print(variables_map)
+def map_seeds(seed_list: dict, mappings: dict) -> int:
+    # Initialize seed properties
+    seed_data = {idx + 1: {'seed': seed} for idx, seed in enumerate(seed_list)}
 
-# Process all mappings
-seed_dict_final = process_mappings(seeds_dict, variables_map)
+    # Process mappings for each seed
+    final_seed_data = {}
+    for seed_id, properties in seed_data.items():
+        final_seed_data[seed_id] = process_mappings(properties, mappings)
 
-min_loc = find_min_prop(seed_dict_final)
-print("Part 1:", min_loc)
+    # # Output the final seed data
+    # for seed_id, properties in final_seed_data.items():
+    #     print(f"Seed {seed_id}: {properties}")
 
-for no, props in seed_dict_final.items():
-    print(f"{no=} {props}")
-print()
+    # Find the minimum location value
+    return min(seed['location'] for seed in final_seed_data.values())
 
+def map_seed_intervals(seeds: list, mappings: dict) -> int:
+    """
+    Process seed intervals through all mapping levels and find the minimum location.
+
+    Args:
+        seeds (list): A list of seeds, where even indices are start values, odd are range lengths.
+        segments (list): List of mapping definitions for each level.
+
+    Returns:
+        int: The minimum location after applying all mappings.
+    """
+    # Initialize seed intervals (start, end, level)
+    seed_intervals = [
+        (seed_start, seed_start + range_len, 0)  # Start at the first level ('seed')
+        for seed_start, range_len in zip(seeds[0::2], seeds[1::2])
+    ]
+
+    min_location = float('inf')  # Initialize minimum location tracker
+
+    # Define the mapping order
+    mapping_order = [
+        'seed', 'soil', 'fertilizer', 'water', 'light', 'temperature', 'humidity', 'location'
+    ]
+
+    # Process each seed interval through the mappings
+    while seed_intervals:
+        seed_start, seed_end, level = seed_intervals.pop()
+
+        # If we've reached the final level (location), update the minimum location
+        if mapping_order[level] == 'location':  # Final level ('location')
+            min_location = min(seed_start, min_location)
+            continue
+
+        # Get the current and next mapping levels
+        current_level = mapping_order[level]
+        next_level = mapping_order[level + 1]
+        map_key = f"{current_level}-to-{next_level}"  # Example: "seed-to-soil"
+
+        # Process the mappings for the current level
+        for mapping in mappings.get(map_key, []):
+            dest_start, dest_end = mapping['dest_range']
+            source_start, source_end = mapping['source_range']
+            offset = dest_start - source_start
+
+            # Skip intervals with no overlap
+            if seed_end <= source_start or source_end <= seed_start:
+                continue
+
+            # Handle partial overlap by splitting intervals
+            if seed_start < source_start:
+                seed_intervals.append((seed_start, source_start, level))
+                seed_start = source_start
+            if source_end < seed_end:
+                seed_intervals.append((source_end, seed_end, level))
+                seed_end = source_end
+
+            # Apply the mapping transformation and move to the next level
+            seed_intervals.append((seed_start + offset, seed_end + offset, level + 1))
+            break  # Only apply the first valid mapping
+
+        else:  # No valid mapping found, pass the interval to the next level unchanged
+            seed_intervals.append((seed_start, seed_end, level + 1))
+
+    return min_location
+
+# Parse input data
+seeds, mappings = parse_almanac(input_data)
+
+min_loc_p1 = map_seeds(seeds, mappings)
+print("Part 1:", min_loc_p1)
+min_loc_p2 = map_seed_intervals(seeds, mappings)
+
+print("Part 2:", min_loc_p2) # 17729182
+print(time.time() - start_time)
