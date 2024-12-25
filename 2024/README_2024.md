@@ -28,3 +28,35 @@ This repository contains coding solutions for the 2024 Advent of Code. Its the f
 22. **Day 22- Monkey Market**: *Python* | Essentially about finding patterns in a list of random numbers, which I ended up using a dictionary of lists to find the optimum point across all the 1600 lists.
 23. **Day 23- LAN Party**: *Python* | Used the gift of a library that is networkx, which may not be as elegant but it is a solution after all.
 24. **Day 24- Crossed Wires**: *Python* | Built a circuit network, fairly simple Part 1, Found a relativey fast solution for Part 2 that works on my input, but seems to get stuck on the examples
+25. **Day 25- Code Chronicle**: *Python* | Made some stupid assumptions about the problem, but otherwise fairly simple.
+
+Overall, Really enjoyed the year, but Day 15 moving blocks was definitely my favourite
+![2024 Advent Calendar](2024_Advent_Calendar.png)
+
+| Day | Part 1 Time | Part 1 Rank | Part 2 Time | Part 2 Rank |
+|-----|-------------|-------------|-------------|-------------|
+|  1  | 00:13:14    | 5227        | 00:24:15    | 5937        |
+|  2  | 01:54:26    | 20049       | 02:23:10    | 15231       |
+|  3  | 00:56:41    | 14969       | 01:41:19    | 15124       |
+|  4  | 03:24:18    | 23576       | 04:40:47    | 24482       |
+|  5  | 06:19:41    | 35055       | 06:46:08    | 28118       |
+|  6  | 05:39:40    | 30452       | 07:10:21    | 19167       |
+|  7  | 05:54:52    | 23847       | 06:19:13    | 22347       |
+|  8  | 10:09:19    | 32410       | 10:50:04    | 30819       |
+|  9  | 05:56:35    | 22580       | 07:35:04    | 16295       |
+| 10  | 11:58:18    | 32095       | 12:59:56    | 32417       |
+| 11  | 08:22:08    | 31446       | 09:22:44    | 23019       |
+| 12  | 08:37:08    | 22880       | 12:39:53    | 17329       |
+| 13  | 11:10:57    | 25599       | 11:46:32    | 20766       |
+| 14  | 12:06:05    | 25850       | 13:42:33    | 22722       |
+| 15  | 15:28:41    | 26593       | 19:24:16    | 19951       |
+| 16  | 12:44:20    | 17404       | 12:52:57    | 12387       |
+| 17  | 20:13:23    | 24630       | 21:42:37    | 14984       |
+| 18  | 00:14:42    | 1491        | 00:23:21    | 1638        |
+| 19  | 13:15:09    | 19979       | 13:16:58    | 17188       |
+| 20  | 07:23:33    | 12207       | 18:29:34    | 15082       |
+| 21  | 20:18:16    | 11734       | 22:19:28    | 8216        |
+| 22  | 02:22:42    | 6129        | 04:46:10    | 6504        |
+| 23  | 03:32:58    | 7897        | 03:51:30    | 6246        |
+| 24  | 04:19:51    | 8862        | 06:31:48    | 3648        |
+| 25  | 00:09:18    | 626         | 00:09:25    | 526         |
