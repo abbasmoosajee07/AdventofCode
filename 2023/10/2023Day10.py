@@ -7,12 +7,11 @@ Brief: [Pipes and Loops]
 
 #!/usr/bin/env python3
 
-import os, re, copy, time
+import os, re, copy
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-start_time = time.time()
 # Load the input data from the specified file path
 D10_file = "Day10_input.txt"
 D10_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), D10_file)
@@ -21,34 +20,53 @@ D10_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), D10_fil
 with open(D10_file_path) as file:
     input_data = file.read().strip().split('\n')
 
-def parse_input(input_grid: list[str]) -> tuple[dict, tuple]:
+def parse_input(input_grid: list[str]) -> tuple[dict, dict, tuple]:
     """Parse the grid input into a dictionary with start position identified."""
     grid_dict = {}
+    grid_graph = {}
     start_pos = None
     for row_no, row in enumerate(input_grid):
         for col_no, char in enumerate(row):
             grid_dict[(row_no, col_no)] = char
+            adjacent = []
+            if char in '-J7S':
+                adjacent.append((row_no, col_no-1))
+            if char in '-FLS':
+                adjacent.append((row_no, col_no+1))
+            if char in '|F7S':
+                adjacent.append((row_no+1, col_no))
+            if char in '|LJS':
+                adjacent.append((row_no-1, col_no))
+            if char == 'S':
+                tile_q = set([(row_no, col_no)])
+            grid_graph[(row_no, col_no)] = adjacent
             if char == 'S':  # Identify start position
                 start_pos = (row_no, col_no)
-    return grid_dict, start_pos
+    return grid_dict, grid_graph, start_pos
 
-
-def print_grid(init_grid: list[str], loop_dict: dict):
+def print_grid(init_grid: list[str], loop_dict: dict, enclosed_area: set, filename: str):
     grid_print = []
+
+    # Process the grid
     for row_no, row in enumerate(init_grid):
         print_row = ''
         for col_no, char in enumerate(row):
             if (row_no, col_no) in loop_dict.keys():
                 print_row += loop_dict[(row_no, col_no)]
+            elif (row_no, col_no) in enclosed_area:
+                print_row += 'I'
             else:
                 print_row += char
         grid_print.append(print_row)
+    
+    # Write to the text file
+    with open(filename, 'w') as file:
+        for row in grid_print:
+            file.write(row + '\n')
 
-    for row in grid_print:
-        print(row)
+    print(f"Grid printed to {filename}")
 
-
-def identify_loop(grid_dict: dict, start_position: tuple) -> tuple[dict, int]:
+def identify_loop(grid_dict: dict, graph: dict,start_position: tuple) -> tuple[dict, int]:
     """
     Identifies the loop in the grid and tracks the directions taken at each step.
 
@@ -70,25 +88,8 @@ def identify_loop(grid_dict: dict, start_position: tuple) -> tuple[dict, int]:
         'S': {'^': '^', 'v': 'v', '<': '<', '>': '>'}  # Starting point
     }
 
-    graph = {}
     loop_dict = {start_position:'S'}
     visited = set()
-
-    # Build the graph from the grid dictionary
-    for pos, tile in grid_dict.items():
-        row, col = pos
-        adjacent = []
-        # Define valid moves based on tile type
-        if tile in '-J7S':  # Can connect to the left
-            adjacent.append((row, col - 1))
-        if tile in '-FLS':  # Can connect to the right
-            adjacent.append((row, col + 1))
-        if tile in '|F7S':  # Can connect downward
-            adjacent.append((row + 1, col))
-        if tile in '|LJS':  # Can connect upward
-            adjacent.append((row - 1, col))
-        # Store the adjacent connections
-        graph[(row, col)] = adjacent
 
     # Initialize BFS from the start position
     visited.add(start_position)
@@ -119,10 +120,47 @@ def identify_loop(grid_dict: dict, start_position: tuple) -> tuple[dict, int]:
     loop_dict[(next_row, next_col)] = 'X'
     return loop_dict, steps
 
+def find_enclosed_area(graph: dict, loop_path: dict) -> int:
+    """Calculate the enclosed area inside a loop in the grid."""
 
-grid_dict, start_pos = parse_input(input_data)
-loop_path, steps = identify_loop(grid_dict, start_pos)
+    # Collect all pipes in the graph
+    pipes = set()
+    for row_1, col_1 in loop_path:
+        for row_2, col_2 in graph[(row_1, col_1)]:
+            # Check for bidirectional connection in the graph
+            if (row_1, col_1) in graph.get((row_2, col_2), []):
+                pipe = (*sorted((row_1, row_2)), *sorted((col_1, col_2)))
+                pipes.add(pipe)
+
+    ROW_LEN, COL_LEN = max(set(graph.keys()))
+    visited = set()
+    corner_q = [(0, 0)]
+
+    while corner_q:
+        i, j = corner_q.pop()
+        requirements = (i > 0, j < COL_LEN, i < ROW_LEN, j > 0)
+        adjacent = ((i-1, j), (i, j+1), (i+1, j), (i, j-1))
+        tile_pairs = ((i-1, i-1, j-1, j),     # up
+                        (i-1, i, j, j),       # right
+                        (i, i, j-1, j),       # down
+                        (i-1, i, j-1, j-1))   # left
+        for req, corner, tile_pair in zip(requirements, adjacent, tile_pairs):
+            if req and corner not in visited and tile_pair not in pipes:
+                visited.add(corner)
+                corner_q.append(corner)
+
+    enclosed_area = set()
+    for i, j in graph.keys():
+            corners = ((i, j), (i+1, j), (i, j+1), (i+1, j+1))
+            if not any(c in visited for c in corners):
+                enclosed_area.add((i,j))
+    return enclosed_area
+
+grid_dict, graph, start_pos = parse_input(input_data)
+loop_path, steps = identify_loop(grid_dict, graph, start_pos)
+enclosed_area = find_enclosed_area(graph, loop_path)
 print("Part 1:", steps)
+print("Part 2:", len(enclosed_area))
 
-print(f"Execution Time: {time.time() - start_time:.5f}")
+# print_grid(input_data, loop_path, enclosed_area, 'pipe_maze.txt')
 
