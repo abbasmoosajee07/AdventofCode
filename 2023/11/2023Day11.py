@@ -20,79 +20,77 @@ D11_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), D11_fil
 with open(D11_file_path) as file:
     input_data = file.read().strip().split('\n')
 
-def print_space(expanded_space: list, galaxies: dict):
-    expanded_grid = []
-    for row_no, row in enumerate(expanded_space):
-        empty_row = []
-        for col_no, space in enumerate(row):
-            if (row_no, col_no) in galaxies.keys():
-                galaxy_no = str(galaxies[(row_no, col_no)]).zfill(3)
-                empty_row.append(galaxy_no)
-            else:
-                empty_row.append(' ' + space + ' ')
-        expanded_grid.append(empty_row)
-
-    for row in expanded_grid:
-        print(''.join(row))
-
-def expand_galaxies(init_grid: list[str]) -> list[str]:
-    def expand_space(grid: list[str]) -> list[str]:
-        """Expand the grid by inserting rows or columns of empty space ('.')."""
-        expanded_grid = []
-        for row in grid:
-            expanded_grid.append(row)
-            if row.count('.') == len(row):
-                expansion = [row] * 1  # Add a million rows of empty space
-                expanded_grid.extend(expansion)
-        return expanded_grid
-
-    # Step 1: Expand rows
-    grid_with_extra_rows = expand_space(init_grid)
-
-    # Step 2: Expand columns by transposing, expanding, and transposing back
-    transposed_grid = np.transpose([list(row) for row in grid_with_extra_rows])
-    transposed_as_strings = [''.join(row) for row in transposed_grid]
-    grid_with_extra_cols = expand_space(transposed_as_strings)
-
-    # Convert back to the original orientation
-    final_transposed_grid = np.transpose([list(row) for row in grid_with_extra_cols])
-    final_expanded_grid = [''.join(row) for row in final_transposed_grid]
-
-    return final_expanded_grid
-
 def galaxy_coordinates(space_grid: list[str]) -> dict:
-    galaxy_dict = {}
     galaxy_no = 0
+    galaxy_dict = {}
+
+    # Initialize boundaries with extreme values
+    min_row, max_row = float('inf'), -float('inf')
+    min_col, max_col = float('inf'), -float('inf')
+
+    # Iterate through the grid to find galaxies and update bounds
     for row_no, row in enumerate(space_grid):
         for col_no, space in enumerate(row):
             if space == '#':
                 galaxy_no += 1
                 galaxy_dict[(row_no, col_no)] = galaxy_no
-    return galaxy_dict
 
-def pair_galaxies(galaxy_dict: dict) -> int:
-    total_pairs = 0
-    galaxy_pairs = set()
-    all_path = 0
+                # Update the boundaries
+                min_row = min(min_row, row_no)
+                max_row = max(max_row, row_no)
+                min_col = min(min_col, col_no)
+                max_col = max(max_col, col_no)
 
-    for coords_1 in galaxy_dict.keys():
-        for coords_2 in galaxy_dict.keys():
-            if coords_1 != coords_2:
-                # Ensure the pair is added in a consistent order
-                pair = tuple(sorted((coords_1, coords_2)))
-                if pair not in galaxy_pairs:
-                    total_pairs += 1
-                    galaxy_pairs.add(pair)
-                    bfs_path = abs(coords_1[0]-coords_2[0]) + abs(coords_1[1]-coords_2[1])
-                    all_path += bfs_path
+    # Define the space bounds
+    space_bounds = (min_row, max_row + 1, min_col, max_col + 1)
 
-    return all_path
+    return galaxy_dict, space_bounds
 
-test_input = ['...#......', '.......#..', '#.........', '..........', '......#...', '.#........', '.........#', '..........', '.......#..', '#...#.....']
-expanded_grid = expand_galaxies(input_data)
-galaxies = galaxy_coordinates(expanded_grid)
-all_galaxy_paths = pair_galaxies(galaxies)
-print("Part 1:", all_galaxy_paths)
-# print_space(expanded_grid, galaxies)
+def expand_galaxies(galaxy_dict: dict, boundaries: tuple, expansion_shift: int = 1) -> dict:
+    min_row, max_row, min_col, max_col = boundaries
 
+    # Determine unused rows and columns
+    unused_rows = set(range(min_row, max_row)) - {row for row, _ in galaxy_dict.keys()}
+    unused_cols = set(range(min_col, max_col)) - {col for _, col in galaxy_dict.keys()}
+
+    expanded_galaxies = {}
+    for (original_row, original_col), galaxy_id in galaxy_dict.items():
+        # Find rows and columns before the current galaxy that are unused
+        unused_rows_before = set(range(min_row, original_row)) & unused_rows
+        unused_cols_before = set(range(min_col, original_col)) & unused_cols
+
+        # Calculate the updated position
+        shifted_row = original_row + len(unused_rows_before) * (expansion_shift - 1)
+        shifted_col = original_col + len(unused_cols_before) * (expansion_shift - 1)
+
+        # Store the expanded galaxy position
+        expanded_galaxies[(shifted_row, shifted_col)] = galaxy_id
+
+    return expanded_galaxies
+
+def all_galaxy_paths(galaxy_dict: dict) -> int:
+    path_sum = 0
+    galaxy_coords = list(galaxy_dict.keys())
+
+    # Iterate over all unique pairs of galaxies
+    for i, coords_1 in enumerate(galaxy_coords):
+        for coords_2 in galaxy_coords[i + 1:]:
+            # Calculate the Manhattan distance
+            bfs_path = abs(coords_1[0] - coords_2[0]) + \
+                        abs(coords_1[1] - coords_2[1])
+            path_sum += bfs_path
+
+    return path_sum
+
+init_galaxies, bounds = galaxy_coordinates(input_data)
+
+# Part 1: Expansion with shift of 2
+galaxy_positions_p1 = expand_galaxies(init_galaxies, bounds, expansion_shift=2)
+galaxy_paths_p1 = all_galaxy_paths(galaxy_positions_p1)
+print("Part 1:", galaxy_paths_p1)
+
+# Part 2: Expansion with a large shift
+galaxy_positions_p2 = expand_galaxies(init_galaxies, bounds, expansion_shift=1_000_000)
+galaxy_paths_p2 = all_galaxy_paths(galaxy_positions_p2)
+print("Part 2:", galaxy_paths_p2)
 
