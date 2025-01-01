@@ -7,11 +7,12 @@ Brief: [Filling the blanks]
 
 #!/usr/bin/env python3
 
-import os, re, copy, functools
+import os, re, copy, sys, functools, time
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-
+start_time = time.time()
+sys.setrecursionlimit(10**7)
 # Load the input data from the specified file path
 D12_file = "Day12_input.txt"
 D12_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), D12_file)
@@ -32,13 +33,6 @@ def parse_input(input_list: list[str]) -> list[tuple]:
 def count_spring_arrangements(spring_record: str, group_sizes: tuple) -> int:
     """
     Calculate the number of valid spring arrangements given a spring record and group sizes.
-
-    Parameters:
-        spring_record (str): The record of springs and separators ('#', '.', or '?').
-        group_sizes (tuple): A tuple of integers representing group sizes.
-
-    Returns:
-        int: The number of valid arrangements.
     """
     # If no group sizes are left, validate the spring record.
     if not group_sizes:
@@ -89,13 +83,20 @@ def count_spring_arrangements(spring_record: str, group_sizes: tuple) -> int:
 
     return result
 
-
-test_input = ['???.### 1,1,3', '.??..??...?##. 1,1,3', '?#?#?#?#?#?#?#? 1,3,1,6', '????.#...#... 4,1,1', '????.######..#####. 1,6,5', '?###???????? 3,2,1']
+def unfold_springs(init_springs: str, init_order: tuple, expand_len: int) -> tuple[str, tuple]:
+    new_springs = ((init_springs + '?') * (expand_len - 1)) + init_springs
+    new_order = tuple(list(init_order) * expand_len)
+    return new_springs, new_order
 
 spring_list = parse_input(input_data)
 
-total_combos = 0
-for springs, group_order in spring_list[:]:
-    spring_combo = count_spring_arrangements(springs, group_order)
-    total_combos += spring_combo
-print("Part 1:", total_combos)
+combos_p1, combos_p2 = 0, 0
+for init_springs, init_order in spring_list[:]:
+    combos_p1 += count_spring_arrangements(init_springs, init_order)
+    full_springs, full_order = unfold_springs(init_springs, init_order, expand_len=5)
+    combos_p2 += count_spring_arrangements(full_springs, full_order)
+
+print("Part 1:", combos_p1)
+print("Part 2:", combos_p2)
+
+# print(time.time() - start_time)
