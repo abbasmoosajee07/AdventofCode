@@ -149,8 +149,8 @@ def tilt_platform(platform: dict, boundaries: tuple, tilt_dir: str):
             tilted_row = final_row - (step * dr)
             tilted_col = final_col - (step * dc)
             tilted_blocks.add((tilted_row, tilted_col))
-            # print((tilt_row,final_col))
         moveable_blocks.difference_update(connected_blocks)  # Remove it from the set
+
     if len(platform['O']) != len(tilted_blocks):
         raise ValueError('Initial number of blocks do NOT match final number of blocks')
 
@@ -159,20 +159,69 @@ def tilt_platform(platform: dict, boundaries: tuple, tilt_dir: str):
 
 def tilt_cycle(init_platform: dict, boundaries: tuple) -> dict:
     SPIN_CYCLE = ['North', 'West', 'South', 'East']
+    tilted_loads = []
     tilted_platform = copy.deepcopy(init_platform)
     for tilt_dir in SPIN_CYCLE:
         tilted_platform = tilt_platform(tilted_platform, boundaries, tilt_dir)
-        print("Tilt Direction:", tilt_dir)
-        print_grid(tilted_platform, boundaries)
-    return tilted_platform
+        tilted_loads.append(calculate_load(tilted_platform))
+        # print("Tilt Direction:", tilt_dir)
+        # print_grid(tilted_platform, boundaries)
+    return tilted_platform, tuple(tilted_loads)
+
+def find_cycle_for_target(tilted_platform: dict, bounds: tuple, total_cycles: int = 100) -> dict:
+    load_cycles = {}
+    repeating_start = None
+    repeating_length = None
+    target_cycle = total_cycles - 1
+
+    for cycle in range(target_cycle):
+        # Simulate the next cycle
+        tilted_platform, cycle_load = tilt_cycle(tilted_platform, bounds)
+        # print(f"{cycle=} {cycle_load=}") # Print for manual cycle detection
+
+        # Check if cycle_load is repeating
+        if cycle_load in load_cycles:
+            repeating_start = load_cycles[cycle_load]
+            repeating_length = cycle - repeating_start
+            break
+        load_cycles[cycle_load] = cycle
+
+    # If no repetition found, target cycle is beyond simulation
+    if repeating_start is None:
+        return f"Repetition not detected within {target_cycle} cycles."
+
+    # Map the target cycle to the repeating pattern
+    if target_cycle < repeating_start:
+        return f"Cycle {target_cycle} has not entered the repeating pattern."
+
+    # Use modular arithmetic to find the equivalent cycle
+    equivalent_cycle = repeating_start + (target_cycle - repeating_start) % repeating_length
+
+    # Find the cycle_load for the equivalent cycle
+    for load, cycle_num in load_cycles.items():
+        if cycle_num == equivalent_cycle:
+            print("Part 2:", load[-1])
+
+            return {
+                "target_cycle": target_cycle,
+                "repeating_start": repeating_start,
+                "repeating_length": repeating_length,
+                "equivalent_cycle": equivalent_cycle,
+                "cycle_load": load
+            }
+
 
 test_input = ['O....#....', 'O.OO#....#', '.....##...', 'OO.#O....O', '.O.....O#.', 'O.#..O.#.#', '..O..#O..O', '.......O..', '#....###..', '#OO..#....']
 test_score = ['OOOO.#.O..', 'OO..#....#', 'OO..O##..O', 'O..#.OO...', '........#.', '..#....#.#', '..O..#.O.O', '..O.......', '#....###..', '#....#....']
 
 init_platform, bounds = parse_input(input_data)
-# final_platform = tilt_cycle(init_platform, bounds)
 
 tilted_platform = tilt_platform(init_platform, bounds, 'North')
 load_p1 = calculate_load(tilted_platform)
 print("Part 1:", load_p1)
+
+TOTAL_CYCLES = 1_000_000_000
+target_cycle = find_cycle_for_target(init_platform, bounds, TOTAL_CYCLES)
+
+print(f"Execution Time = {time.time() - start_time:.5f}s")
 
