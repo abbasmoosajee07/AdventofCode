@@ -12,6 +12,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 start_time = time.time()
+
 # Load the input data from the specified file path
 D14_file = "Day14_input.txt"
 D14_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), D14_file)
@@ -210,10 +211,6 @@ def find_cycle_for_target(tilted_platform: dict, bounds: tuple, total_cycles: in
                 "cycle_load": load
             }
 
-
-test_input = ['O....#....', 'O.OO#....#', '.....##...', 'OO.#O....O', '.O.....O#.', 'O.#..O.#.#', '..O..#O..O', '.......O..', '#....###..', '#OO..#....']
-test_score = ['OOOO.#.O..', 'OO..#....#', 'OO..O##..O', 'O..#.OO...', '........#.', '..#....#.#', '..O..#.O.O', '..O.......', '#....###..', '#....#....']
-
 init_platform, bounds = parse_input(input_data)
 
 tilted_platform = tilt_platform(init_platform, bounds, 'North')
@@ -223,5 +220,5 @@ print("Part 1:", load_p1)
 TOTAL_CYCLES = 1_000_000_000
 target_cycle = find_cycle_for_target(init_platform, bounds, TOTAL_CYCLES)
 
-print(f"Execution Time = {time.time() - start_time:.5f}s")
+# print(f"Execution Time = {time.time() - start_time:.5f}s")
 
