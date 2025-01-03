@@ -92,24 +92,6 @@ def calculate_load(grid_dict: dict) -> int:
     return total_load
 
 def tilt_platform(platform: dict, boundaries: tuple, tilt_dir: str):
-    DIRECTIONS = {
-        'North': (-1, 0),       # Move up
-        'South': (1, 0),        # Move down
-        'East': (0, 1),         # Move right
-        'West': (0, -1),        # Move left
-        'Northeast': (-1, 1),   # Move up and right
-        'Northwest': (-1, -1),  # Move up and left
-        'Southeast': (1, 1),    # Move down and right
-        'Southwest': (1, -1)    # Move down and left
-    }
-    tilt_coords = DIRECTIONS[tilt_dir]
-    dr, dc = tilt_coords
-    min_row, max_row, min_col, max_col = boundaries
-    fixed_blocks = set(platform.get('#', set()))
-    move_blocks = set(platform.get('O', set()))
-    tilted_blocks = set()
-    # print('Initial Blocks Count:', len(move_blocks))
-
     def get_connected_blocks() -> tuple[set, tuple]:
         connected_blocks = set()
         next_row, next_col = block_row, block_col
@@ -121,99 +103,76 @@ def tilt_platform(platform: dict, boundaries: tuple, tilt_dir: str):
                 break_point = (next_row, next_col)
                 if (next_row, next_col) in fixed_blocks:
                     break_point = (next_row - dr, next_col - dc)
-
                     break
-                elif (next_row, next_col) in move_blocks:
+                elif (next_row, next_col) in moveable_blocks:
                     connected_blocks.add((next_row, next_col))
             else:
-                base_row = 0 if dr == -1 else max_row
-                break_point = (base_row, next_col)
+                if dc == 0:
+                    base_col = next_col
+                    if dr == -1:
+                        base_row = min_row
+                    elif dr == 1:
+                        base_row = max_row - 1
+                if dr == 0:
+                    base_row = next_row
+                    if dc == -1:
+                        base_col = min_col
+                    elif dc == 1:
+                        base_col = max_col - 1
+                break_point = (base_row, base_col)
                 break
         return connected_blocks, break_point
 
-    while move_blocks:
-        block_row, block_col = max(move_blocks)  # Find the "last" block based on tuple comparison
-        connected, break_point = get_connected_blocks()
+    DIRECTIONS = {
+        'North': (-1, 0),       # Move up
+        'South': (1, 0),        # Move down
+        'East': (0, 1),         # Move right
+        'West': (0, -1),        # Move left
+    }
+    tilt_coords = DIRECTIONS[tilt_dir]
+    dr, dc = tilt_coords
+    min_row, max_row, min_col, max_col = boundaries
+    fixed_blocks = set(platform.get('#', set()))
+    moveable_blocks = set(platform.get('O', set()))
+    tilted_blocks = set()
+
+    while moveable_blocks:
+        # Find the "last" block based on tuple comparison
+        if dr == -1 or dc == -1:
+            block_row, block_col = max(moveable_blocks)
+        elif dr == 1 or dc == 1:
+            block_row, block_col = min(moveable_blocks)
+        connected_blocks, break_point = get_connected_blocks()
         final_row, final_col = break_point
-        # print(connected, break_point)
-        for step in range(len(connected)):
-            tilt_row = (step * -dr) + final_row
-            tilted_blocks.add((tilt_row, final_col))
+
+        for step in range(len(connected_blocks)):
+            tilted_row = final_row - (step * dr)
+            tilted_col = final_col - (step * dc)
+            tilted_blocks.add((tilted_row, tilted_col))
             # print((tilt_row,final_col))
-        move_blocks.difference_update(connected)  # Remove it from the set
+        moveable_blocks.difference_update(connected_blocks)  # Remove it from the set
+    if len(platform['O']) != len(tilted_blocks):
+        raise ValueError('Initial number of blocks do NOT match final number of blocks')
 
     final_platform = {'#': fixed_blocks, 'O': tilted_blocks}
-    # print('Final Block Count:', len(tilted_blocks))
-    # print(tilted_blocks)
-    # print_grid(final_platform, boundaries)
     return final_platform
+
+def tilt_cycle(init_platform: dict, boundaries: tuple) -> dict:
+    SPIN_CYCLE = ['North', 'West', 'South', 'East']
+    tilted_platform = copy.deepcopy(init_platform)
+    for tilt_dir in SPIN_CYCLE:
+        tilted_platform = tilt_platform(tilted_platform, boundaries, tilt_dir)
+        print("Tilt Direction:", tilt_dir)
+        print_grid(tilted_platform, boundaries)
+    return tilted_platform
 
 test_input = ['O....#....', 'O.OO#....#', '.....##...', 'OO.#O....O', '.O.....O#.', 'O.#..O.#.#', '..O..#O..O', '.......O..', '#....###..', '#OO..#....']
 test_score = ['OOOO.#.O..', 'OO..#....#', 'OO..O##..O', 'O..#.OO...', '........#.', '..#....#.#', '..O..#.O.O', '..O.......', '#....###..', '#....#....']
 
 init_platform, bounds = parse_input(input_data)
-# north_tilt = tilt_platform(init_platform, bounds, 'North')
-# south_tilt = tilt_platform(init_platform, bounds, 'South')
+# final_platform = tilt_cycle(init_platform, bounds)
 
 tilted_platform = tilt_platform(init_platform, bounds, 'North')
 load_p1 = calculate_load(tilted_platform)
 print("Part 1:", load_p1)
-
-# OOOO.#.O..
-# OO..#....#
-# OO..O##..O
-# O..#.OO...
-# ........#.
-# ..#....#.#
-# ..O..#.O.O
-# ..O.......
-# #....###..
-# #....#....
-
-SPIN_CYCLE = ['North', 'West', 'South', 'East']
-
-# for cycle in range(1_000_000_000):
-#     print(cycle)
-#     tilted_platform = tilt_platform(tilted_platform, bounds, 'North')
-#     load_p2 = calculate_load(tilted_platform)
-# print("Part 2:", load_p2)
-
-# After 1 cycle:
-# .....#....
-# ....#...O#
-# ...OO##...
-# .OO#......
-# .....OOO#.
-# .O#...O#.#
-# ....O#....
-# ......OOOO
-# #...O###..
-# #..OO#....
-
-# After 2 cycles:
-# .....#....
-# ....#...O#
-# .....##...
-# ..O#......
-# .....OOO#.
-# .O#...O#.#
-# ....O#...O
-# .......OOO
-# #..OO###..
-# #.OOO#...O
-
-# After 3 cycles:
-# .....#....
-# ....#...O#
-# .....##...
-# ..O#......
-# .....OOO#.
-# .O#...O#.#
-# ....O#...O
-# .......OOO
-# #...O###.O
-# #.OOO#...O
-
-print(f"Execution Time = {time.time() - start_time:.5f}s")
-
 
