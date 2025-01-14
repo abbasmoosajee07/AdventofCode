@@ -105,9 +105,60 @@ def find_path_avoid_slopes(grid_dict: dict, start: tuple, goal: tuple) -> dict:
     dfs(start, {start: 'S'})  # Start DFS with the initial position
     return longest_path
 
+def find_longest_path(grid_dict: dict, start: tuple, goal: tuple) -> dict:
+    def get_neighbors(init_pos: tuple):
+        """Generate all valid neighboring positions based on slope logic."""
+        if init_pos in neighbors_cache:
+            return neighbors_cache[init_pos]
+
+        init_row, init_col = init_pos
+        neighbors = []  # Store valid neighbors and their directions
+        for dir_char, (dr, dc) in DIRECTIONS.items():
+            new_row, new_col = init_row + dr, init_col + dc
+            new_pos = (new_row, new_col)
+            if new_pos in grid_dict and grid_dict[new_pos] != '#':  # Valid position
+                neighbors.append((new_pos, dir_char))
+
+        neighbors_cache[init_pos] = neighbors
+        return neighbors
+
+    def dfs(current, path):
+        nonlocal longest_path
+        if current == goal:
+            if len(path) > len(longest_path):
+                longest_path = path[:]
+            return
+
+        for neighbor, dir_char in get_neighbors(current):
+            if neighbor not in visited:
+                visited.add(neighbor)
+                path.append((neighbor, dir_char))
+                dfs(neighbor, path)
+                path.pop()  # Backtrack
+                visited.remove(neighbor)
+
+    # Define possible movement directions (cardinal directions)
+    DIRECTIONS = {'^': (-1, 0), '>': (0, 1), 'v': (1, 0), '<': (0, -1)}
+
+    visited = {start}  # Track visited nodes
+    longest_path = []  # Store the longest path as a list of (position, direction)
+    neighbors_cache = {}  # Cache for neighbor computation
+    dfs(start, [(start, 'S')])  # Mark the start point with 'S'
+
+    # Convert the longest path back to a dictionary format
+    return {pos: 'O' for pos, dir_char in longest_path}
+
+test_input = ['#.#####################', '#.......#########...###', '#######.#########.#.###', '###.....#.>.>.###.#.###', '###v#####.#v#.###.#.###', '###.>...#.#.#.....#...#', '###v###.#.#.#########.#', '###...#.#.#.......#...#', '#####.#.#.#######.#.###', '#.....#.#.#.......#...#', '#.#####.#.#.#########v#', '#.#...#...#...###...>.#', '#.#.#v#######v###.###v#', '#...#.>.#...>.>.#.###.#', '#####v#.#.###v#.#.###.#', '#.....#...#...#.#.#...#', '#.#########.###.#.#.###', '#...###...#...#...#.###', '###.###.#.###v#####v###', '#...#...#.#.>.>.#.>.###', '#.###.###.#.###.#.#v###', '#.....###...###...#...#', '#####################.#']
+
 grid_dict, start, goal = parse_grid(input_data)
 
 path_p1 = find_path_avoid_slopes(grid_dict, start, goal)
 print('Path 1:', len(path_p1) - 1)
+print_grid(grid_dict, path_p1)
 
-# print(f"Execution Time = {time.time() - start_time:.5f}")
+# path_p2 = find_longest_path(grid_dict, start, goal)
+print('Path 2:', len(path_p2) - 1)
+# print_grid(grid_dict, path_p2)
+
+
+print(f"Execution Time = {time.time() - start_time:.5f}")
