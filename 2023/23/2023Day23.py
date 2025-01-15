@@ -2,7 +2,7 @@
 Solution Started: Jan 13, 2025
 Puzzle Link: https://adventofcode.com/2023/day/23
 Solution by: abbasmoosajee07
-Brief: [Find Longest Path]
+Brief: [Find Longest Path, Maze Method]
 """
 
 #!/usr/bin/env python3
@@ -12,6 +12,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 sys.setrecursionlimit(10**7)
+from collections import defaultdict
 start_time = time.time()
 
 # Load the input data from the specified file path
@@ -105,7 +106,7 @@ def find_path_avoid_slopes(grid_dict: dict, start: tuple, goal: tuple) -> dict:
     dfs(start, {start: 'S'})  # Start DFS with the initial position
     return longest_path
 
-def find_longest_path(grid_dict: dict, start: tuple, goal: tuple) -> dict:
+def find_longest_path_og(grid_dict: dict, start: tuple, goal: tuple) -> dict:
     def get_neighbors(init_pos: tuple):
         """Generate all valid neighboring positions based on slope logic."""
         if init_pos in neighbors_cache:
@@ -148,17 +149,65 @@ def find_longest_path(grid_dict: dict, start: tuple, goal: tuple) -> dict:
     # Convert the longest path back to a dictionary format
     return {pos: 'O' for pos, dir_char in longest_path}
 
-test_input = ['#.#####################', '#.......#########...###', '#######.#########.#.###', '###.....#.>.>.###.#.###', '###v#####.#v#.###.#.###', '###.>...#.#.#.....#...#', '###v###.#.#.#########.#', '###...#.#.#.......#...#', '#####.#.#.#######.#.###', '#.....#.#.#.......#...#', '#.#####.#.#.#########v#', '#.#...#...#...###...>.#', '#.#.#v#######v###.###v#', '#...#.>.#...>.>.#.###.#', '#####v#.#.###v#.#.###.#', '#.....#...#...#.#.#...#', '#.#########.###.#.#.###', '#...###...#...#...#.###', '###.###.#.###v#####v###', '#...#...#.#.>.>.#.>.###', '#.###.###.#.###.#.#v###', '#.....###...###...#...#', '#####################.#']
+
+def longest_path(grid_dict, start, target):
+    # create graph where the nodes are the intersections of the grid
+    DIRECTIONS = {'^': (-1, 0), '>': (0, 1), 'v': (1, 0), '<': (0, -1)}
+    graph = defaultdict(list)
+    queue = [(start, start, {start, (0, 1)})]
+    while queue:
+        curr_node, prev_node, visited = queue.pop()
+        if curr_node == target:
+            final_node = prev_node
+            final_steps = len(visited)-1
+            continue
+
+        (x, y) = curr_node
+        neighbors = []
+        for dx, dy in DIRECTIONS.values():
+            pos = (x + dx, y + dy)
+            if pos not in visited and pos in grid_dict.keys() and grid_dict[pos] != '#':
+                neighbors.append(pos)
+
+        if len(neighbors) == 1:                                 # neither intersection nor dead end
+            nxt_xy = neighbors.pop()
+            queue.append((nxt_xy, prev_node, visited|{nxt_xy}))
+
+        elif len(neighbors) > 1:                                # found an intersection ( node)
+            steps = len(visited) - 1
+            if (curr_node, steps) in graph[prev_node]:            # already been here
+                continue
+            graph[prev_node].append((curr_node, steps))
+            graph[curr_node].append((prev_node, steps))
+            while neighbors:                                    # start new paths from current node
+                nxt_xy = neighbors.pop()
+                queue.append((nxt_xy, curr_node, {curr_node, nxt_xy}))
+
+    # traverse graph
+    max_steps = 0
+    queue = [(start, 0, {start})]
+    while queue:
+        curr, steps, visited = queue.pop()
+        if curr == final_node:
+            max_steps = max(steps, max_steps)
+            continue
+        for nxt, distance in graph[curr]:
+            if nxt not in visited:
+                queue.append((nxt, steps+distance, visited|{nxt}))
+
+    return max_steps + final_steps
 
 grid_dict, start, goal = parse_grid(input_data)
 
 path_p1 = find_path_avoid_slopes(grid_dict, start, goal)
-print('Path 1:', len(path_p1) - 1)
-print_grid(grid_dict, path_p1)
+print('Part 1:', len(path_p1) - 1)
+# print_grid(grid_dict, path_p1)
 
-# path_p2 = find_longest_path(grid_dict, start, goal)
-print('Path 2:', len(path_p2) - 1)
+# path_p2 = find_longest_path_og(grid_dict, start, goal)
+# print('Path 2:', len(path_p2) - 1)
 # print_grid(grid_dict, path_p2)
 
+path_p2_len = longest_path(grid_dict, start, goal)
+print("Part 2:", path_p2_len)
 
-print(f"Execution Time = {time.time() - start_time:.5f}")
+# print(f"Execution Time = {time.time() - start_time:.5f}")
