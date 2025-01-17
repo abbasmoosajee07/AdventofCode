@@ -34,3 +34,5 @@ This repository contains coding solutions for the 2023 Advent of Code, focusing 
 ---
 
 The 2023 challenges highlight graph traversal, numerical optimization, and efficient simulation strategies.
+
+![2023 Advent](2023_Advent_Calendar.png)
