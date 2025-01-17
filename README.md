@@ -21,7 +21,7 @@ In this repository, you’ll find:
 | Year | Stars | Time (s) | Languages        | Repository |
 |------|-------|-----------------|------------------|------------|
 | 2024 |50\*   |64.63 s |Julia/Python/Ruby| [GitHub](https://github.com/abbasmoosajee07/AdventofCode/tree/main/2024) |
-| 2023 |12\*    |16.00 s|Python\Ruby| [GitHub](https://github.com/abbasmoosajee07/AdventofCode/tree/main/2023) |
+| 2023 |50\*    |69.18 s|Python\Ruby| [GitHub](https://github.com/abbasmoosajee07/AdventofCode/tree/main/2023) |
 | 2022 | 50\*  |107.55 s|Julia/Python/Ruby| [GitHub](https://github.com/abbasmoosajee07/AdventofCode/tree/main/2022) |
 | 2021 | 50\*  | 40.67 s| Python/Ruby/C    | [GitHub](https://github.com/abbasmoosajee07/AdventofCode/tree/main/2021) |
 | 2020 | 50\*  | 72.70 s| Python/Ruby/C    | [GitHub](https://github.com/abbasmoosajee07/AdventofCode/tree/main/2020) |
@@ -30,6 +30,6 @@ In this repository, you’ll find:
 | 2017 | 50\*  |131.25 s| Python/Ruby/C    | [GitHub](https://github.com/abbasmoosajee07/AdventofCode/tree/main/2017) |
 | 2016 | 50\*  |264.24 s| Python/Ruby/C    | [GitHub](https://github.com/abbasmoosajee07/AdventofCode/tree/main/2016) |
 | 2015 | 50\*  |530.01 s| Python/Ruby/C/R  | [GitHub](https://github.com/abbasmoosajee07/AdventofCode/tree/main/2015) |
-| **Total** | **436\*** |                 |                  |            |
+| **Total** | **474\*** |                 |                  |            |
 
 ![alt text](analyse_AOC/overall_summary.png)
