@@ -2,13 +2,12 @@
 Solution Started: Jan 15, 2025
 Puzzle Link: https://adventofcode.com/2023/day/24
 Solution by: abbasmoosajee07
-Brief: [Code/Problem Description]
+Brief: [3D Particle Interactions]
 """
 
 #!/usr/bin/env python3
 
 import os, re, copy, time
-import sympy
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -32,11 +31,11 @@ def parse_input(input_list: list[str]) -> dict[tuple]:
         particle_data[particle_no] = (position_no, velocity_no)
     return particle_data
 
-def identify_interactions(particle_1: tuple, particle_2: tuple, target_area: tuple) -> int:
+def identify_2d_interactions(particle_1: tuple, particle_2: tuple, target_area: tuple) -> bool:
     min_size, max_size = target_area
     # Unpack particle 1 and particle 2 data
-    ((px_1, py_1, pz_1), (vx_1, vy_1, vz_1)) = particle_1
-    ((px_2, py_2, pz_2), (vx_2, vy_2, vz_2)) = particle_2
+    ((px_1, py_1, _), (vx_1, vy_1, _)) = particle_1
+    ((px_2, py_2, _), (vx_2, vy_2, _)) = particle_2
 
     # Compute slopes (m1 and m2)
     if vx_1 != 0 and vx_2 != 0:  # Ensure no division by zero
@@ -72,7 +71,7 @@ def simulate_all_particles(particle_data: dict, target_area: tuple):
             combo = tuple(sorted((no_1, no_2)))
             if (no_1 != no_2) and (combo not in combos_checked):
                 combos_checked.add(combo)
-                interaction = identify_interactions(properties_1, properties_2, target_area)
+                interaction = identify_2d_interactions(properties_1, properties_2, target_area)
                 if interaction:
                     particle_interactions.add((combo, interaction))
                 count += 1
@@ -80,12 +79,32 @@ def simulate_all_particles(particle_data: dict, target_area: tuple):
                 #     print(f"Count {count} = {time.time() - start_time:.5f}")
     return particle_interactions
 
-test_input = ['19, 13, 30 @ -2,  1, -2', '18, 19, 22 @ -1, -1, -2', '20, 25, 34 @ -2, -2, -4', '12, 31, 28 @ -1, -2, -1', '20, 19, 15 @  1, -5, -3']
+def find_perfect_throw(particle_data: dict) -> tuple:
+    import sympy as sp
 
-target_area = (200_000_000_000_000, 400_000_000_000_000)
+    particles = list(particle_data.keys())
+    first_three_hailstones = []
+    for particle_no in particles[:3]:
+        (px_1, py_1, pz_1), (vx_1, vy_1, vz_1) = particle_data[particle_no]
+        first_three_hailstones.append(tuple((px_1, py_1, pz_1, vx_1, vy_1, vz_1)))
+
+    x, y, z, dx, dy, dz, *time = sp.symbols('x, y, z, dx, dy, dz, t1, t2, t3')
+
+    equations = []  # build system of 9 equations with 9 unknowns
+    for t, h in zip(time, first_three_hailstones):
+        equations.append(sp.Eq(x + t*dx, h[0] + t*h[3]))
+        equations.append(sp.Eq(y + t*dy, h[1] + t*h[4]))
+        equations.append(sp.Eq(z + t*dz, h[2] + t*h[5]))
+
+    solution = sp.solve(equations, (x, y, z, dx, dy, dz, *time)).pop()
+    return solution
 
 particle_data = parse_input(input_data)
-total_interactions  = simulate_all_particles(particle_data, target_area)
+total_interactions  = simulate_all_particles(particle_data, target_area=(2E+14, 4E+14))
 print("Part 1:", len(total_interactions))
 
+thrown_particle = find_perfect_throw(particle_data)
+print("Part 2:", sum(thrown_particle[:3]))
+
 # print(f"Execution Time = {time.time() - start_time:.5f}")
+
