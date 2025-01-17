@@ -10,7 +10,7 @@ from Polyglot_Setups.Setup_Python import create_python_script
 
 # Define default values for the Advent of Code challenge
 advent_day  = 1
-advent_year = 2023
+advent_year = 2019
 author_name = "abbasmoosajee07"
 selected_language = "python"  # Options: "python", "c", "julia", "ruby"
 
