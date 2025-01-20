@@ -2,7 +2,7 @@
 # Solution Started: Nov 17, 2024
 # Puzzle Link: https://adventofcode.com/2019/day/2
 # Solution by: [abbasmoosajee07]
-# Brief: [IntCode Computer v1]
+# Brief: [Intcode CPU V1]
 
 #!/usr/bin/env python3
 
@@ -17,48 +17,63 @@ D02_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), D02_fil
 
 # Read and sort input data into a grid
 with open(D02_file_path) as file:
-    input_data = file.read().strip(',')
+    input_data = file.read().strip().split(',')
     input_nums = list(map(int, input_data))
 
 class Intcode_Program:
-    def __init__(self, program: list[int], pointer: int = 0):
+    def __init__(self, program: list[int], pointer: int = 0, debug: bool = False):
+        """
+        Initialize the Intcode Program with a copy of the program, a pointer, and optional debugging.
+        """
         self.program = copy.deepcopy(program)
         self.pointer = pointer
         self.running = True  # Flag to manage the loop
+        self.debug = debug  # Debug flag
         self.opcode_map = {
-            1: lambda: self.__arithmetic( 'add'),
+            1: lambda: self.__arithmetic('add'),
             2: lambda: self.__arithmetic('mult'),
             99: self.__halt,
         }
 
     def __arithmetic(self, operator: str):
+        """
+        Perform arithmetic operation based on the operator ('add' or 'mult').
+        """
         pointer = self.pointer
-        # Dereference values based on program's addressing
-        A_addr, B_addr, target= self.program[pointer + 1: pointer + 4]
+        A_addr, B_addr, target = self.program[pointer + 1: pointer + 4]
+
+        if self.debug:
+            op_str = f"(A{A_addr}:{self.program[A_addr]}) (B{B_addr}:{self.program[B_addr]}) (to{target}:{self.program[target]})"
+            print(f"{pointer:07}: {operator.upper()} {op_str}")
+
         if operator == 'add':
             self.program[target] = self.program[A_addr] + self.program[B_addr]
         elif operator == 'mult':
             self.program[target] = self.program[A_addr] * self.program[B_addr]
+
         self.pointer += 4  # Move to the next instruction
 
     def __halt(self):
-        self.running = False  # Stop the program
-        # print("Program halted.")
-        # print("Final state:", self.program)
+        """
+        Halt the program and stop execution.
+        """
+        self.running = False
+        if self.debug:
+            print(f"{self.pointer:07}: HALT")
 
     def process_program(self):
+        """
+        Start and run the Intcode program.
+        """
         while self.running:
             opcode = self.program[self.pointer]
             if opcode not in self.opcode_map:
                 raise ValueError(f"Unknown opcode {opcode} at position {self.pointer}")
-            self.opcode_map[opcode]()  # Execute the mapped function
+
+            # Execute the operation based on the opcode
+            self.opcode_map[opcode]()  # Executes the correct lambda function or method
 
         return self.program
-
-# Append the 'Intcode' folder to sys.path
-intcode_path = os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir, "Intcode"))
-sys.path.append(intcode_path)
-# from Intcode import Intcode_Program
 
 def find_address(instruction, target):
     test_instructions = copy.deepcopy(instruction)

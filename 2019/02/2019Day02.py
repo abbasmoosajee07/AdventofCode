@@ -2,7 +2,7 @@
 # Solution Started: Nov 17, 2024
 # Puzzle Link: https://adventofcode.com/2019/day/2
 # Solution by: [abbasmoosajee07]
-# Brief: [IntCode Computer V1]
+# Brief: [Intcode CPU V1]
 
 #!/usr/bin/env python3
 
@@ -24,7 +24,6 @@ D02_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), D02_fil
 with open(D02_file_path) as file:
     input_data = file.read().strip().split(',')
     input_nums = list(map(int, input_data))
-
 
 def find_address(instruction, target):
     test_instructions = copy.deepcopy(instruction)
