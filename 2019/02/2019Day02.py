@@ -2,14 +2,19 @@
 # Solution Started: Nov 17, 2024
 # Puzzle Link: https://adventofcode.com/2019/day/2
 # Solution by: [abbasmoosajee07]
-# Brief: [IntCode Computer P1]
+# Brief: [IntCode Computer V1]
 
 #!/usr/bin/env python3
 
-import os, re, copy
+import os, re, copy, sys
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+
+intcode_path = os.path.join(os.path.dirname(__file__), "..", "Intcode_CPU")
+sys.path.append(intcode_path)
+
+from Intcode_CPU import Intcode_Program
 
 # Load the input data from the specified file path
 D02_file = "Day02_input.txt"
@@ -18,73 +23,27 @@ D02_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), D02_fil
 # Read and sort input data into a grid
 with open(D02_file_path) as file:
     input_data = file.read().strip().split(',')
-    input_list = [int(num) for num in input_data]
-og_instructions = copy.deepcopy(input_list)
-
-class IntcodeComputer:
-    def __init__(self, instructions):
-        self.instructions = instructions[:]  # Make a copy to avoid modifying the input
-        self.pos = 0
-
-    def int_add(self):
-        """Perform addition as per Opcode 1."""
-        a, b, dest = self.instructions[self.pos + 1:self.pos + 4]
-        self.instructions[dest] = self.instructions[a] + self.instructions[b]
-
-    def int_mult(self):
-        """Perform multiplication as per Opcode 2."""
-        a, b, dest = self.instructions[self.pos + 1:self.pos + 4]
-        self.instructions[dest] = self.instructions[a] * self.instructions[b]
-
-    def get_current_opcode(self):
-        """Get the current opcode."""
-        return self.instructions[self.pos]
-
-    def advance(self):
-        """Move the instruction pointer to the next block."""
-        self.pos += 4
-
-    def is_halted(self):
-        """Check if the program is halted."""
-        return self.instructions[self.pos] == 99
-
-
-def execute(computer):
-    """Execute the Intcode program using the IntcodeComputer."""
-    while not computer.is_halted():  # Run until Opcode 99 is encountered
-        opcode = computer.get_current_opcode()
-        if opcode == 1:  # Addition
-            computer.int_add()
-        elif opcode == 2:  # Multiplication
-            computer.int_mult()
-        else:
-            raise ValueError(f"Unknown opcode {opcode} at position {computer.pos}")
-        computer.advance()  # Move to the next instruction block
-    return computer.instructions  # Return the final state of the program
-
-instruction_p1 = input_list
-instruction_p1[1] = 12
-instruction_p1[2] = 2
-
-computer = IntcodeComputer(instruction_p1)
-
-ans_p1 = execute(computer)
-print(f"Part 1: {ans_p1[0]}")
+    input_nums = list(map(int, input_data))
 
 
 def find_address(instruction, target):
+    test_instructions = copy.deepcopy(instruction)
     for num_1 in range(99):
         for num_2 in range(99):
-            instruction[1] = num_1
-            instruction[2] = num_2
+            test_instructions[1] = num_1
+            test_instructions[2] = num_2
 
-            computer = IntcodeComputer(instruction)
-
-            output_p2 = execute(computer)
+            output_p2 = Intcode_Program(test_instructions).process_program()
             if output_p2[0] == target:
-                address = (100 * num_1) + num_2
-                break
-    return address
+                return num_1, num_2  # Fix: Return the found address
+    return 0, 0  # If no valid address found
 
-ans_p2 = find_address(input_list, 19690720)
-print(f"Part 2: {ans_p2}")
+instruction_p1 = copy.deepcopy(input_nums)
+instruction_p1[1] = 12
+instruction_p1[2] = 2
+
+ans_p1 = Intcode_Program(instruction_p1).process_program()
+print("Part 1:", ans_p1[0])
+
+noun, verb = find_address(input_nums, 19690720)
+print("Part 2:", (100 * noun) + verb)
