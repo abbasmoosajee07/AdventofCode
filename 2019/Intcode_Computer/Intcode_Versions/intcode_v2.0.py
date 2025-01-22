@@ -4,22 +4,6 @@
 # Solution by: [abbasmoosajee07]
 # Brief: [IntCode Computer v2.0]
 
-#!/usr/bin/env python3
-
-import os, re, copy
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
-
-# Load the input data from the specified file path
-D05_file = "Day05_input.txt"
-D05_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), D05_file)
-
-# Read and sort input data into a grid
-with open(D05_file_path) as file:
-    input_data = file.read().strip().split(',')
-    input_program = list(map(int, input_data))
-
 class Intcode_CPU:
     def __init__(self, program: list[int], pointer: int = 0, inputs=None, debug: bool = False):
         """
@@ -124,9 +108,9 @@ test_input_v21 = [3,0,4,0,99]
 test_input_v22 = [1002,4,3,4,33]
 test_input_v23 = [1101,100,-1,4,0]
 
-start_cpu = Intcode_CPU(test_input_v21, inputs=1, debug=True)
+start_cpu = Intcode_CPU(test_input_v22, inputs=1, debug=True)
 start_cpu.process_program()
-output_p1 = start_cpu.get_result('output')
+output_p1 = start_cpu.get_result()
 diagnostic_code =  next((x for x in output_p1 if x != 0), None)
-print("Part 1:", diagnostic_code)
+print("Part 1:", output_p1)
 
