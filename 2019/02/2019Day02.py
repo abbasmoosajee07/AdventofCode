@@ -11,10 +11,10 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-intcode_path = os.path.join(os.path.dirname(__file__), "..", "Intcode_CPU")
+intcode_path = os.path.join(os.path.dirname(__file__), "..", "Intcode_Computer")
 sys.path.append(intcode_path)
 
-from Intcode_CPU import Intcode_Program
+from Intcode_Computer import Intcode_CPU
 
 # Load the input data from the specified file path
 D02_file = "Day02_input.txt"
@@ -23,7 +23,7 @@ D02_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), D02_fil
 # Read and sort input data into a grid
 with open(D02_file_path) as file:
     input_data = file.read().strip().split(',')
-    input_nums = list(map(int, input_data))
+    input_program = list(map(int, input_data))
 
 def find_address(instruction, target):
     test_instructions = copy.deepcopy(instruction)
@@ -32,17 +32,21 @@ def find_address(instruction, target):
             test_instructions[1] = num_1
             test_instructions[2] = num_2
 
-            output_p2 = Intcode_Program(test_instructions).process_program()
+            cpu_p2 = Intcode_CPU(test_instructions)
+            cpu_p2.process_program()
+            output_p2 = cpu_p2.get_result()
             if output_p2[0] == target:
                 return num_1, num_2  # Fix: Return the found address
     return 0, 0  # If no valid address found
 
-instruction_p1 = copy.deepcopy(input_nums)
+instruction_p1 = copy.deepcopy(input_program)
 instruction_p1[1] = 12
 instruction_p1[2] = 2
 
-ans_p1 = Intcode_Program(instruction_p1).process_program()
+cpu_p1 = Intcode_CPU(instruction_p1)
+cpu_p1.process_program()
+ans_p1 = cpu_p1.get_result()
 print("Part 1:", ans_p1[0])
 
-noun, verb = find_address(input_nums, 19690720)
+noun, verb = find_address(input_program, 19690720)
 print("Part 2:", (100 * noun) + verb)

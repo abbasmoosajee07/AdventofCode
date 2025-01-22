@@ -2,7 +2,7 @@
 # Solution Started: Nov 17, 2024
 # Puzzle Link: https://adventofcode.com/2019/day/2
 # Solution by: [abbasmoosajee07]
-# Brief: [Intcode CPU V1]
+# Brief: [Intcode CPU v1.0]
 
 #!/usr/bin/env python3
 
@@ -20,7 +20,7 @@ with open(D02_file_path) as file:
     input_data = file.read().strip().split(',')
     input_nums = list(map(int, input_data))
 
-class Intcode_Program:
+class Intcode_CPU:
     def __init__(self, program: list[int], pointer: int = 0, debug: bool = False):
         """
         Initialize the Intcode Program with a copy of the program, a pointer, and optional debugging.
@@ -82,7 +82,7 @@ def find_address(instruction, target):
             test_instructions[1] = num_1
             test_instructions[2] = num_2
 
-            output_p2 = Intcode_Program(test_instructions).process_program()
+            output_p2 = Intcode_CPU(test_instructions).process_program()
             if output_p2[0] == target:
                 return num_1, num_2  # Fix: Return the found address
     return 0, 0  # If no valid address found
@@ -90,7 +90,7 @@ def find_address(instruction, target):
 instruction_p1 = copy.deepcopy(input_nums)
 instruction_p1[1] = 12
 instruction_p1[2] = 2
-ans_p1 = Intcode_Program(instruction_p1).process_program()
+ans_p1 = Intcode_CPU(instruction_p1).process_program()
 print("Part 1:", ans_p1[0])
 
 noun, verb = find_address(input_nums, 19690720)
