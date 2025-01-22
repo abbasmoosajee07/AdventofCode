@@ -103,7 +103,6 @@ class Intcode_CPU:
         else:
             raise ValueError(f"Invalid return_type '{return_type}'. Must be 'program', 'output', or 'both'.")
 
-test_input_v10 = [1,9,10,3,2,3,11,0,99,30,40,50]
 test_input_v21 = [3,0,4,0,99]
 test_input_v22 = [1002,4,3,4,33]
 test_input_v23 = [1101,100,-1,4,0]
@@ -112,5 +111,5 @@ start_cpu = Intcode_CPU(test_input_v22, inputs=1, debug=True)
 start_cpu.process_program()
 output_p1 = start_cpu.get_result()
 diagnostic_code =  next((x for x in output_p1 if x != 0), None)
-print("Part 1:", output_p1)
+print("Test v2.0:", output_p1)
 

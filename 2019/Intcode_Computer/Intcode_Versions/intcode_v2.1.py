@@ -1,3 +1,12 @@
+# Advent of Code - Day 5, Year 2019
+# Solution Started: Jan 21, 2025
+# Puzzle Link: https://adventofcode.com/2019/day/5
+# Solution by: [abbasmoosajee07]
+# Brief: [IntCode Computer v2.1]
+
+#!/usr/bin/env python3
+
+
 class Intcode_CPU:
     def __init__(self, program: list[int], pointer: int = 0, inputs=None, debug: bool = False):
         """
@@ -146,3 +155,14 @@ class Intcode_CPU:
             return self.program, self.output_list
         else:
             raise ValueError(f"Invalid return_type '{return_type}'. Must be 'program', 'output', or 'both'.")
+
+test_input_v211 = [3,12,6,12,15,1,13,14,13,4,13,99,-1,0,1,9]
+test_input_v212 = [3,3,1105,-1,9,1101,0,0,12,4,12,99,1]
+test_input_v213 = [3,21,1008,21,8,20,1005,20,22,107,8,21,20,1006,20,31,1106,0,36,98,0,0,1002,21,125,20,4,20,1105,1,46,104,999,1105,1,46,1101,1000,1,20,4,20,1105,1,46,98,99]
+
+start_cpu = Intcode_CPU(test_input_v213, inputs=5, debug=True)
+start_cpu.process_program()
+output_p1 = start_cpu.get_result('output')
+diagnostic_code =  next((x for x in output_p1 if x != 0), None)
+print("Test v2.1:", diagnostic_code)
+

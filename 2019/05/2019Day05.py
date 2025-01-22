@@ -28,5 +28,11 @@ with open(D05_file_path) as file:
 cpu_p1 = Intcode_CPU(input_program, inputs=1)
 cpu_p1.process_program()
 output_p1 = cpu_p1.get_result('output')
-diagnostic_code =  next((x for x in output_p1 if x != 0), None)
-print("Part 1:", diagnostic_code)
+code_p1 =  next((x for x in output_p1 if x != 0), None)
+print("Part 1:", code_p1)
+
+cpu_p2 = Intcode_CPU(input_program, inputs=5)
+cpu_p2.process_program()
+output_p2 = cpu_p2.get_result('output')
+code_p2 =  next((x for x in output_p2 if x != 0), None)
+print("Part 2:", code_p2)

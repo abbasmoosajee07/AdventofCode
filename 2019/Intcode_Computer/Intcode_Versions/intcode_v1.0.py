@@ -83,11 +83,11 @@ def find_address(instruction, target):
                 return num_1, num_2  # Return the values if found
     return 0, 0
 
-test_program = [1,9,10,3,2,3,11,0,99,30,40,50]
+test_input_v10 = [1,9,10,3,2,3,11,0,99,30,40,50]
 
-ans_p1 = Intcode_CPU(test_program).process_program()
-print("Part 1:", ans_p1[0])
+ans_p1 = Intcode_CPU(test_input_v10).process_program()
+print("Test v1.0:", ans_p1[0])
 
-noun, verb = find_address(test_program, 6450)
-print("Part 2:", (100 * noun) + verb)
+noun, verb = find_address(test_input_v10, 6450)
+print("Test v1.1:", (100 * noun) + verb)
 
