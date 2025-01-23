@@ -11,7 +11,7 @@ from Benchmarks.performance_analysis import create_table
 from Benchmarks.visualization import create_plot
 from Benchmarks.script_runner import run_script
 
-def execute_challenge_scripts(challenge, Year, days_to_run, base_dir, num_iterations=5, center_color="#4CAF50"):
+def execute_challenge_scripts(challenge, Year, days_to_run, base_dir, num_iterations=5, center_color="#4CAF50", save_dir=None):
     """
     Execute challenge scripts, aggregate performance statistics, and generate results.
 
@@ -26,6 +26,7 @@ def execute_challenge_scripts(challenge, Year, days_to_run, base_dir, num_iterat
         base_dir (str): Base Directory where all challenge scripts are saved
         num_iterations (int): Number of iterations to execute each day's scripts (default is 5).
         center_color (str): The base color for gradients in plots (default is "#4CAF50").
+        save_dir (str): If you want to save results to different location from base_dir
     Returns:
         DataFrame: A Pandas DataFrame containing aggregated results, including:
                     : Day numbers.
@@ -85,19 +86,21 @@ def execute_challenge_scripts(challenge, Year, days_to_run, base_dir, num_iterat
                         if day_number not in file_info:
                             file_info[day_number] = (f".{languages_str}", day_lines, day_size)
 
+    if save_dir is None:
+        save_dir = base_dir
     # Use averaged times for the table and plot
     run_df, table_txt = create_table(file_info, times_taken, peak_memory_usage, num_iterations, Year)
 
     # Save the table to a text file
-    output_file = os.path.join(base_dir, f"{Year}_Run_Summary.txt")
+    output_file = os.path.join(save_dir, f"{Year}_Run_Summary.txt")
     with open(output_file, 'w') as f:
         for line in table_txt:
             f.write(line + "\n")
     print(f"Summary saved to {output_file}")
 
     # Create plots
-    create_plot(run_df, challenge, Year, num_iterations, base_dir, center_color, scale='linear')
-    create_plot(run_df, challenge, Year, num_iterations, base_dir, center_color, scale='log')
+    create_plot(run_df, challenge, Year, num_iterations, save_dir, center_color, scale='linear')
+    create_plot(run_df, challenge, Year, num_iterations, save_dir, center_color, scale='log')
 
     print(f"\nTotal script execution time over {num_iterations} iterations saved to table and plotted.")
 
