@@ -1,3 +1,12 @@
+# Advent of Code - Day 7, Year 2019
+# Solution Started: Nov 17, 2024
+# Puzzle Link: https://adventofcode.com/2019/day/7
+# Solution by: [abbasmoosajee07]
+# Brief: [IntCode Computer v3.0 (Amplifiers)]
+
+#!/usr/bin/env python3
+from itertools import permutations
+
 class Intcode_CPU:
     def __init__(self, program: list[int], pointer: int = 0, inputs=None, debug: bool = False):
         """
@@ -158,3 +167,34 @@ class Intcode_CPU:
             return self.program, self.output_list
         else:
             raise ValueError(f"Invalid return_type '{return_type}'. Must be 'program', 'output', or 'both'.")
+
+# Max thruster signal 43210 (from phase setting sequence 4,3,2,1,0):
+test_input_v301 = [3,15,3,16,1002,16,10,16,1,16,15,15,4,15,99,0,0]
+
+# Max thruster signal 54321 (from phase setting sequence 0,1,2,3,4):
+test_input_v302 = [3,23,3,24,1002,24,10,24,1002,23,-1,23,101,5,23,23,1,24,23,23,4,23,99,0,0]
+
+# Max thruster signal 65210 (from phase setting sequence 1,0,4,3,2):
+test_input_v303 = [3,31,3,32,1002,32,10,32,1001,31,-2,31,1007,31,0,33,1002,33,7,33,1,33,31,31,1,32,31,31,4,31,99,0,0,0]
+
+def run_amplifiers(program, phase_settings):
+    max_signal = 0
+    for phases in permutations(phase_settings):
+        amplifiers = [Intcode_CPU(program, inputs=[phase], debug=False) for phase in phases]
+        signal = 0
+
+        while any(a.running for a in amplifiers):  # Run until all amplifiers halt
+            for amp in amplifiers:
+                amp.inputs_queue.append(signal)
+                amp.process_program()
+                output = amp.output_list
+                if output:  # Check if there's a new output
+                    signal = output.pop(0)
+        
+        max_signal = max(max_signal, signal)
+    
+    return max_signal
+
+
+test_30 = run_amplifiers(test_input_v301, range(0, 5))
+print(f"Test v3.0: {test_30}")
