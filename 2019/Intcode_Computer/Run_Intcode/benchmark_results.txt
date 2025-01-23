@@ -1,0 +1,6 @@
+Benchmark Prog	Time (s)	Memory(B)	Input
+Sum of Primes	1.99325s	2555904	100000
+Ackermann func	1.17971s	53248	[3, 6]
+Int Sqaure Root	0.00138s	4096	130
+Divmod (Euclid)	0.00396s	4096	[1024, 3]
+Factorization	0.05638s	8192	399
