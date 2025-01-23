@@ -1,8 +1,8 @@
 # Advent of Code - 2019
-# Solved in 2024
+# Solved in 2025
 # Puzzle Link: https://adventofcode.com/2019
 # Solution by: [abbasmoosajee07]
-# Brief: [Run all 2019 scripts]
+# Brief: [Run all 2019 Intcode scripts]
 
 #!/usr/bin/env python3
 import os
