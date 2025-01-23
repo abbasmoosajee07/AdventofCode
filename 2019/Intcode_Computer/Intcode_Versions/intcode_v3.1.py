@@ -1,3 +1,13 @@
+# Advent of Code - Day 7, Year 2019
+# Solution Started: Jan 23, 2025
+# Puzzle Link: https://adventofcode.com/2019/day/7
+# Solution by: [abbasmoosajee07]
+# Brief: [IntCode Computer v3.1]
+
+#!/usr/bin/env python3
+
+from itertools import permutations
+
 class Intcode_CPU:
     def __init__(self, program: list[int], pointer: int = 0, inputs=None, debug: bool = False):
         """
@@ -14,7 +24,7 @@ class Intcode_CPU:
             self.inputs_queue = inputs
         elif isinstance(inputs, int):
             self.inputs_queue = [inputs]
-        else:
+        elif inputs:
             self.inputs_queue = []
 
         self.opcode_map = {
@@ -72,9 +82,7 @@ class Intcode_CPU:
         """
         if not self.inputs_queue:
             self.paused = True
-            if self.debug:
-                print(f"[{self.pointer:07}: INP] Paused waiting for input.")
-            return  # Pause until input is available
+            return  # Wait for more input
         store_to = self.program[self.pointer + 1]
         input_val = self.inputs_queue.pop(0)
         self.program[store_to] = input_val
@@ -97,6 +105,8 @@ class Intcode_CPU:
 
         self.pointer += 2
 
+        return output_val
+
     def __jump_op(self, jump_if: str):
         """
         Perform jump operations based on the condition (`jump_if`).
@@ -105,10 +115,17 @@ class Intcode_CPU:
         A_val = self.__get_value(A_addr, self.modes[0])
         B_val = self.__get_value(B_addr, self.modes[1])
 
+
         if (jump_if == 'True' and A_val != 0) or (jump_if == 'False' and A_val == 0):
             self.pointer = B_val
+            pointer_jump = B_val
         else:
             self.pointer += 3
+            pointer_jump = 3
+
+        if self.debug:
+            condition = "!= 0" if jump_if == 'True' else "== 0"
+            print(f"[{self.pointer:07}: JMP] A({A_addr}): {A_val} {condition}, Jump By: {pointer_jump}")
 
     def __comp_op(self, comparison: str):
         """
@@ -120,6 +137,10 @@ class Intcode_CPU:
 
         result = 1 if (comparison == 'less' and A_val < B_val) or (comparison == 'equal' and A_val == B_val) else 0
         self.program[target] = result
+
+        if self.debug:
+            condition = "<" if comparison == 'less' else "=="
+            print(f"[{self.pointer:07}: CMP] A({A_addr}): {A_val} {condition} B({B_addr}): {B_val} -> To({target}): {result}")
 
         self.pointer += 4
 
@@ -149,3 +170,35 @@ class Intcode_CPU:
             return self.program, self.output_list
         else:
             raise ValueError(f"Invalid return_type '{return_type}'. Must be 'program', 'output', or 'both'.")
+
+
+# Max thruster signal 139629729 (from phase setting sequence 9,8,7,6,5):
+test_input_v311 = [3,26,1001,26,-4,26,3,27,1002,27,2,27,1,27,26,27,4,27,1001,28,-1,28,1005,28,6,99,0,0,5]
+
+# Max thruster signal 18216 (from phase setting sequence 9,7,8,5,6):
+test_input_v312 = [3,52,1001,52,-5,52,3,53,1,52,56,54,1007,54,5,55,1005,55,26,1001,54,-5,54,1105,1,12,1,53,54,53,1008,54,0,55,1001,55,1,55,2,53,55,53,4,53,1001,56,-1,56,1005,56,6,99,0,0,0,0,10]
+
+def run_amplifiers(program, phase_settings):
+    max_signal = 0
+    for phases in permutations(phase_settings):
+        amplifiers = [Intcode_CPU(program, inputs=[phase], debug=False) for phase in phases]
+        signal = 0
+
+        while any(a.running for a in amplifiers):  # Run until all amplifiers halt
+            for amp in amplifiers:
+                if amp.paused:
+                    amp.paused = False  # Resume if paused
+                amp.inputs_queue.append(signal)
+                amp.process_program()
+                if amp.output_list:  # Check if there's a new output
+                    signal = amp.output_list.pop(0)
+        
+        max_signal = max(max_signal, signal)
+    
+    return max_signal
+
+test_311= run_amplifiers(test_input_v311, range(5, 10))
+print(f"Test v3.11: {test_311}")
+
+test_312= run_amplifiers(test_input_v312, range(5, 10))
+print(f"Test v3.12: {test_312}")
