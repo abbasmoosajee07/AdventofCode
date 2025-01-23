@@ -1,3 +1,11 @@
+# Advent of Code - Day 7, Year 2019
+# Solution Started: Jan 23, 2025
+# Puzzle Link: https://adventofcode.com/2019/day/7
+# Solution by: [abbasmoosajee07]
+# Brief: [IntCode Computer v4.0]
+
+#!/usr/bin/env python3
+
 class Intcode_CPU:
     def __init__(self, program: list[int], pointer: int = 0, inputs=None, debug: bool = False):
         """
@@ -199,3 +207,17 @@ class Intcode_CPU:
             return ([self.memory[i] for i in sorted(self.memory.keys())], self.output_list)
         else:
             raise ValueError(f"Invalid return_type '{return_type}'. Must be 'memory', 'output', 'program', or 'both'.")
+
+# takes no input and produces a copy of itself as output.
+test_input_v401 = [109,1,204,-1,1001,100,1,100,1008,100,16,101,1006,101,0,99]
+
+# should output a 16-digit number.
+test_input_v402 = [1102,34915192,34915192,7,4,7,99,0]
+
+# should output the large number in the middle.
+test_input_v403 = [104,1125899906842624,99]
+
+cpu_p1 = Intcode_CPU(test_input_v401, debug=False)
+cpu_p1.process_program()
+output = cpu_p1.get_result('output')
+print("test v4.01:", output)
