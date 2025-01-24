@@ -28,7 +28,7 @@ with open(D07_file_path) as file:
 def run_amplifiers(program, phase_settings):
     max_signal = 0
     for phases in permutations(phase_settings):
-        amplifiers = [Intcode_CPU(program, init_inputs=[phase], debug=False, add_input=True) for phase in phases]
+        amplifiers = [Intcode_CPU(program, init_inputs=[phase], debug=False) for phase in phases]
         signal = 0
 
         while any(a.running for a in amplifiers):  # Run until all amplifiers halt

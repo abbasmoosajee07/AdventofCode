@@ -1,5 +1,5 @@
 class Intcode_CPU:
-    def __init__(self, program: list[int], pointer: int = 0, init_inputs = None, add_input = None, debug: bool = False):
+    def __init__(self, program: list[int], init_inputs = None, pointer: int = 0, debug: bool = False):
         """
         Initialize the Intcode Program with a copy of the program,
             a pointer, inputs, and optional debugging.
@@ -12,7 +12,6 @@ class Intcode_CPU:
         self.running = True    # Execution flag
         self.debug = debug     # Debugging flag
         self.relative_base = 0 # Relative base for mode 2
-        self.add_input = add_input
         if isinstance(init_inputs, list):
             self.inputs_queue = init_inputs
         elif isinstance(init_inputs, int):
@@ -101,10 +100,7 @@ class Intcode_CPU:
         Handle input operation: store the input value at the specified location.
         """
         if not self.inputs_queue:
-            if self.add_input:
-                self.paused = True
-            else:
-                self.inputs_queue.append(1)  # Default input behavior to match the function
+            self.paused = True
             return None # Wait for more input
 
         target = self.__get_args(args_reqd)[0]

@@ -26,7 +26,16 @@ with open(D11_file_path) as file:
     input_data = file.read().strip().split(',')
     input_program = list(map(int, input_data))
 
-cpu_p1 = Intcode_CPU(input_program, init_inputs=1, debug=False)
-cpu_p1.process_program()
-output = cpu_p1.get_result('output')
+def run_robot(robot_program: list[int], base_color: int):
+    robot_cpu = Intcode_CPU(robot_program, base_color, debug=False)
+    robot_cpu.process_program()
+    robot_output = robot_cpu.get_result('output')
+    robot_instructions = list(zip(robot_output[::2], robot_output[1::2]))
+    print(robot_instructions)
+    tiles_dict = {}
+    for color, direction in robot_instructions:
+        print(color, direction)
+    return tiles_dict
+
+output = run_robot(input_program, 1)
 print("Output:", sum(output))
