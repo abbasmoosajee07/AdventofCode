@@ -26,26 +26,23 @@ with open(D07_file_path) as file:
     input_program = [int(num) for num in input_data]
 
 def run_amplifiers(program, phase_settings):
-    """
-    Run the amplifiers with feedback loop and calculate the maximum thruster signal.
-    """
     max_signal = 0
     for phases in permutations(phase_settings):
-        amplifiers = [Intcode_CPU(program, inputs=[phase]) for phase in phases]
+        amplifiers = [Intcode_CPU(program, init_inputs=[phase], debug=False, add_input=True) for phase in phases]
         signal = 0
 
         while any(a.running for a in amplifiers):  # Run until all amplifiers halt
             for amp in amplifiers:
                 if amp.paused:
                     amp.paused = False  # Resume if paused
-                amp.inputs_queue.append(signal)  # Provide the input signal
-                amp.process_program()
-                if amp.output_list:  # If output exists, consume it
+                amp.process_program(external_input=signal)
+                if amp.output_list:  # Check if there's a new output
                     signal = amp.output_list.pop(0)
 
         max_signal = max(max_signal, signal)
 
     return max_signal
+
 
 ans_p1 = run_amplifiers(input_program, range(0, 5))
 print(f"Part 1: {ans_p1}")

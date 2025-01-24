@@ -21,13 +21,13 @@ with open(D09_file_path) as file:
     input_program = [int(num) for num in input_data]
 
 # Part 1: Execute the Intcode program with input 1
-cpu_p1 = Intcode_CPU(input_program, inputs = 1)
+cpu_p1 = Intcode_CPU(input_program, init_inputs = 1)
 cpu_p1.process_program()
 boost_code = cpu_p1.get_result('output')
 print("Part 1:", boost_code[0])
 
 # Part 2: Execute the Intcode program with input 2
-cpu_p2 = Intcode_CPU(input_program, inputs = 2)
+cpu_p2 = Intcode_CPU(input_program, init_inputs = 2)
 cpu_p2.process_program()
 distress_coords = cpu_p2.get_result('output')
 print("Part 1:", distress_coords[0])

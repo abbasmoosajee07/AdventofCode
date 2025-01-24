@@ -35,7 +35,7 @@ def perform_benchmark(program, program_name, test_inputs):
     # Measure memory usage before starting
     process = psutil.Process()
     memory_before = process.memory_info().rss  # Memory in bytes before execution
-    cpu = Intcode_CPU(program, inputs=test_inputs, debug=False)
+    cpu = Intcode_CPU(program, init_inputs=test_inputs, debug=False)
 
     # Measure runtime
     start_time = time.time()
