@@ -1,25 +1,46 @@
 class Intcode_CPU:
+    """
+    Simulates an Intcode computer, capable of executing a given Intcode program.
+
+    The Intcode computer interprets and executes an Intcode program, which consists of 
+    a sequence of instructions represented as integers. The program operates using an 
+    instruction pointer (pointer) and memory (memory) and follows the rules of the Intcode 
+    language, supporting operations such as addition, multiplication, input/output, jumps, 
+    comparisons, and relative base adjustments.
+
+    Attributes:
+        program (list[int]): The original Intcode program, stored as a list of integers.
+        memory (dict): A dictionary-based memory for dynamic addressable space, initialized 
+                       with the program values.
+        pointer (int): The current position in the program, representing the instruction pointer.
+        output_list (list): A list to store the output values generated during program execution.
+        paused (bool): A flag indicating if the program is paused (e.g., waiting for input).
+        running (bool): A flag indicating if the program is still running or has halted.
+        debug (bool): A flag enabling or disabling verbose logging for debugging purposes.
+        relative_base (int): The relative base used for addressing in relative mode (opcode 9).
+        inputs_queue (list): A queue of inputs that can be used during program execution.
+        opcode_map (dict): A mapping of opcodes (integer operation codes) to their corresponding 
+                           methods that handle the respective operation.
+
+    Methods:
+        process_program(external_input=None): Starts and runs the Intcode program, using 
+                                                external_input to append inputs to the queue.
+        get_result(return_type="memory"): Retrieves the result from the program's execution.
+                                            The result can be the memory, output, or both.
+        __halt(): Halts the program, stopping further execution.
+        __arithmetic(operator: str, args_reqd: int): Performs arithmetic operations (addition or multiplication).
+        __input(args_reqd: int): Handles the input operation, retrieving input values and storing them in memory.
+        __output(args_reqd: int): Handles the output operation, appending output values to the output list.
+        __jump_op(jump_if: str, args_reqd: int): Performs conditional jumps based on the value of an argument.
+        __comp_op(comparison: str, args_reqd: int): Performs comparison operations (less than or equal).
+        __relative(args_reqd: int): Adjusts the relative base used for addressing in relative mode.
+        __get_args(total_args: int): Retrieves the required number of arguments from memory starting at the current pointer.
+        __get_value(parameter, mode): Fetches a value based on the parameter mode (position, immediate, or relative).
+        __write_value(parameter, mode, value): Writes a value to memory, using the specified mode (position or relative).
+    """
     def __init__(self, program: list[int], init_inputs=None, pointer: int = 0, debug: bool = False):
         """
         Initialize the Intcode Program.
-
-        Args:
-            program (list[int]): The Intcode program as a list of integers.
-            init_inputs (list[int] or int, optional): Initial inputs for the program,
-                                                    can be a single integer or a list.
-            pointer (int, optional): The initial instruction pointer position (default is 0).
-            debug (bool, optional): Enable debugging mode (default is False).
-
-        Attributes:
-            program (list[int]): A copy of the original Intcode program.
-            memory (dict): A dictionary-based dynamic memory, initialized with the program values.
-            pointer (int): Current instruction pointer position in the program.
-            output_list (list): List to store output values generated during execution.
-            paused (bool): Flag to indicate if the program is paused (e.g., waiting for input).
-            running (bool): Flag to indicate if the program is still running (not halted).
-            debug (bool): Debug mode flag to enable verbose logging during execution.
-            relative_base (int): The relative base used in mode 2 for memory addressing.
-            inputs_queue (list): Queue to hold input values for the program's execution.
         """
         # Make a copy of the input program to avoid modifying the original
         self.program = program.copy()

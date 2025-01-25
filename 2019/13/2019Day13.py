@@ -23,6 +23,9 @@ with open(D13_file_path) as file:
     input_program = [int(num) for num in input_data]
 
 class Intcode_Arcade:
+    """
+    Simulates the Breakout Arcade game based on where the brains of the computer is the Intcode CPU
+    """
     def __init__(self, software: list[int], quarters: int = 0):
         """
         Initialize the arcade with the given software and set the game mode.
