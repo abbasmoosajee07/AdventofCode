@@ -7,15 +7,10 @@
 #!/usr/bin/env python3
 
 import os, re, copy, sys
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
-from itertools import permutations
 
 intcode_path = os.path.join(os.path.dirname(__file__), "..", "Intcode_Computer")
 sys.path.append(intcode_path)
 
-from Intcode_Computer import Intcode_CPU
 # Load the input data from the specified file path
 D07_file = "Day07_input.txt"
 D07_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), D07_file)
@@ -25,27 +20,43 @@ with open(D07_file_path) as file:
     input_data = file.read().strip().split(',')
     input_program = [int(num) for num in input_data]
 
-def run_amplifiers(program, phase_settings):
-    max_signal = 0
-    for phases in permutations(phase_settings):
-        amplifiers = [Intcode_CPU(program, init_inputs=[phase], debug=False) for phase in phases]
-        signal = 0
+class Intcode_Amplifiers:
+    """
+    Class to simulate a set of Intcode amplifiers with a feedback loop,
+    running different phase settings to find the maximum output signal.
+    """
+    def __init__(self, program):
+        from itertools import permutations
+        from Intcode_Computer import Intcode_CPU
+        self.Intcode_CPU = Intcode_CPU  # Reference to Intcode_CPU for amplifier execution
+        self.program = program  # The Intcode program to be executed
+        self.permutations = permutations  # Helper function to generate phase setting permutations
 
-        while any(a.running for a in amplifiers):  # Run until all amplifiers halt
-            for amp in amplifiers:
-                if amp.paused:
-                    amp.paused = False  # Resume if paused
-                amp.process_program(external_input=signal)
-                if amp.output_list:  # Check if there's a new output
-                    signal = amp.output_list.pop(0)
+    def run_amplifiers(self, phase_settings):
+        """
+        Runs amplifiers with different phase settings and returns the maximum signal produced.
+        """
+        max_signal = 0  # Initialize the maximum signal
+        for phases in self.permutations(phase_settings):  # Iterate through phase permutations
+            amplifiers = [self.Intcode_CPU(self.program, init_inputs=[phase], debug=False) for phase in phases]
+            signal = 0  # Initial signal for the first amplifier
 
-        max_signal = max(max_signal, signal)
+            # Run until all amplifiers halt
+            while any(a.running for a in amplifiers):
+                for amp in amplifiers:
+                    if amp.paused:
+                        amp.paused = False  # Resume paused amplifiers
+                    amp.process_program(external_input=signal)  # Run the amplifier
+                    if amp.output_list:  # Check if the amplifier has produced output
+                        signal = amp.output_list.pop(0)  # Update signal for the next amplifier
 
-    return max_signal
+            max_signal = max(max_signal, signal)  # Track the maximum signal produced
+
+        return max_signal  # Return the highest signal output
 
 
-ans_p1 = run_amplifiers(input_program, range(0, 5))
-print(f"Part 1: {ans_p1}")
+signal_p1 = Intcode_Amplifiers(input_program).run_amplifiers(range(0, 5))
+print(f"Part 1: {signal_p1}")
 
-ans_p2= run_amplifiers(input_program, range(5, 10))
-print(f"Part 2: {ans_p2}")
+signal_p2= Intcode_Amplifiers(input_program).run_amplifiers(range(5, 10))
+print(f"Part 2: {signal_p2}")
