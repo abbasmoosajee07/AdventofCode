@@ -1,8 +1,3 @@
-# Advent of Code - Day 15, Year 2019
-# Solution Started: Jan 23, 2025
-# Puzzle Link: https://adventofcode.com/2019/day/15
-# Solution by: [abbasmoosajee07]
-# Brief: [IntCode Computer v6.0 (add replication)]
 
 #!/usr/bin/env python3
 
