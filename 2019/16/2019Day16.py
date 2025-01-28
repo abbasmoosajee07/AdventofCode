@@ -22,7 +22,7 @@ with open(D16_file_path) as file:
     input_data = file.read().strip().split()
     input_seq  = list(map(int, input_data[0]))
 
-def analyse_signal(init_sequence: list[int], total_phases: int = 5) -> int:
+def analyse_signal(init_sequence: list[int], total_phases: int = 100) -> int:
     def __build_pattern_matrix(seq_len: int):
         """Builds a matrix of patterns for all positions."""
         BASE_PATTERN = [0, 1, 0, -1]
@@ -65,8 +65,28 @@ def analyse_signal(init_sequence: list[int], total_phases: int = 5) -> int:
     output_sequence = current_sequence.copy()
     return list(output_sequence.values())
 
-final_output = analyse_signal(input_seq, 100)
+def analyse_large_signal(init_data: list[int], total_phases: int = 100) -> list[int]:
+    # Parse offset from the first 7 digits
+    offset = int(''.join(map(str, init_data[:7])))
+
+    # Expand the data by a factor
+    expanded_data = (init_data * 10000)[offset:]
+
+    # Slice the data for analysis
+    shifted_data = np.array(expanded_data, dtype=np.uint32)
+    shifted_data = np.flip(shifted_data)
+
+    # Perform transformation phases
+    for _ in range(total_phases):
+        np.cumsum(shifted_data, out=shifted_data)
+        shifted_data %= 10  # Keep only the last digit
+
+    return np.flip(shifted_data).tolist()
+
+final_output = analyse_signal(copy.deepcopy(input_seq))
 print("Part 1:", ''.join(map(str, final_output[:8])))
 
-# print(f"Execution Time = {time.time() - start_time:.5f}s")
+message = analyse_large_signal(copy.deepcopy(input_seq))
+print("Part 2:", ''.join(map(str, message[:8])))
 
+print(f"Execution Time = {time.time() - start_time:.5f}s")
