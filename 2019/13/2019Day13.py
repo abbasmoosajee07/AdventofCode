@@ -35,7 +35,6 @@ class Intcode_Arcade:
             self.software[0] = quarters  # Set position 0 to 2 for free play
 
         from Intcode_Computer import Intcode_CPU
-        import keyboard   # External library for capturing keyboard events
         self.console = Intcode_CPU(self.software)
 
     def run_console(self, joystick_input=None):
@@ -56,6 +55,8 @@ class Intcode_Arcade:
         original_tiles = {}
 
         if play_manually:
+            import keyboard   # External library for capturing keyboard events
+            show_screen = True
             print("Use Left/Right arrow keys to control the paddle. Press 'Esc' to quit.")
 
         while self.console.running:
