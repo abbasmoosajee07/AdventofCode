@@ -6,151 +6,97 @@
 
 #!/usr/bin/env python3
 
-import os, re, copy, math
-import numpy as np
-import pandas as pd
+import os, re, time
+from itertools import combinations, count
+from math import gcd
 from functools import reduce
 
-# Load the input data from the specified file path
-D12_file = "Day12_input.txt"
-D12_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), D12_file)
+class Moon:
+    def __init__(self, position):
+        self.position = list(position)
+        self.velocity = [0, 0, 0]
 
-# Read and sort input data into a grid
-with open(D12_file_path) as file:
-    input_data = file.read().strip().split('\n')
+    def total_energy(self):
+        potential_energy = sum(abs(x) for x in self.position)
+        kinetic_energy = sum(abs(x) for x in self.velocity)
+        return potential_energy * kinetic_energy
 
-def parse_particle_data(particle_list):
-    # Initialize a dictionary to store the structured data
-    data = {
-        'p_x': [], 'p_y': [], 'p_z': [],
-        'v_x': 0, 'v_y': 0, 'v_z': 0
-        # 'pos': []
-        }
+class MoonSystem:
+    def __init__(self, moon_positions):
+        self.moons = [Moon(position) for position in moon_positions]
 
-    # Regular expression to extract numbers from the particle string
-    pattern = r"<x=(-?\d+), y=(-?\d+), z=(-?\d+)>"
+    def apply_gravity(self, dim):
+        for A, B in combinations(self.moons, 2):
+            if A.position[dim] < B.position[dim]:
+                A.velocity[dim] += 1
+                B.velocity[dim] -= 1
+            elif A.position[dim] > B.position[dim]:
+                A.velocity[dim] -= 1
+                B.velocity[dim] += 1
 
-    # Process each particle entry in the list
-    for particle in particle_list:
-        # Extract values
-        match = re.match(pattern, particle)
-        if match:
-            p_x, p_y, p_z = map(int, match.groups())
+    def apply_velocity(self, dim):
+        for moon in self.moons:
+            moon.position[dim] += moon.velocity[dim]
 
-            # Append to respective lists in the dictionary
-            data['p_x'].append(p_x)
-            data['p_y'].append(p_y)
-            data['p_z'].append(p_z)
-            # data['pos'].append((p_x) + (p_y) + (p_z))
-    # Convert dictionary to DataFrame
-    df = pd.DataFrame(data)
-    return df
+    def get_state(self, dim):
+        """Get the state for a specific dimension as a tuple of positions and velocities."""
+        return tuple((moon.position[dim], moon.velocity[dim]) for moon in self.moons)
 
-def compare_particles(particle, other_df, dim):
-    # Get the value of the current particle in the specified dimension
-    og_v = particle[dim]
-    
-    # Compare all other particles in the same dimension
-    n_v = sum(other_df[dim] > og_v) - sum(other_df[dim] < og_v)
-    
-    return n_v
+    def simulate(self, steps):
+        for _ in range(steps):
+            for dim in range(3):
+                self.apply_gravity(dim)
+                self.apply_velocity(dim)
 
-def calculate_gravity(all_particle):
-    # Create a copy to avoid modifying the original DataFrame during iteration
-    updated_particle = all_particle.copy()
+    def total_energy(self):
+        return sum(moon.total_energy() for moon in self.moons)
 
-    # Iterate over each particle
-    for particle_no in range(len(all_particle)):
-        # Get the current particle properties (row)
-        particle_props = all_particle.iloc[particle_no]
+    def find_cycle_lengths(self):
+        initial_states = [self.get_state(dim) for dim in range(3)]
+        cycle_lengths = [0] * 3
 
-        # Filter out the current particle
-        other_particles = all_particle.drop(index=all_particle.index[particle_no])
+        for dim in range(3):
+            for step in count(1):
+                self.apply_gravity(dim)
+                self.apply_velocity(dim)
 
-        # Update velocity and position for each dimension
-        for dim in ['p_x', 'p_y', 'p_z']:
-            # Corresponding velocity key: v_x, v_y, v_z
-            velocity_key = 'v_' + dim[-1]              # Calculate the velocity change
-            nv = compare_particles(particle_props, other_particles, dim)
-            # Update velocity
-            updated_particle.at[particle_no, velocity_key] += nv
-            # Update position
-            updated_particle.at[particle_no, dim] += updated_particle.at[particle_no, velocity_key]
-    return updated_particle
+                if self.get_state(dim) == initial_states[dim]:
+                    cycle_lengths[dim] = step
+                    break
 
-def calc_total_energy(particle_df):
+        return cycle_lengths
 
-    total_energy = 0
-    for particle_no in range(len(particle_df)):
-        particle_prop = particle_df.loc[particle_no]
-        potential_E = abs(particle_prop['p_x']) + abs(particle_prop['p_y']) + abs(particle_prop['p_z'])
-        kinetic_E = abs(particle_prop['v_x']) + abs(particle_prop['v_y']) + abs(particle_prop['v_z'])
-        total_energy += potential_E * kinetic_E
+def parse_input(filepath):
+    """Parse the input file to extract moon positions."""
+    with open(filepath) as file:
+        return [[int(value) for value in re.findall(r'-?\d+', line)] for line in file]
 
-    return total_energy
-
-# Function to calculate LCM of two numbers
+# Utility to calculate LCM
 def lcm(a, b):
-    return abs(a * b) // math.gcd(a, b)
+    return abs(a * b) // gcd(a, b)
 
-# Function to calculate LCM of a list of numbers
 def lcm_multiple(numbers):
     return reduce(lcm, numbers)
 
-def find_cycle_length(initial_positions, initial_velocities):
-    num_particles = len(initial_positions)
-    positions = initial_positions[:]
-    velocities = initial_velocities[:]
-    step = 0
+start_time = time.time()
 
-    while True:
-        # Update velocities
-        for i in range(num_particles):
-            for j in range(num_particles):
-                if positions[i] < positions[j]:
-                    velocities[i] += 1
-                elif positions[i] > positions[j]:
-                    velocities[i] -= 1
+# File input path setup
+D12_file = "Day12_input.txt"
+D12_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), D12_file)
 
-        # Update positions
-        for i in range(num_particles):
-            positions[i] += velocities[i]
+# Parse input data
+moon_positions = parse_input(D12_file_path)
+system = MoonSystem(moon_positions)
 
-        step += 1
+# Part 1: Simulate for 1000 steps and calculate total energy
+system.simulate(1000)
+part1_result = system.total_energy()
+print(f"Part 1: {part1_result}")
 
-        # Check if positions and velocities have returned to initial state
-        if positions == initial_positions and velocities == initial_velocities:
-            return step
+# Part 2: Find the steps to the first repeated state
+system = MoonSystem(moon_positions)  # Reset the system for Part 2
+cycle_lengths = system.find_cycle_lengths()
+part2_result = lcm_multiple(cycle_lengths)
+print(f"Part 2: {part2_result}")
 
-# Main logic for Part 2
-def steps_to_first_cycle(parsed_data):
-
-    # Extract initial positions for each dimension
-    initial_x = list(parsed_data['p_x'])
-    initial_y = list(parsed_data['p_y'])
-    initial_z = list(parsed_data['p_z'])
-
-    # Initial velocities are all zero
-    initial_velocities = [0] * len(initial_x)
-
-    # Find cycle length for each dimension
-    cycle_x = find_cycle_length(initial_x, initial_velocities)
-    cycle_y = find_cycle_length(initial_y, initial_velocities)
-    cycle_z = find_cycle_length(initial_z, initial_velocities)
-
-    # Calculate the LCM of the cycle lengths
-    return lcm_multiple([cycle_x, cycle_y, cycle_z])
-
-
-initial_df = parse_particle_data(input_data)
-particle_df = initial_df
-
-for steps in range(1000):
-    particle_df = calculate_gravity(particle_df)
-
-ans_p1 = calc_total_energy(particle_df)
-print(f"Part 1: {ans_p1}")
-
-# Solve Part 2
-ans_p2 = steps_to_first_cycle(initial_df)
-print(f"Part 2: {ans_p2}")
+print(f"Execution Time = {time.time() - start_time:.5f}s")
