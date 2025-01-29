@@ -22,7 +22,7 @@ with open(D16_file_path) as file:
     input_data = file.read().strip().split()
     input_seq  = list(map(int, input_data[0]))
 
-def analyse_signal(init_sequence: list[int], total_phases: int = 100) -> int:
+def analyse_signal_old(init_sequence: list[int], total_phases: int = 100) -> int:
     def __build_pattern_matrix(seq_len: int):
         """Builds a matrix of patterns for all positions."""
         BASE_PATTERN = [0, 1, 0, -1]
@@ -65,6 +65,44 @@ def analyse_signal(init_sequence: list[int], total_phases: int = 100) -> int:
     output_sequence = current_sequence.copy()
     return list(output_sequence.values())
 
+def analyse_signal(init_sequence: list[int], total_phases: int = 100) -> int:
+    """
+    Analyse and transform the given signal sequence over a number of phases.
+    """
+    # Initialize working list and sequence length
+    digits = init_sequence[:]
+    length = len(digits)
+
+    for _ in range(total_phases):
+        # Copy current state of digits for reference
+        old_digits = digits[:]
+
+        # Process the first half of the sequence
+        for i in range(length // 2 + 1):
+            index = i
+            step = i + 1
+            current_sum = 0
+
+            while index < length:
+                # Add contributions from positive part of pattern
+                current_sum += sum(old_digits[index:index + step])
+                index += 2 * step
+
+                # Subtract contributions from negative part of pattern
+                current_sum -= sum(old_digits[index:index + step])
+                index += 2 * step
+
+            # Update the digit value at position i
+            digits[i] = abs(current_sum) % 10
+
+        # Process the second half of the sequence using cumulative sums
+        cumulative_sum = 0
+        for i in range(length - 1, length // 2, -1):
+            cumulative_sum += digits[i]
+            digits[i] = cumulative_sum % 10
+
+    return digits
+
 def analyse_large_signal(init_data: list[int], total_phases: int = 100) -> list[int]:
     # Parse offset from the first 7 digits
     offset = int(''.join(map(str, init_data[:7])))
@@ -89,4 +127,4 @@ print("Part 1:", ''.join(map(str, final_output[:8])))
 message = analyse_large_signal(copy.deepcopy(input_seq))
 print("Part 2:", ''.join(map(str, message[:8])))
 
-print(f"Execution Time = {time.time() - start_time:.5f}s")
+# print(f"Execution Time = {time.time() - start_time:.5f}s")
