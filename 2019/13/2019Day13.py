@@ -26,22 +26,22 @@ class Intcode_Arcade:
     """
     Simulates the Breakout Arcade game based on where the brains of the computer is the Intcode CPU
     """
-    def __init__(self, software: list[int], quarters: int = 0):
+    def __init__(self, software: list[int], quarters: int = None):
         """
         Initialize the arcade with the given software and set the game mode.
         """
-        self.software = software.copy()
-        if quarters != 0:
-            self.software[0] = quarters  # Set position 0 to 2 for free play
 
         from Intcode_Computer import Intcode_CPU
-        self.console = Intcode_CPU(self.software)
+        self.console = Intcode_CPU(software)
+        if quarters:
+            self.console.edit_program([quarters])  # Set position 0 to 2 for free play
+
 
     def run_console(self, joystick_input=None):
         self.console.process_program(external_input=joystick_input)
         output = self.console.get_result('output')
         tile_dict = {(output[i], output[i + 1]): output[i + 2] \
-                     for i in range(0, len(output), 3)}
+                        for i in range(0, len(output), 3)}
         return tile_dict
 
     def play_game(self, show_screen: bool = False, play_manually: bool = False):
@@ -141,7 +141,7 @@ exit_tiles = arcade_p1.run_console()
 block_count = sum(1 for tile in exit_tiles.values() if tile == 2)
 print("Part 1:", block_count)
 
-arcade_p2 = Intcode_Arcade(input_program, quarters=2)
+arcade_p2 = Intcode_Arcade(input_program, quarters= (0, 2))
 final_score = arcade_p2.play_game()
 print("Part 2:", final_score)
 

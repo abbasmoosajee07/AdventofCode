@@ -25,25 +25,26 @@ with open(D02_file_path) as file:
     input_data = file.read().strip().split(',')
     input_program = list(map(int, input_data))
 
+
 def find_address(instruction, target):
-    test_instructions = copy.deepcopy(instruction)
-    for num_1 in range(99):
-        for num_2 in range(99):
-            test_instructions[1] = num_1
-            test_instructions[2] = num_2
+    for num_1 in range(100):  # Adjusted range to include 99
+        for num_2 in range(100):
+            # Set the values at positions 1 and 2
+            edit_list = [(1, num_1), (2, num_2)]
 
-            cpu_p2 = Intcode_CPU(test_instructions)
-            cpu_p2.process_program()
-            output_p2 = cpu_p2.get_result()
-            if output_p2[0] == target:
-                return num_1, num_2  # Fix: Return the found address
-    return 0, 0  # If no valid address found
+            # Run the Intcode program
+            cpu = Intcode_CPU(instruction)
+            cpu.edit_program(edit_list)
+            cpu.process_program()
+            output = cpu.get_result()
 
-instruction_p1 = copy.deepcopy(input_program)
-instruction_p1[1] = 12
-instruction_p1[2] = 2
+            # Check if the output matches the target
+            if output[0] == target:
+                return num_1, num_2  # Return the values if found
+    return 0, 0
 
-cpu_p1 = Intcode_CPU(instruction_p1)
+cpu_p1 = Intcode_CPU(input_program)
+cpu_p1.edit_program([(1, 12), (2, 2)])
 cpu_p1.process_program()
 ans_p1 = cpu_p1.get_result()
 print("Part 1:", ans_p1[0])

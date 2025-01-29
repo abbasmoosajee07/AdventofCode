@@ -1,3 +1,11 @@
+# Advent of Code - Intcode
+# Solution by: [abbasmoosajee07]
+# Brief: [Intcode CPU v7.0 (add edit program func)]
+
+#!/usr/bin/env python3
+
+import os, re, copy, sys
+
 
 #!/usr/bin/env python3
 
@@ -291,3 +299,31 @@ class Intcode_CPU:
         new_cpu.debug = self.debug
 
         return new_cpu
+
+
+def find_address(instruction, target):
+    test_instructions = copy.deepcopy(instruction)
+    for num_1 in range(10):  # Adjusted range to include 99
+        for num_2 in range(10):
+            # Create a fresh copy of the instructions for each iteration
+            test_instructions = instruction.copy()
+
+            # Set the values at positions 1 and 2
+            edit_list = [(1, num_1), (2, num_2)]
+
+            # Run the Intcode program
+            cpu = Intcode_CPU(test_instructions)
+            cpu.edit_program(edit_list)
+            cpu.process_program()
+            output = cpu.get_result()
+
+            # Check if the output matches the target
+            if output[0] == target:
+                return num_1, num_2  # Return the values if found
+    return 0, 0
+
+test_input_v10 = [1,9,10,3,2,3,11,0,99,30,40,50]
+
+noun, verb = find_address(test_input_v10, 6450)
+print("Test v7.0:", (100 * noun) + verb)
+
