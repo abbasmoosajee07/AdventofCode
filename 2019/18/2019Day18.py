@@ -6,157 +6,183 @@ Brief: [Breaking a Vault]
 """
 
 #!/usr/bin/env python3
+from collections import defaultdict, deque
+from itertools import combinations
+import networkx as nx
+import os
+import time
 
-import os, re, copy, time
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
-start_time = time.time()
-
-# Load the input data from the specified file path
+# Define the file paths for input
 D18_file = "Day18_input.txt"
 D18_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), D18_file)
 
-# Read and sort input data into a grid
-with open(D18_file_path) as file:
-    input_data = file.read().strip().split('\n')
+class Path:
+    def __init__(self, current, collected_keys, length):
+        self.current = current
+        self.collected_keys = collected_keys
+        self.length = length
+
+    def get_state(self):
+        return (self.current, self.collected_keys)
+
+    def path_length(self):
+        return bin(self.collected_keys).count("1")
+
+    def __repr__(self):
+        return f"{self.current} {bin(self.collected_keys)} : {self.length}"
 
 class TritonVault:
-    def __init__(self, blueprints: list[str]):
-        self.blueprint = blueprints
-        self.path_marker = '█' if '█'.encode().decode('utf-8', 'ignore') else '|'
-        self.DIRECTIONS = {'<': (0, -1), '>': (0, 1), '^': (-1, 0), 'v': (1, 0)}
+    def __init__(self, file_path):
+        self.file_path = file_path
 
-        # Initialize grid attributes
-        self.start_pos = None
-        self.WALLS = set()
-        self.passage = set()
-        self.DOORS_KEYS = {}
-        self.BASE_VAULT = {}
-        self.TARGETS = {}
-        self.overall_path = {}
-        self.parse_grid(blueprints)
+    def load_grid(self, part_b=False):
+        grid = defaultdict(int)
+        keys, doors, start_points = {}, {}, []
 
-    def parse_grid(self, vault: list[str] = None):
-        """
-        Parse the grid from blueprint and identify special elements.
-        """
-        vault = vault or self.blueprint
+        with open(self.file_path) as f:
+            lines = [list(line.strip()) for line in f.readlines()]
+            mid_y, mid_x = (len(lines) - 1) // 2, (len(lines[0]) - 1) // 2
+            if part_b:
+                lines[mid_y-1][mid_x-1:mid_x+2] = "@#@"
+                lines[mid_y][mid_x-1:mid_x+2] = "###"
+                lines[mid_y+1][mid_x-1:mid_x+2] = "@#@"
 
-        for row_no, row in enumerate(vault):
-            for col_no, tile in enumerate(row):
-                pos = (row_no, col_no)
-                self.BASE_VAULT[pos] = tile
+            for y, line in enumerate(lines):
+                for x, c in enumerate(line):
+                    if c != '#':
+                        p = {'x': x, 'y': y}
+                        grid[(x, y)] = 1
+                        if c == '@':
+                            start_points.append(p)
+                        elif c != '.':
+                            o = ord(c)
+                            if o >= 97:
+                                keys[o - 97] = p
+                            else:
+                                doors[o - 65] = p
 
-                if tile == '@':  # Starting position
-                    self.start_pos = pos
-                    self.TARGETS[pos] = tile
-                    self.BASE_VAULT[pos] = '.'
+        total_start_points = len(start_points)
+        keys = {k + total_start_points: v for k, v in keys.items()}
+        doors = {k + total_start_points: v for k, v in doors.items()}
 
-                elif tile == '#':  # Wall
-                    self.WALLS.add(pos)
+        return grid, keys, doors, start_points, len(lines[0]) - 1, len(lines) - 1
 
-                elif tile == '.':  # Passage
-                    self.passage.add(pos)
+    @staticmethod
+    def get_surrounding_points(p):
+        x, y = p['x'], p['y']
+        return {(x, y - 1), (x, y + 1), (x - 1, y), (x + 1, y)}
 
-                else:  # Doors or Keys
-                    self.DOORS_KEYS[tile] = pos
-                    self.TARGETS[pos] = tile
+    @staticmethod
+    def build_graph(grid, max_x, max_y):
+        edges = []
+        for x in range(max_x + 1):
+            for y in range(max_y + 1):
+                p = (x, y)
+                if grid[p]:
+                    for sp in TritonVault.get_surrounding_points({'x': x, 'y': y}):
+                        if grid[sp]:
+                            edges.append((p, sp))
+        return nx.Graph(edges)
 
-    def get_next_position(self, init_pos: tuple[int, int], move: str) -> tuple[int, int]:
-        """
-        Return the next position based on the current position and direction.
-        """
-        dr, dc = self.DIRECTIONS[move]
-        return init_pos[0] + dr, init_pos[1] + dc
+    def find_smallest_path(self, grid, keys, doors, start_points, max_x, max_y):
+        G = self.build_graph(grid, max_x, max_y)
 
-    def print_maze(self, path_taken: dict = {}):
-        """
-        Display the maze with path visualization.
-        """
-        min_row = min(row for row, _ in self.WALLS)
-        max_row = max(row for row, _ in self.WALLS)
-        min_col = min(col for _, col in self.WALLS)
-        max_col = max(col for _, col in self.WALLS)
+        total_keys = len(keys)
+        start_points_nums = list(range(len(start_points)))
+        start_points_bits = sum(1 << num for num in start_points_nums)
 
-        vault_grid = []
+        key_to_key = self.compute_key_distances(G, keys, doors, start_points, start_points_nums)
+        start_path = Path(start_points_bits, 0, 0)
+        
+        min_full_path_length = float('inf')
+        min_path_lengths = defaultdict(int)
 
-        for row_no in range(min_row, max_row + 1):
-            row = ''
-            for col_no in range(min_col, max_col + 1):
-                pos = (row_no, col_no)
-                if pos in self.WALLS:
-                    tile = '#'
-                elif pos in path_taken:
-                    tile = path_taken[pos]
-                else:
-                    tile = self.TARGETS.get(pos, '.')
-                row += tile
-            vault_grid.append(row)
+        counter = 0
+        possible_paths = deque([start_path])
+        while possible_paths:
+            counter += 1
+            path = possible_paths.popleft()
 
-        print("\n".join(vault_grid))
-        print("_" * (max_col - min_col + 1))
-
-    def map_path(self, visualize: bool = False) -> int:
-        """
-        Map and visualize the shortest path from the start to collect all keys using BFS.
-        """
-        from collections import deque
-        # Initialize BFS queue: (steps, current_pos, collected_keys_bitmask)
-        queue = deque([(0, self.start_pos, 0)])
-
-        # Compute the bitmask for all keys
-        all_keys_bitmask = (1 << len([k for k in self.DOORS_KEYS if k.islower()])) - 1
-
-        # Visited states to avoid redundant exploration
-        visited = set()
-        overall_path = {}
-
-        while queue:
-            steps, current_pos, collected_keys = queue.popleft()
-
-            # Return if all keys are collected
-            if collected_keys == all_keys_bitmask:
-                return steps
-
-            # Skip already visited states with the same keys
-            state = (current_pos, collected_keys)
-            if state in visited:
+            if min_path_lengths[path.get_state()] < path.length:
                 continue
-            visited.add(state)
 
-            # Explore all adjacent positions
-            for direction in self.DIRECTIONS:
-                next_pos = self.get_next_position(current_pos, direction)
+            for new_path in self.find_next_possible_paths(key_to_key, path, total_keys):
+                if new_path.length < min_full_path_length:
+                    unique_state = new_path.get_state()
+                    if unique_state in min_path_lengths and new_path.length >= min_path_lengths[unique_state]:
+                        continue
 
-                # Skip walls
-                if next_pos in self.WALLS:
-                    continue
+                    min_path_lengths[unique_state] = new_path.length
 
-                tile = self.BASE_VAULT.get(next_pos, '.')
+                    if new_path.path_length() == total_keys:
+                        min_full_path_length = min(min_full_path_length, new_path.length)
+                    else:
+                        possible_paths.append(new_path)
 
-                # Handle doors
-                if tile.isupper() and not (collected_keys & (1 << (ord(tile.lower()) - ord('a')))):
-                    continue  # Door is locked, skip this path
+        return min_full_path_length, counter
 
-                # Handle keys
-                new_collected_keys = collected_keys
-                if tile.islower():
-                    new_collected_keys |= (1 << (ord(tile) - ord('a')))
+    @staticmethod
+    def compute_key_distances(G, keys, doors, start_points, start_points_nums):
+        def get_distance(p0, p1, doors):
+            if not nx.has_path(G, tuple(p0.values()), tuple(p1.values())):
+                return None
+            path = nx.shortest_path(G, tuple(p0.values()), tuple(p1.values()))
+            path_set = set(path)
+            doors_in_way = 0
+            for k, p in doors.items():
+                if tuple(p.values()) in path_set:
+                    doors_in_way |= (1 << k)
+            return len(path) - 1, doors_in_way
 
-                # Add the new state to the queue
-                queue.append((steps + 1, next_pos, new_collected_keys))
-                overall_path[next_pos] = direction #self.path_marker
+        key_to_key = defaultdict(dict)
+        key_to_bits = {k: 1 << k for k in keys.keys()}
 
-                if visualize:
-                    print(f"Move to {next_pos} with steps: {steps + 1}, keys: {bin(new_collected_keys)}")
-                    self.print_maze(overall_path)
+        for start_point, start_point_num in zip(start_points, start_points_nums):
+            start_point_bits = 1 << start_point_num
+            for k, p in keys.items():
+                k_bits = key_to_bits[k]
+                res = get_distance(start_point, p, doors)
+                if res:
+                    distance, doors_in_way = res
+                    key_to_key[start_point_bits][k_bits] = (distance, doors_in_way)
 
-        print("No valid path found.")
-        return -1
+        for k0, k1 in combinations(keys.keys(), 2):
+            k0_bits = key_to_bits[k0]
+            k1_bits = key_to_bits[k1]
+            res = get_distance(keys[k0], keys[k1], doors)
+            if res:
+                distance, doors_in_way = res
+                key_to_key[k0_bits][k1_bits] = (distance, doors_in_way)
+                key_to_key[k1_bits][k0_bits] = (distance, doors_in_way)
 
-vault = TritonVault(input_data)
-steps = vault.map_path()
-print("Part 1:", (steps))
+        return dict(key_to_key)
 
-# print(f"Execution Time: {time.time() - start_time}")
+    @staticmethod
+    def find_next_possible_paths(key_to_key, path, total_keys):
+        current_positions = path.current
+        for k0, v0 in key_to_key.items():
+            if k0 & current_positions:
+                for k1, v1 in v0.items():
+                    if not k1 & path.collected_keys:
+                        dist, doors_in_way = v1
+                        if doors_in_way & path.collected_keys == doors_in_way:
+                            new_position = current_positions ^ k0 | k1
+                            yield Path(new_position, path.collected_keys | k1, path.length + dist)
+
+# Main execution
+start_time = time.time()
+vault = TritonVault(D18_file_path)
+
+# Part A
+grid, keys, doors, start_points, max_x, max_y = vault.load_grid()
+min_length, counter = vault.find_smallest_path(grid, keys, doors, start_points, max_x, max_y)
+print("Part 1:", min_length)
+# print(f"Execution Time: {time.time() - start_time:.5f}")
+
+# Part B
+start_time_part_b = time.time()
+grid, keys, doors, start_points, max_x, max_y = vault.load_grid(part_b=True)
+min_length, counter = vault.find_smallest_path(grid, keys, doors, start_points, max_x, max_y)
+print("Part 2:", min_length)
+# print(f"Execution Time Part B: {time.time() - start_time_part_b:.5f}")
+# print(f"Execution Time Part B: {time.time() - start_time:.5f}")
