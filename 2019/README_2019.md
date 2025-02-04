@@ -22,7 +22,7 @@ This repository contains coding solutions for the 2019 Advent of Code. Each day'
 16. **Day 16 - Flawed Frequency Transmission**: Implement a custom FFT algorithm for signal processing.
 17. **Day 17 - Set and Forget**: Use a grid pathfinding algorithm for robot navigation in a scaffold maze. `Intcode Navigators`
 18. **Day 18 - Many-Worlds Interpretation**: Use BFS with keys and doors to navigate a complex graph.
-19. **Day 19 - Tractor Beam**: Model a grid area with a program to test points for beam coverage. `Intcode BeamSensors`
+19. **Day 19 - Tractor Beam**: Model a grid area with a program to test points for beam coverage. `Intcode Drones`
 20. **Day 20 - Donut Maze**: Implement BFS for shortest paths in a multi-layered toroidal maze.
 21. **Day 21 - Springdroid Adventure**: Develop a custom program for a robot using specific jumping rules. `Intcode Springdroid`
 22. **Day 22 - Slam Shuffle**: Model a card shuffling algorithm using modular arithmetic.
