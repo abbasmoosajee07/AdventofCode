@@ -6,11 +6,10 @@ Brief: [Breaking a Vault]
 """
 
 #!/usr/bin/env python3
-from collections import defaultdict, deque
-from itertools import combinations
+import os, time
 import networkx as nx
-import os
-import time
+from itertools import combinations
+from collections import defaultdict, deque
 
 # Define the file paths for input
 D18_file = "Day18_input.txt"
@@ -93,7 +92,7 @@ class TritonVault:
 
         key_to_key = self.compute_key_distances(G, keys, doors, start_points, start_points_nums)
         start_path = Path(start_points_bits, 0, 0)
-        
+
         min_full_path_length = float('inf')
         min_path_lengths = defaultdict(int)
 
@@ -173,16 +172,14 @@ class TritonVault:
 start_time = time.time()
 vault = TritonVault(D18_file_path)
 
-# Part A
 grid, keys, doors, start_points, max_x, max_y = vault.load_grid()
-min_length, counter = vault.find_smallest_path(grid, keys, doors, start_points, max_x, max_y)
-print("Part 1:", min_length)
+path_p1, _ = vault.find_smallest_path(grid, keys, doors, start_points, max_x, max_y)
+print("Part 1:", path_p1)
 # print(f"Execution Time: {time.time() - start_time:.5f}")
 
-# Part B
-start_time_part_b = time.time()
-grid, keys, doors, start_points, max_x, max_y = vault.load_grid(part_b=True)
-min_length, counter = vault.find_smallest_path(grid, keys, doors, start_points, max_x, max_y)
-print("Part 2:", min_length)
-# print(f"Execution Time Part B: {time.time() - start_time_part_b:.5f}")
+start_time_part_2 = time.time()
+grid, keys, doors, start_points, _, _ = vault.load_grid(part_b=True)
+path_p2, _ = vault.find_smallest_path(grid, keys, doors, start_points, max_x, max_y)
+print("Part 2:", path_p2)
+# print(f"Execution Time Part B: {time.time() - start_time_part_2:.5f}")
 # print(f"Execution Time Part B: {time.time() - start_time:.5f}")
