@@ -1,3 +1,14 @@
+# Advent of Code - Intcode
+# Solution by: [abbasmoosajee07]
+# Brief: [Intcode CPU v8.0 (add types of input)]
+
+#!/usr/bin/env python3
+
+import os, re, copy, sys
+
+
+#!/usr/bin/env python3
+
 class Intcode_CPU:
     """
     Simulates an Intcode computer, capable of executing a given Intcode program.
@@ -90,10 +101,10 @@ class Intcode_CPU:
         Append or extend cpu inputs to the existing queue of inputs waiting to be processed
         """
         if isinstance(cpu_inputs, list):
-            # If inputs are provided as a list, extend to existing queue
+            # If inputs are provided as a list, use them directly
             self.inputs_queue.extend(cpu_inputs)
         elif isinstance(cpu_inputs, int):
-            # If a single integer is provided, append to the list
+            # If a single integer is provided, wrap it in a list
             self.inputs_queue.append(cpu_inputs)
 
     def __get_args(self, total_args: int):
@@ -292,3 +303,31 @@ class Intcode_CPU:
         new_cpu.debug = self.debug
 
         return new_cpu
+
+
+def find_address(instruction, target):
+    test_instructions = copy.deepcopy(instruction)
+    for num_1 in range(10):  # Adjusted range to include 99
+        for num_2 in range(10):
+            # Create a fresh copy of the instructions for each iteration
+            test_instructions = instruction.copy()
+
+            # Set the values at positions 1 and 2
+            edit_list = [(1, num_1), (2, num_2)]
+
+            # Run the Intcode program
+            cpu = Intcode_CPU(test_instructions)
+            cpu.edit_program(edit_list)
+            cpu.process_program()
+            output = cpu.get_result()
+
+            # Check if the output matches the target
+            if output[0] == target:
+                return num_1, num_2  # Return the values if found
+    return 0, 0
+
+test_input_v10 = [1,9,10,3,2,3,11,0,99,30,40,50]
+
+noun, verb = find_address(test_input_v10, 6450)
+print("Test v8.0:", (100 * noun) + verb)
+
