@@ -5,12 +5,12 @@ This repository contains coding solutions for the 2019 Advent of Code. Each day'
 ## Day-by-Day Coding Overview
 
 1. **Day 1 - The Tyranny of the Rocket Equation**: Use recursive calculations to compute fuel requirements based on mass.
-2. **Day 2 - 1202 Program Alarm**: Implement a simple Intcode computer, focusing on list manipulation and opcode handling. `Intcode CPU v1.0`
+2. **Day 2 - 1202 Program Alarm**: Implement a simple Intcode computer, focusing on list manipulation and opcode handling. `Intcode CPU` v1.0
 3. **Day 3 - Crossed Wires**: Find intersection points on a grid, emphasizing coordinate mapping and distance calculations.
 4. **Day 4 - Secure Container**: Use constraints on digit sequences to filter potential passwords.
-5. **Day 5 - Sunny with a Chance of Asteroids**: Extend Intcode to handle parameters with multiple modes. `Intcode CPU v2.0/2.1`
+5. **Day 5 - Sunny with a Chance of Asteroids**: Extend Intcode to handle parameters with multiple modes. `Intcode CPU` v2.0/2.1
 6. **Day 6 - Universal Orbit Map**: Build a tree structure to represent orbits and calculate distances between nodes.
-7. **Day 7 - Amplification Circuit**: Chain Intcode programs with feedback loops to maximize signal output. `Intcode Amplifiers (v3.1)`
+7. **Day 7 - Amplification Circuit**: Chain Intcode programs with feedback loops to maximize signal output. `Intcode Amplifiers` (v3.1)
 8. **Day 8 - Space Image Format**: Parse layered image data, focusing on frequency counting and grid rendering.
 9. **Day 9 - Sensor Boost**: Extend Intcode to support relative modes, enabling dynamic memory expansion.`Intcode CPU v4.0`
 10. **Day 10 - Monitoring Station**: Calculate visibility using polar coordinates to determine optimal vantage points.
@@ -26,9 +26,9 @@ This repository contains coding solutions for the 2019 Advent of Code. Each day'
 20. **Day 20 - Donut Maze**: Implement BFS for shortest paths in a multi-layered toroidal maze.
 21. **Day 21 - Springdroid Adventure**: Develop a custom program for a robot using specific jumping rules. `Intcode Springdroid`
 22. **Day 22 - Slam Shuffle**: Model a card shuffling algorithm using modular arithmetic.
-23. **Day 23 - Category Six**: Implement a network of Intcode programs with inter-process communication.`IntCode Network`
+23. **Day 23 - Category Six**: Implement a network of Intcode programs with inter-process communication.`Intcode Network`
 24. **Day 24 - Planet of Discord**: Apply cellular automata to simulate a multi-layered ecosystem.
-25. **Day 25 - Cryostasis**: Develop an Intcode interpreter with interaction for a text-based adventure game.`IntCode TextGame`
+25. **Day 25 - Cryostasis**: Develop an Intcode interpreter with interaction for a text-based adventure game.`Intcode TextGame`
 
 ---
 
