@@ -29,8 +29,7 @@ with open(D19_file_path) as file:
 class Intcode_Drones:
     def __init__(self, drone_program: list[int]):
         from Intcode_Computer import Intcode_CPU
-        self.drone = Intcode_CPU
-        self.drone_program = drone_program
+        self.drone = Intcode_CPU(drone_program)
 
     def print_grid(self, grid_dict: dict):
         """
@@ -62,8 +61,8 @@ class Intcode_Drones:
         """
         if x < 0 or y < 0:
             return False
-        drone = self.drone(self.drone_program, init_inputs=[x, y])
-        drone.process_program()
+        drone = self.drone.replicate()
+        drone.process_program(external_input = [x, y])
         return drone.get_result('output')[-1] == 1
 
     def scan_area(self, scan_area: tuple[int, int], visualize: bool = False) -> int:
