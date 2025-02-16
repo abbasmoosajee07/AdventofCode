@@ -23,6 +23,8 @@ with open(D22_file_path) as file:
 class Space_Cards:
     def __init__(self, instructions: list[str]):
         self.shuffle_commands = self.parse_instructions(instructions)
+        self.big_deck = 119315717514047
+        self.shuffle_times = 101741582076661
 
     def parse_instructions(self, init_commands: list[str]):
         instructions = []
@@ -39,62 +41,48 @@ class Space_Cards:
                     instructions.append(("increment", int(match.group(5))))
         return instructions
 
-    def __deal_new_stack(self, visualize: bool):
-        og_stack = self.deck_cards
-        og_deck = list(og_stack.values())
-        new_deck = og_deck[::-1]
-        new_stack = {pos: num for pos, num in enumerate(new_deck)}
-        self.deck_cards = new_stack
-        if visualize:
-            print("deal into new stack")
-            print(og_deck, "Original Stack")
-            print(new_deck, "New Stack")
+    def shuffle_deck(self, deck_size: int, target_card: int, visualize: bool = False):
+        deck = list(range(deck_size))
 
-    def __deal_increment(self, increment: int, visualize: bool):
-        og_deck = self.deck_cards
-        deck_size = len(og_deck)
-        cards_queue = list(og_deck.values())
-        new_deck = {}
-        card_pos = -increment
-        while cards_queue:
-            card = cards_queue.pop(0)
-            card_pos = (card_pos + increment) % deck_size
-            new_deck[card_pos] = card
-        new_deck = dict(sorted(new_deck.items()))
-        self.deck_cards = new_deck
-        if visualize:
-            print("deal with increment", increment)
-            print(list(new_deck.values()))
-
-    def __cut_stack(self, cut_point: int, visualize: bool):
-        og_stack = self.deck_cards
-        og_deck = list(og_stack.values())
-
-        cut_cards = og_deck[:cut_point]
-        og_deck = og_deck[cut_point:]
-        new_deck = og_deck + cut_cards
-        self.deck_cards = {pos: num for pos, num in enumerate(new_deck)}
-        if visualize:
-            print("cut", cut_point)
-            print(og_deck, "Original Deck")
-            print(cut_cards, "Cut Deck")
-            print(new_deck, "New Deck")
-
-    def shuffle_deck(self, deck_size: int, visualize: bool = False):
-        self.deck_cards = {num: num for num in range(deck_size)}
-        for command, shift in self.shuffle_commands:
+        for command, value in self.shuffle_commands:
             if command == 'cut':
-                self.__cut_stack(shift, visualize)
+                deck = deck[value:] + deck[:value]  # Cut operation
+            elif command == 'increment':
+                new_deck = [None] * deck_size
+                for i, card in enumerate(deck):
+                    new_deck[(i * value) % deck_size] = card
+                deck = new_deck  # Deal with increment
+            elif command == 'new stack':
+                deck.reverse()   # Deal into new stack
+
+            if visualize:
+                print(command, value if command != 'new stack' else '')
+                print(deck)
+
+        target_card_pos = next(pos for pos, num in enumerate(deck) if num == target_card)
+        return deck, target_card_pos
+
+    def modular_shuffle(self, deck_size: int, target_card: int, visualize: bool = False):
+        init_card = target_card
+        for command, shift in self.shuffle_commands:
+            original_position = target_card
+
+            if command == 'cut':
+                target_card = (target_card - shift) % deck_size
             elif command == "increment":
-                self.__deal_increment(shift, visualize)
+                target_card = (shift * target_card) % deck_size
             elif command == "new stack":
-                self.__deal_new_stack(visualize)
-        if visualize:
-            print(list(self.deck_cards.values()), "Final Stack")
-        return self.deck_cards
+                target_card = deck_size - target_card - 1
+
+            if visualize:
+                print(f"After {command} {shift if command != 'new stack' else ''}: \n",
+                        f"Card({init_card}) Moved {original_position} -> {target_card}")
+
+        return target_card
 
 cards = Space_Cards(input_data)
-shuffled_cards = cards.shuffle_deck(10007)
-print("Part 1:", next(pos for pos, num in shuffled_cards.items() if num == 2019))
+
+final_pos = cards.modular_shuffle(10007, 2019)
+print("Part 1:", final_pos)
 
 # print(f"Execution Time = {time.time() - start_time:.5f}s")
