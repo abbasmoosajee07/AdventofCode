@@ -1,5 +1,5 @@
 """Advent of Code - Day 23, Year 2019
-Solution Started: Feb 17, 2025
+Solution Started: Mar 12, 2025
 Puzzle Link: https://adventofcode.com/2019/day/23
 Solution by: abbasmoosajee07
 Brief: [Intcode Networks]
@@ -8,9 +8,6 @@ Brief: [Intcode Networks]
 #!/usr/bin/env python3
 
 import os, re, copy, time, sys
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
 start_time = time.time()
 
 intcode_path = os.path.join(os.path.dirname(__file__), "..", "Intcode_Computer")
@@ -27,47 +24,56 @@ with open(D23_file_path) as file:
     input_program = [int(num) for num in input_data]
 
 class Intcode_Networks:
-    NETWORK_SIZE = 50
+    NETWORK_SIZE = 50  # Number of computers in the network
 
-    def __init__(self, NIC_SOFTWARE: list[int]):
-        self.software = NIC_SOFTWARE
+    def __init__(self, program):
+        """
+        Initialize a network of 50 Intcode computers.
+        Each computer starts with a unique ID (0-49) and the provided Intcode program.
+        """
         from Intcode_Computer import Intcode_CPU
-        self.computer = Intcode_CPU(NIC_SOFTWARE)
+        self.computers = {i: Intcode_CPU(program.copy(), [i]) for i in range(self.NETWORK_SIZE)}
+        self.queues = {i: [] for i in range(self.NETWORK_SIZE)}
 
-    def build_network(self, visualize: bool = False):
-        comp_list = list(range(self.NETWORK_SIZE))
-        comps_reached = []
-        queue = comp_list.copy()
-        cpu_input = [0, -1]
-        while queue:
-            num = queue.pop(0)
-            print("in", cpu_input)
-            node = self.computer.replicate()
-            node.process_program(cpu_input)
+    def run_network(self):
+        """
+        Run the network of computers continuously. Each computer processes its input,
+        sends outputs to other computers, and checks for special 'destination 255' outputs.
+        The network will terminate when a packet is sent to destination 255, returning its Y value.
+        """
+        while True:
+            idle = True  # Assume idle until proven otherwise
 
-            node.paused = False
-            output = node.get_result("output")
-            if len(output) == 0:
-                cpu_input = [num, -1]
-            else:
-                comp_list.remove(cpu_input[0])
-                comps_reached.append(cpu_input[0])
-                cpu_input = output[:3]
+            for comp_no in range(self.NETWORK_SIZE):
+                # Process the computer, either with its input queue or -1 if no input
+                if self.queues[comp_no]:
+                    self.computers[comp_no].process_program(self.queues[comp_no])
+                    self.queues[comp_no].clear()  # Clear the input queue after processing
+                    idle = False  # Activity detected, network is not idle
+                else:
+                    self.computers[comp_no].process_program([-1])  # No input, send -1
 
-            if 255 in output:
-                print("final", output)
-                break
+                # Clear paused state and get output from the computer
+                self.computers[comp_no].paused = False
+                output = self.computers[comp_no].get_result("output")
+                self.computers[comp_no].output_list = []  # Clear output list after processing
 
-            if visualize:
-                print("out", output)
+                # Process output in chunks of three (dest, x, y)
+                for pos in range(0, len(output), 3):
+                    dest, x, y = output[pos:pos + 3]
+                    if dest == 255:
+                        return y  # Return the Y value if destination is 255
+                    self.queues[dest].extend([x, y])  # Forward the packet to the correct queue
+                    idle = False  # A packet was sent, network is not idle
 
-        print(comp_list)
-        print(comps_reached)
-        return 0
+            # If the network is idle (no packets sent or received), log the idle state
+            if idle:
+                print("Network is idle.")
 
-networks = Intcode_Networks(input_program)
 
-addr_y = networks.build_network(True)
-print("Part 1:", addr_y)
+# Run the network
+network = Intcode_Networks(input_program)
+part1_result = network.run_network()
 
+print("Part 1:", part1_result)
 print(f"Execution Time = {time.time() - start_time:.5f}s")
