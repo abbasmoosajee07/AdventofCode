@@ -73,30 +73,70 @@ class Planet_Discord:
 
     def evolve_infinite_system(self, current_state: dict):
         evolved_state = {}
+
         for (row, col, level), state in current_state.items():
-            new_state, bugs_count = ['.', 0]
-            if row == 0 or row == 4:
-                
+            new_state = '.'  # Default state
+            bugs_count = 0   # Initialise bug count
+
+            # Count adjacent bugs
             for dr, dc in self.ADJACENT_POSITIONS:
                 next_row, next_col = row + dr, col + dc
-                
-                if current_state.get((next_row, next_col, level), '.') == '#':
-                    bugs_count += 1
+                adj_state = current_state.get((next_row, next_col, level), '.')
 
+                if adj_state == '#':
+                    bugs_count += 1
+                # Handle infinite recursion levels
+                elif adj_state == '?':
+                    level -= 1
+                    if dr == 1:
+                        for r, row_data in enumerate(self.BASE_GRID):
+                            for c, cell in enumerate(row_data):
+                                if r == 0:
+                                    if (r, c, level) in current_state.keys():
+                                        bugs_count += current_state.get((next_row, next_col, level), '.') if adj_state == '#' else 0
+                                evolved_state[(r, c, level)] = cell
+                    elif dr == -1:
+                        for r, row_data in enumerate(self.BASE_GRID):
+                            for c, cell in enumerate(row_data):
+                                if r == 4:
+                                    if (r, c, level) in current_state.keys():
+                                        bugs_count += current_state.get((next_row, next_col, level), '.') if adj_state == '#' else 0
+                                evolved_state[(r, c, level)] = cell
+                    elif dc == 1:
+                        for r, row_data in enumerate(self.BASE_GRID):
+                            for c, cell in enumerate(row_data):
+                                if c == 0:
+                                    if (r, c, level) in current_state.keys():
+                                        bugs_count += current_state.get((next_row, next_col, level), '.') if adj_state == '#' else 0
+                                evolved_state[(r, c, level)] = cell
+                    elif dc == -1:
+                        for r, row_data in enumerate(self.BASE_GRID):
+                            for c, cell in enumerate(row_data):
+                                if c == 0:
+                                    if (r, c, level) in current_state.keys():
+                                        bugs_count += current_state.get((next_row, next_col, level), '.') if adj_state == '#' else 0
+                                evolved_state[(r, c, level)] = cell
+                    for r, row_data in enumerate(self.BASE_GRID):
+                        for c, cell in enumerate(row_data):
+                            evolved_state[(r, c, level)] = cell
+
+            # Evolution rules
             if state == '.' and bugs_count in [1, 2]:
-                    new_state = '#'
-            elif state == '#'and bugs_count == 1:
-                    new_state = '#'
+                new_state = '#'
+            elif state == '#' and bugs_count == 1:
+                new_state = '#'
+
             evolved_state[(row, col, level)] = new_state
-        print(evolved_state)
+        # print(len(evolved_state), )
         return evolved_state
+
 
     def simulate_recursive_life(self, total_time: int, visualize: bool = False):
         mid = len(self.init_state) // 2
         init_recursion = [*self.init_state]
         init_recursion[mid] = init_recursion[mid][:mid] + '?' + init_recursion[mid][mid + 1:]
 
-        BASE_GRID = ['.....', '.....', '..?..', '.....', '.....']
+        self.BASE_GRID = ['.....', '.....', '..?..', '.....', '.....']
         life_state = {
             (row, col, 0): state
             for row, row_data in enumerate(init_recursion)
@@ -107,6 +147,7 @@ class Planet_Discord:
         for mins in range(1, total_time + 1):
             life_state = self.evolve_infinite_system(life_state)
             history[mins] = Counter(life_state.values())['#']
+            print(f"{mins=}, len+{len(life_state)}, bug_count={Counter(life_state.values())['#']}")
 
         return history
 
@@ -117,8 +158,9 @@ planet = Planet_Discord(input_data)
 rating_p1 = planet.simulate_life()
 print("Part 1:", rating_p1)
 
-bug_history = planet.simulate_recursive_life(3)
-print("Part 2:", bug_history)
+full_time = 10 #* 20
+bug_history = planet.simulate_recursive_life(full_time)
+print("Part 2:", bug_history[full_time])
 
 print(f"Execution Time = {time.time() - start_time:.5f}s")
 
