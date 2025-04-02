@@ -9,6 +9,7 @@ Brief: [Game of Life]
 
 import os, re, copy, time
 from collections import Counter
+from collections import defaultdict
 start_time = time.time()
 
 # Load the input data from the specified file path
@@ -22,6 +23,7 @@ with open(D24_file_path) as file:
 class Planet_Discord:
     def __init__(self, initial_state: list[str]):
         self.init_state = initial_state
+        self.grid_size = len(initial_state)
         self.ADJACENT_POSITIONS = [(1, 0), (-1, 0), (0, 1), (0, -1)]
 
     def get_adjacent_bug_count(self, position: tuple, state_dict: dict) -> int:
@@ -71,128 +73,113 @@ class Planet_Discord:
             evolution_history[mins] = evolved_state
         return rating
 
-    def evolve_infinite_system(self, current_state: dict):
-        evolved_state = {}
+    def get_adjacent_recursive(self, x: int, y: int, z: int):
+        """Returns the list of adjacent coordinates, accounting for recursion."""
+        if (x, y) == (2, 2):  # The center square leads to recursion.
+            return []
 
-        for (row, col, level), state in current_state.items():
-            new_state = '.'  # Default state
-            bugs_count = 0   # Initialise bug count
+        adjacent = []
 
-            # Count adjacent bugs
-            for dr, dc in self.ADJACENT_POSITIONS:
-                next_row, next_col = row + dr, col + dc
-                adj_state = current_state.get((next_row, next_col, level), '.')
+        # Left
+        if x == 0:
+            adjacent.append((1, 2, z - 1))  # Outward recursion
+        elif (x, y) == (3, 2):
+            adjacent.extend((4, yy, z + 1) for yy in range(self.grid_size))  # Inward recursion
+        else:
+            adjacent.append((x - 1, y, z))
 
-                if adj_state == '#':
-                    bugs_count += 1
-                # Handle infinite recursion levels
-                elif adj_state == '?':
-                    level -= 1
-                    if dr == 1:
-                        for r, row_data in enumerate(self.BASE_GRID):
-                            for c, cell in enumerate(row_data):
-                                if r == 0:
-                                    if (r, c, level) in current_state.keys():
-                                        bugs_count += current_state.get((next_row, next_col, level), '.') if adj_state == '#' else 0
-                                evolved_state[(r, c, level)] = cell
-                    elif dr == -1:
-                        for r, row_data in enumerate(self.BASE_GRID):
-                            for c, cell in enumerate(row_data):
-                                if r == 4:
-                                    if (r, c, level) in current_state.keys():
-                                        bugs_count += current_state.get((next_row, next_col, level), '.') if adj_state == '#' else 0
-                                evolved_state[(r, c, level)] = cell
-                    elif dc == 1:
-                        for r, row_data in enumerate(self.BASE_GRID):
-                            for c, cell in enumerate(row_data):
-                                if c == 0:
-                                    if (r, c, level) in current_state.keys():
-                                        bugs_count += current_state.get((next_row, next_col, level), '.') if adj_state == '#' else 0
-                                evolved_state[(r, c, level)] = cell
-                    elif dc == -1:
-                        for r, row_data in enumerate(self.BASE_GRID):
-                            for c, cell in enumerate(row_data):
-                                if c == 0:
-                                    if (r, c, level) in current_state.keys():
-                                        bugs_count += current_state.get((next_row, next_col, level), '.') if adj_state == '#' else 0
-                                evolved_state[(r, c, level)] = cell
-                    for r, row_data in enumerate(self.BASE_GRID):
-                        for c, cell in enumerate(row_data):
-                            evolved_state[(r, c, level)] = cell
+        # Right
+        if x == 4:
+            adjacent.append((3, 2, z - 1))
+        elif (x, y) == (1, 2):
+            adjacent.extend((0, yy, z + 1) for yy in range(self.grid_size))
+        else:
+            adjacent.append((x + 1, y, z))
 
-            # Evolution rules
-            if state == '.' and bugs_count in [1, 2]:
-                new_state = '#'
-            elif state == '#' and bugs_count == 1:
-                new_state = '#'
+        # Up
+        if y == 0:
+            adjacent.append((2, 1, z - 1))
+        elif (x, y) == (2, 3):
+            adjacent.extend((xx, 4, z + 1) for xx in range(self.grid_size))
+        else:
+            adjacent.append((x, y - 1, z))
 
-            evolved_state[(row, col, level)] = new_state
-        # print(len(evolved_state), )
-        return evolved_state
+        # Down
+        if y == 4:
+            adjacent.append((2, 3, z - 1))
+        elif (x, y) == (2, 1):
+            adjacent.extend((xx, 0, z + 1) for xx in range(self.grid_size))
+        else:
+            adjacent.append((x, y + 1, z))
 
+        return adjacent
 
-    def simulate_recursive_life(self, total_time: int, visualize: bool = False):
-        mid = len(self.init_state) // 2
-        init_recursion = [*self.init_state]
-        init_recursion[mid] = init_recursion[mid][:mid] + '?' + init_recursion[mid][mid + 1:]
+    def count_adjacent_bugs(self, grids, x, y, z):
+        """Counts the number of adjacent bugs for a given cell."""
+        adjacent = self.get_adjacent_recursive(x, y, z)
+        ch = grids[z][y][x]
+        n_neighbours = 0
+        for x, y, z in adjacent:
+            if z not in grids and ch != "#":
+                continue
+            if grids[z][y][x] == "#":
+                n_neighbours += 1
+        return n_neighbours
 
-        self.BASE_GRID = ['.....', '.....', '..?..', '.....', '.....']
-        life_state = {
-            (row, col, 0): state
-            for row, row_data in enumerate(init_recursion)
-            for col, state in enumerate(row_data)
-        }
+    def evolve_cell(self, grids, x, y, z):
+        """Determines the next state of a cell based on the number of adjacent bugs."""
+        bug_neighbors = self.count_adjacent_bugs(grids, x, y, z)
+        if grids[z][y][x] == "#":
+            return "#" if bug_neighbors == 1 else "."
+        return "#" if bug_neighbors in (1, 2) else "."
 
-        history = {0: Counter(life_state.values())['#']}
+    def evolve_level(self, grids, z):
+        """Evolves an entire grid level for the next iteration."""
+        return tuple(
+            tuple(self.evolve_cell(grids, x, y, z) for x in range(self.grid_size))
+            for y in range(self.grid_size)
+        )
+
+    def empty_grid(self):
+        """Returns an empty grid."""
+        return tuple(tuple("." for _ in range(5)) for _ in range(5))
+
+    def iterate(self, grids):
+        """Evolves all active grid levels, including newly created levels if necessary."""
+        new_grids = defaultdict(self.empty_grid)
+        grids_to_scan = set(grids)
+        for z in grids_to_scan:
+            new_grids[z] = self.evolve_level(grids, z)
+        for z in set(grids) - grids_to_scan:
+            new_grids[z] = self.evolve_level(grids, z)
+        return new_grids
+
+    def count_bugs(self, grids: list) -> int:
+        return sum(ch == "#" for grid in grids.values() for line in grid for ch in line)
+
+    def simulate_recursive_bugs(self, total_time: int, visualize: bool = False) -> dict:
+        """Simulates the recursive bug evolution using a grid-based approach."""
+        grid = tuple(tuple(ch for ch in line) for line in self.init_state)
+        grids = defaultdict(self.empty_grid, {0: grid})
+
+        history = {0: self.count_bugs(grids)}
         for mins in range(1, total_time + 1):
-            life_state = self.evolve_infinite_system(life_state)
-            history[mins] = Counter(life_state.values())['#']
-            print(f"{mins=}, len+{len(life_state)}, bug_count={Counter(life_state.values())['#']}")
+            grids = self.iterate(grids)
+            bug_count = self.count_bugs(grids)
+            history[mins] = bug_count
+            if visualize:
+                print(f"{mins=}, size={len(grids)}, bug_count={bug_count}")
 
         return history
-
-
-input_data = ['....#','#..#.','#..##','..#..','#....']
 
 planet = Planet_Discord(input_data)
 rating_p1 = planet.simulate_life()
 print("Part 1:", rating_p1)
 
-full_time = 10 #* 20
-bug_history = planet.simulate_recursive_life(full_time)
+full_time = 200
+bug_history = planet.simulate_recursive_bugs(full_time)
 print("Part 2:", bug_history[full_time])
 
-print(f"Execution Time = {time.time() - start_time:.5f}s")
+# print(f"Execution Time = {time.time() - start_time:.5f}s")
 
-#      |     |         |     |
-#   1  |  2  |    3    |  4  |  5
-#      |     |         |     |
-# -----+-----+---------+-----+-----
-#      |     |         |     |
-#   6  |  7  |    8    |  9  |  10
-#      |     |         |     |
-# -----+-----+---------+-----+-----
-#      |     |A|B|C|D|E|     |
-#      |     |-+-+-+-+-|     |
-#      |     |F|G|H|I|J|     |
-#      |     |-+-+-+-+-|     |
-#  11  | 12  |K|L|?|N|O|  14 |  15
-#      |     |-+-+-+-+-|     |
-#      |     |P|Q|R|S|T|     |
-#      |     |-+-+-+-+-|     |
-#      |     |U|V|W|X|Y|     |
-# -----+-----+---------+-----+-----
-#      |     |         |     |
-#  16  | 17  |    18   |  19 |  20
-#      |     |         |     |
-# -----+-----+---------+-----+-----
-#      |     |         |     |
-#  21  | 22  |    23   |  24 |  25
-#      |     |         |     |
-# Tile 19 has four adjacent tiles: 14, 18, 20, and 24.
-# Tile G has four adjacent tiles: B, F, H, and L.
-# Tile D has four adjacent tiles: 8, C, E, and I.
-# Tile E has four adjacent tiles: 8, D, 14, and J.
-# Tile 14 has eight adjacent tiles: 9, E, J, O, T, Y, 15, 19.
-# Tile N has eight adjacent tiles: I, O, S, and
-#   five tiles within the sub-grid marked ?.
+
