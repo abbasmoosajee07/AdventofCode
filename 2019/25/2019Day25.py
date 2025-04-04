@@ -26,7 +26,7 @@ with open(D25_file_path) as file:
 class Intcode_TextGame:
     def __init__(self, program: list[int]):
         from Intcode_Computer import Intcode_CPU
-        self.game_console = Intcode_CPU(program)
+        self.game_console = Intcode_CPU(program, debug = False)
         self.game_software = program
 
     @staticmethod
@@ -56,34 +56,40 @@ class Intcode_TextGame:
         -To get a list of all of the items the droid is currently carrying,
             use the command inv (for "inventory").
         """
+        spool_cat6 = "north\nwest\nwest\ntake spool of cat6\neast\neast\nsouth\n"
+        jam = "east\nnorth\nwest\nnorth\ntake jam\nsouth\neast\nsouth\nwest\n"
+        coin = "east\nnorth\nwest\ntake coin\neast\nsouth\nwest\n"
+        planetoid = "north\nwest\ntake planetoid\neast\nsouth\n"
+        sand = "east\nnorth\ntake sand\nsouth\nwest\n"
         dark_matter = "west\nnorth\ntake dark matter\nsouth\neast\n"
+        wreath = "east\nnorth\nwest\nwest\nsouth\ntake wreath\nnorth\neast\neast\nsouth\nwest\n"
+        fuel_cell = "east\nnorth\nwest\nwest\nsouth\nwest\ntake fuel cell\neast\nnorth\neast\neast\nsouth\nwest\n"
+        electromagnet = "east\nnorth\neast\ntake giant electromagnet\n"
         photons = "west\nsouth\neast\ntake photons\n"
         escape_pod = "east\ntake escape pod\n"
-        planetoid = "north\nwest\ntake planetoid\neast\nsouth\n"
-        spool_cat6 = "north\nwest\nwest\ntake spool of cat6\neast\neast\nsouth\n"
-        sand = "east\nnorth\ntake sand\nsouth\nwest\n"
-        coin = "east\nnorth\nwest\ntake coin\neast\nsouth\nwest\n"
-        jam = "east\nnorth\nwest\nnorth\ntake jam\nsouth\neast\nsouth\nwest\n"
-        electromagnet = "east\nnorth\neast\ntake giant electromagnet\n"
+        infinite_loop = "east\nnorth\nwest\nwest\ntake infinite loop\n"
+        molten_lava = "east\nnorth\nwest\nwest\nnorth\ntake molten lava\n"
+        checkpoint = "east\nnorth\nwest\nwest\nnorth\nwest\nsouth\n"
 
         console = self.game_console
-        command_list = [dark_matter, planetoid, sand, coin, jam, spool_cat6, photons, escape_pod,
-                        "inv\n"
+        command_list = [
+                        sand, jam, spool_cat6, fuel_cell, checkpoint, "inv\n"
                     ]
         while True:
             console.process_program()
             output = console.get_result("output")
-            # screen = self.show_console(output)
             game_input = [ord(chr) for command in command_list for chr in list(command)]
             console.paused = False
             console.process_program(game_input)
             output = console.get_result("output")
-            screen = self.show_console(output)
+            screen = self.show_console(output, False)
+            if visualize:
+                print('\n'.join(screen))
             break
-        return screen
+        return re.search(r"\d+", screen[-1]).group()
 
 text_game = Intcode_TextGame(input_program)
-password = text_game.play_game(True)
-print("Part 1:", password)
+password = text_game.play_game()
+print("Password:", password)
 
 print(f"Execution Time = {time.time() - start_time:.5f}s")

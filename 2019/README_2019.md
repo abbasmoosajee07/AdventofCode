@@ -30,6 +30,8 @@ This repository contains coding solutions for the 2019 Advent of Code. Each day'
 24. **Day 24 - Planet of Discord**: Apply cellular automata to simulate a multi-layered ecosystem.
 25. **Day 25 - Cryostasis**: Develop an Intcode interpreter with interaction for a text-based adventure game.`Intcode TextGame`
 
+
 ---
 
 The 2019 challenges involve creating interpreters, pathfinding algorithms, and physics-based simulations, covering a variety of complex programming techniques.
+![2019 Advent Calendar](<2019 Advent Calendar.png>)
