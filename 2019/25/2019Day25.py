@@ -43,7 +43,59 @@ class Intcode_TextGame:
 
         return screen_rows
 
-    def play_game(self, visualize: bool = False):
+    def run_console(self, game_input: list[int], visualize: bool) -> list[str]:
+        console = self.game_console.replicate()
+        console.process_program(game_input)
+        output = console.get_result("output")
+        screen = self.show_console(output, visualize)
+        return screen
+
+    def bruteforced_solution(self, visualize: bool = False):
+        spool_cat6 = "north\nwest\nwest\ntake spool of cat6\neast\neast\nsouth\n"
+        jam = "east\nnorth\nwest\nnorth\ntake jam\nsouth\neast\nsouth\nwest\n"
+        sand = "east\nnorth\ntake sand\nsouth\nwest\n"
+        fuel_cell = "east\nnorth\nwest\nwest\nsouth\nwest\ntake fuel cell\neast\nnorth\neast\neast\nsouth\nwest\n"
+        checkpoint = "east\nnorth\nwest\nwest\nnorth\nwest\nsouth\n"
+
+        console = self.game_console
+        command_list = [
+                        sand, jam, spool_cat6, fuel_cell, checkpoint, "inv\n"
+                    ]
+        game_input = [ord(chr) for command in command_list for chr in list(command)]
+        screen = self.run_console(game_input, visualize)
+        return re.search(r"\d+", screen[-1]).group()
+
+    def parse_screen(self, screen_lines: list[str]):
+        room = ""
+        directions = []
+        items = []
+        parsing = None
+        for line in screen_lines:
+            if line.startswith("=="):
+                room = line.strip("= ").strip()
+            elif line == "Doors here lead:":
+                parsing = "dirs"
+            elif line == "Items here:":
+                parsing = "items"
+            elif line.startswith("- "):
+                if parsing == "dirs":
+                    directions.append(line[2:])
+                elif parsing == "items":
+                    items.append(line[2:])
+            elif line == "":
+                parsing = None
+        return room, directions, items
+
+    def __get_instructions(self, screen_output: list[str]) -> str:
+        room, directions, items = self.parse_screen(screen_output)
+        avoid_picking = ["infinite loop", "giant electromagnet", "photons", "escape pod", "molten lava"]
+        self.rooms_visited.add(room)
+        if items not in avoid_picking:
+            take_item = f"take {items}"
+        print(room, directions, items)
+        return f"{directions[0]}\n"
+
+    def automatic_playthrough(self, visualize: bool = False):
         """
         -Movement via north, south, east, or west.
         -To take an item the droid sees in the environment,
@@ -71,25 +123,31 @@ class Intcode_TextGame:
         molten_lava = "east\nnorth\nwest\nwest\nnorth\ntake molten lava\n"
         checkpoint = "east\nnorth\nwest\nwest\nnorth\nwest\nsouth\n"
 
+        reverse_directions = {"north":"south", "south":"north", "east":"west", "west":"east"}
+        avoid_picking = ["infinite loop", "giant electromagnet", "photons", "escape pod", "molten lava"]
+        command_list = []
+        self.rooms_visited = set()
+        self.inventory = {}
+        iters = 0
+
         console = self.game_console
-        command_list = [
-                        sand, jam, spool_cat6, fuel_cell, checkpoint, "inv\n"
-                    ]
         while True:
-            console.process_program()
-            output = console.get_result("output")
+            iters += 1
             game_input = [ord(chr) for command in command_list for chr in list(command)]
-            console.paused = False
-            console.process_program(game_input)
-            output = console.get_result("output")
-            screen = self.show_console(output, False)
-            if visualize:
-                print('\n'.join(screen))
-            break
-        return re.search(r"\d+", screen[-1]).group()
+            screen = self.run_console(game_input, visualize)
+            next_instruction = self.__get_instructions(screen)
+            command_list.append(next_instruction)
+
+            if iters == 4:
+                print(command_list)
+                break
+        return screen[-1]
+
 
 text_game = Intcode_TextGame(input_program)
-password = text_game.play_game()
-print("Password:", password)
+test_play = text_game.automatic_playthrough(True)
+
+# password = text_game.bruteforced_solution()
+# print("Password:", password)
 
 print(f"Execution Time = {time.time() - start_time:.5f}s")
