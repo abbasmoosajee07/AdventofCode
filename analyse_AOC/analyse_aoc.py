@@ -157,19 +157,10 @@ def annual_summary(dataframe):
 summary_df = annual_summary(combined_data)
 
 # Filter rows where Avg_ms is greater than or equal to 30,000
-over_30s = combined_data.loc[combined_data['Avg_ms'] >= 30_000, ['Year', 'Day', 'Avg_ms']]
+over_15s = combined_data.loc[combined_data['Avg_ms'] >= 15_000, ['Year', 'Day', 'Avg_ms']]
 
 # Save the filtered data to a text file (tab-separated)
-over_30s.to_csv("problems_over_30s.txt", sep="\t", index=False)
+over_15s.to_csv("problems_over_15s.txt", sep="\t", index=False)
 
 # Print the filtered data to the console
-print(over_30s)
-
-# Filter rows where Avg_ms is between 15,000 and 30,000 (inclusive)
-between_15s_and_30s = combined_data.loc[(combined_data['Avg_ms'] >= 15_000) & (combined_data['Avg_ms'] <= 30_000), ['Year', 'Day', 'Avg_ms']]
-
-# Save the filtered data to a text file (tab-separated)
-between_15s_and_30s.to_csv("between_15s_and_30s.txt", sep="\t", index=False)
-
-# Print the filtered data to the console
-print(between_15s_and_30s)
+print(over_15s)
