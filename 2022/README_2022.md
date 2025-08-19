@@ -1,7 +1,7 @@
 # Advent of Code 2022 - Coding Challenge Summaries
 
 This repository contains coding solutions for the 2022 Advent of Code, focusing on grid manipulation, string parsing, and complex simulations.
-![2022 Run Time](2022_Log_plot.png)
+![2022 Run Time](analysis/AOC_2022_log.png)
 ## Day-by-Day Coding Overview
 
 1. **Day 1 - Calorie Counting**: Parse and sum calorie lists to rank highest totals.

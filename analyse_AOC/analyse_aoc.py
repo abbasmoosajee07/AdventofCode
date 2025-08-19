@@ -1,19 +1,20 @@
-import os
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D  # Import 3D plotting capabilities
+from pathlib import Path
 
 def get_repository_path():
     """
-    Returns the absolute path to the repository's root directory.
+    Returns the absolute Path to the repository's root directory.
     Assumes the script is located inside the repository.
     """
-    # Get the path of the current file
-    current_file_path = os.path.abspath(__file__)
+    # Get the path of the current file using Pathlib
+    current_file_path = Path(__file__).resolve()
     
-    # Move up the directory tree as needed (e.g., assume repo is the parent directory)
-    repo_path = os.path.abspath(os.path.join(current_file_path, os.pardir, os.pardir))
+    # Move up the directory tree as needed
+    # Adjust the number of parents based on your repository structure
+    repo_path = current_file_path.parent.parent
     
     return repo_path
 
@@ -21,63 +22,89 @@ def parse_runtime_file(file_path, year):
     """
     Parses a single runtime file and extracts data into a structured format.
     """
-    with open(file_path, 'r') as f:
-        lines = f.readlines()
+    try:
+        with file_path.open('r') as f:
+            lines = f.readlines()
+    except FileNotFoundError:
+        print(f"File not found: {file_path}")
+        return []
+    except Exception as e:
+        print(f"Error reading file {file_path}: {e}")
+        return []
     
     # Skip headers and table border
     data = []
     start_end = [(i + 1) for i, line in enumerate(lines) if line.strip() == "-" * len(line.strip())]
-
-    for line in lines[start_end[0]:start_end[1]]:  # Start after the header and skip the last 4 lines (table border)
-        if not line.strip():  # Skip empty lines
+    
+    if len(start_end) < 2:
+        print(f"Invalid table format in file: {file_path}")
+        return []
+    
+    for line in lines[start_end[0]:start_end[1]]:
+        if not line.strip() or line.strip().startswith('-'):
             continue
+        
         parts = line.split()
         
         # Ensure the row has enough data
         if len(parts) < 8:
             continue
         
-        # Assign values to variables
-        day, avg_time, std_time, rel_time, avg_mb, std_mb, rel_mb, *Lang, file_size, Lines = parts
-        
-        # Append the row as a dictionary to the data list
-        data.append({
-            "Year": year,
-            "Day": int(day),
-            "Avg_ms": float(avg_time),
-            "STD_ms": float(std_time),
-            "rel_ms": float(rel_time.strip('%')),
-            "Avg_mb": float(avg_mb),
-            "STD_mb": float(std_mb),
-            "rel_mb": float(rel_mb.strip('%')),
-            "Lang": ' '.join(Lang),  # Join language(s) into a single string
-            'Size_kb': float(file_size),
-            "Lines": int(Lines)
-        })
+        try:
+            # Assign values to variables
+            day, avg_time, std_time, rel_time, avg_mb, std_mb, rel_mb, *Lang, file_size, Lines = parts
+            
+            # Append the row as a dictionary to the data list
+            data.append({
+                "Year": year,
+                "Day": int(day),
+                "Avg_ms": float(avg_time),
+                "STD_ms": float(std_time),
+                "rel_ms": float(rel_time.strip('%')),
+                "Avg_mb": float(avg_mb),
+                "STD_mb": float(std_mb),
+                "rel_mb": float(rel_mb.strip('%')),
+                "Lang": ' '.join(Lang),  # Join language(s) into a single string
+                'Size_kb': float(file_size),
+                "Lines": int(Lines)
+            })
+        except (ValueError, IndexError) as e:
+            print(f"Error parsing line in {file_path}: {line.strip()}")
+            continue
     
     return data
 
 def read_all_runtime_tables(base_folder):
     """
     Traverses all yearly folders and combines data from all runtime tables.
+    Looks for data in the 'analysis' subfolder of each year folder.
     """
     all_data = []
-    
-    for year_folder in os.listdir(base_folder):
-        year_path = os.path.join(base_folder, year_folder)
-        
-        if os.path.isdir(year_path):  # Check if it's a directory
+    base_path = Path(base_folder)
+
+    if not base_path.exists():
+        print(f"Base folder does not exist: {base_path}")
+        return pd.DataFrame()
+
+    # Use glob to find all year folders
+    for year_path in base_path.glob('*'):
+        if year_path.is_dir():
             try:
-                year = int(year_folder)  # Assuming folder names are years
+                year = int(year_path.name)  # Assuming folder names are years
             except ValueError:
                 continue  # Skip non-numeric folder names
-            
-            for file_name in os.listdir(year_path):
-                if file_name.endswith('_Run_Summary.txt'):
-                    file_path = os.path.join(year_path, file_name)
-                    year_data = parse_runtime_file(file_path, year)
-                    all_data.extend(year_data)
-    
+
+            # Look for the analysis subfolder
+            analysis_folder = year_path / 'analysis'
+            if not analysis_folder.exists():
+                print(f"Analysis folder not found in {year_path}")
+                continue
+
+            # Find all results files in the analysis folder
+            for results_file in analysis_folder.glob('*_results.txt'):
+                year_data = parse_runtime_file(results_file, year)
+                all_data.extend(year_data)
+
     return pd.DataFrame(all_data)
 
 def analyze_data(dataframe):
@@ -101,6 +128,7 @@ print(f"Repository path: {repo_path}")
 # Read and combine all data
 combined_data = read_all_runtime_tables(repo_path)
 print(combined_data)
+
 # Analyze the combined data
 analyze_data(combined_data)
 
@@ -124,7 +152,7 @@ def annual_summary(dataframe):
     fig, ax = plt.subplots(figsize=(10, 6))
 
     # Bar plot with color scale
-    bars = ax.bar(summary['Year'], summary['Total_Time']/1000, color=colors, edgecolor='black',zorder =2)
+    bars = ax.bar(summary['Year'], summary['Total_Time']/1000, color=colors, edgecolor='black', zorder=2)
 
     # Add color bar for Total_memory
     sm = plt.cm.ScalarMappable(cmap='viridis', norm=norm)
@@ -133,24 +161,24 @@ def annual_summary(dataframe):
     cbar.set_label('Total Memory')
 
     # Add labels and title
-    ax.set_title('Yearly Summary: Total Time with Total Lines as Color Scale')
+    ax.set_title('Advent of Code: Yearly Summary')
     ax.set_xlabel('Year')
     ax.set_ylabel('Total Time (s)')
     ax.set_xticks(summary['Year'])
     ax.set_xticklabels(summary['Year'])
 
-    ax.grid(visible=True, which='major', color ='grey', axis='y', linestyle='--', linewidth=0.7, alpha=0.9,zorder =1)
+    ax.grid(visible=True, which='major', color='grey', axis='y', linestyle='--', linewidth=0.7, alpha=0.9, zorder=1)
 
     # Show plot
     plt.tight_layout()
 
-
-    # Save the plot to the script's directory
-    script_location = os.path.dirname(os.path.abspath(__file__))  # Get the directory of the current script
-    plot_filename = os.path.join(script_location, 'overall_summary.png')  # Define the plot filename
-    plt.savefig(plot_filename)  # Save the plot as a PNG file
+    # Save the plot to the script's directory using pathlib
+    script_location = Path(__file__).parent
+    plot_filename = script_location / 'overall_summary.png'
+    plt.savefig(plot_filename)
     print(f"Plot saved to {plot_filename}")
     plt.show()
+    
     return summary  # Return the summary DataFrame
 
 # Example usage
@@ -159,8 +187,9 @@ summary_df = annual_summary(combined_data)
 # Filter rows where Avg_ms is greater than or equal to 30,000
 over_15s = combined_data.loc[combined_data['Avg_ms'] >= 15_000, ['Year', 'Day', 'Avg_ms']]
 
-# Save the filtered data to a text file (tab-separated)
-over_15s.to_csv("problems_over_15s.txt", sep="\t", index=False)
+# Save the filtered data to a text file (tab-separated) using pathlib
+output_file = Path(__file__).parent / "problems_over_15s.txt"
+over_15s.to_csv(output_file, sep="\t", index=False)
 
 # Print the filtered data to the console
 print(over_15s)

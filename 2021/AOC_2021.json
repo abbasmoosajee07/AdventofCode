@@ -1,0 +1,11 @@
+{
+    "problem_title": "Day",
+    "text_input": "Day{problem_no:02d}_input",
+    "challenge_id": "AOC_2021",
+    "challenge_folder": "2021",
+    "problem_folder": "{problem_no:02d}",
+    "solution_file": "2021Day{problem_no:02d}.{lang}",
+    "challenge_header": "Advent of Codes: Year 2021(Explore the Ocean)!",
+    "plot_color": "#228B22",
+    "script_header": "Advent of Code - Day {problem_no}, Year 2021\nSolution Started: {month} {current_time.tm_mday}, {current_time.tm_year}\nPuzzle Link: https://adventofcode.com/2021/day/{problem_no}\nSolution by: {author}\nBrief: [Code/Problem Description]"
+}

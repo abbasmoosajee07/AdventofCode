@@ -145,9 +145,9 @@ class Intcode_TextGame:
 
 
 text_game = Intcode_TextGame(input_program)
-test_play = text_game.automatic_playthrough(True)
+# test_play = text_game.automatic_playthrough(True)
 
-# password = text_game.bruteforced_solution()
-# print("Password:", password)
+password = text_game.bruteforced_solution()
+print("Password:", password)
 
 print(f"Execution Time = {time.time() - start_time:.5f}s")

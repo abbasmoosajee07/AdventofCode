@@ -2,7 +2,7 @@
 
 First attempt at solving the advent of code, pretty fun overall started off with a mix of Python and R, before umping into Ruby and C for more brute force and intensive codes for speed.
 
-![2015 Full Run Time Plot](2015_Log_plot.png)
+![2015 Full Run Time Plot](analysis/AOC_2015_log.png)
 
 ## Day-by-Day Coding Overview
 

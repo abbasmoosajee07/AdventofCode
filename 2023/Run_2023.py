@@ -4,25 +4,31 @@
 # Solution by: [abbasmoosajee07]
 # Brief: [Run all 2023 scripts]
 
+
 #!/usr/bin/env python3
-import os
-from Benchmarks.execute_challenge import execute_challenge_scripts
+from pathlib import Path
+from challenge_utils.ChallengeBenchmarks import ChallengeBenchmarks
 
 if __name__ == "__main__":
-    # Define constants
-    YEAR = 2023
-    CHALLENGE_NAME = 'Advent of Code'
-    DAYS_TO_RUN = range(1, 26)
-    COLOR_2023 = "#23C3A0"
-    NUM_ITERATIONS = 3  # Number of iterations for benchmarking
 
-    # Get the directory of the current script
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    repo_dir = os.path.abspath(script_dir)  # Repo directory (same level as script)
-    base_dir = os.path.abspath(os.path.join(os.getcwd(), str(YEAR)))
+    base_dir = Path.cwd()
+    script_dir = Path(__file__).parent.resolve()
+    selected_dir = base_dir / "2023"
+    config_file = "AOC_2023.json"
 
-    # Print repo directory for debugging purposes
-    print(f"Repository Directory: {repo_dir}")
+    PROBLEMS_TO_RUN = list(range(1, 26))
 
-    # Execute the challenge scripts
-    execute_challenge_scripts(CHALLENGE_NAME, YEAR, DAYS_TO_RUN, repo_dir, NUM_ITERATIONS, COLOR_2023)
+    analyzer = ChallengeBenchmarks(
+        base_dir = selected_dir,
+        config_file = config_file,
+    )
+
+    results = analyzer.analyze(
+        problems_to_run= PROBLEMS_TO_RUN,
+        iterations=3,
+        save_results=True,
+        custom_dir= script_dir / "analysis"
+    )
+
+    print("\nAnalysis complete!")
+    print(results.head(27))

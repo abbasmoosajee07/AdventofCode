@@ -78,9 +78,9 @@ def find_best_point(df):
                     best_point = (x, y, z)
                     best_distance = manhattan_distance(best_point, (0, 0, 0))
                     check_distance.append(best_distance)
-                    print(best_distance)
-                    # if best_distance == check_distance[-1]:
-                    #     break
+                    # print(best_distance)
+                    if best_distance == check_distance[-1]:
+                        break
                     
     return best_distance
 
@@ -88,4 +88,4 @@ def find_best_point(df):
 input_pos_df = parse_particle_data(input_data)
 # Find the best point and its Manhattan distance
 result = find_best_point(input_pos_df)
-# print("Best Manhattan distance:", result)
+print("Part 2:", result)

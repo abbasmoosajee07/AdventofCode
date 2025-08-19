@@ -1,0 +1,11 @@
+{
+    "problem_title": "Day",
+    "text_input": "Day{problem_no:02d}_input",
+    "challenge_id": "AOC_2019",
+    "challenge_folder": "2019",
+    "problem_folder": "{problem_no:02d}",
+    "solution_file": "2019Day{problem_no:02d}.{lang}",
+    "challenge_header": "Advent of Codes: Year 2019(Intcode)!",
+    "plot_color": "#4682B4",
+    "script_header": "Advent of Code - Day {problem_no}, Year 2019\nSolution Started: {month} {current_time.tm_mday}, {current_time.tm_year}\nPuzzle Link: https://adventofcode.com/2019/day/{problem_no}\nSolution by: {author}\nBrief: [Code/Problem Description]"
+}

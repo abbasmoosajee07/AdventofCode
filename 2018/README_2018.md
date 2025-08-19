@@ -2,7 +2,7 @@
 
 This repository contains coding solutions for the 2018 Advent of Code. Each day's challenge offers unique puzzles requiring efficient coding, algorithmic thinking, and optimization. These challenges emphasize data structures like trees, graphs, and grids, alongside dynamic programming, simulation, and optimization techniques.
 
-![2018 Full Run Time Plot](2018_Log_plot.png)
+![2018 Full Run Time Plot](analysis/AOC_2018_log.png)
 
 ## Day-by-Day Coding Overview
 

@@ -94,7 +94,7 @@ def execute_program(instructions, pointer_register, initial_registers):
     seen_values = set()
     last_value = None
     ip = 0  # instruction pointer
-    
+
     while 0 <= ip < len(instructions):
         computer.registers[pointer_register] = ip
         instruction, A, B, C = instructions[ip]

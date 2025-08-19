@@ -103,5 +103,3 @@ init_wires, gates = parse_input(input_data)
 wires_p1 = simulate_circuit(init_wires, gates)
 dec_num_p1 = find_wire_group(wires_p1)
 print("Part 1:", dec_num_p1)
-
-print(time.time() - start_time)

@@ -1,4 +1,5 @@
 **/Day??_input.txt
 *.exe
 __pycache__/
+*.egg-info
 # git rm --cached *.exe remove existing files

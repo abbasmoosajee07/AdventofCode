@@ -1,0 +1,11 @@
+{
+    "problem_title": "Day",
+    "text_input": "Day{problem_no:02d}_input",
+    "challenge_id": "AOC_2020",
+    "challenge_folder": "2020",
+    "problem_folder": "{problem_no:02d}",
+    "solution_file": "2020Day{problem_no:02d}.{lang}",
+    "challenge_header": "Advent of Codes: Year 2020(Vacation Time)!",
+    "plot_color": "#1F75FE",
+    "script_header": "Advent of Code - Day {problem_no}, Year 2020\nSolution Started: {month} {current_time.tm_mday}, {current_time.tm_year}\nPuzzle Link: https://adventofcode.com/2020/day/{problem_no}\nSolution by: {author}\nBrief: [Code/Problem Description]"
+}

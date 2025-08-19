@@ -1,7 +1,7 @@
 # Advent of Code 2021 - Coding Challenge Summaries
 
 This repository contains coding solutions for the 2021 Advent of Code challenges, involving simulations, graph traversal, and advanced state management.
-![2020 Run Time Plot](2021_Log_plot.png)
+![2020 Run Time Plot](analysis/AOC_2021_log.png)
 ## Day-by-Day Coding Overview
 
 1. **Day 1 - Sonar Sweep**: Apply sliding window to detect depth increases.

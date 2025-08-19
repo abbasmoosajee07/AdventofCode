@@ -1,7 +1,7 @@
 # Advent of Code 2023 - Coding Challenge Summaries
 
 This repository contains coding solutions for the 2023 Advent of Code, focusing on algorithm optimization, dynamic simulations, and graph traversal techniques.
-![2023 Run Time](2023_Log_plot.png)
+![2023 Run Time](analysis/AOC_2023_log.png)
 
 ## Day-by-Day Coding Overview
 

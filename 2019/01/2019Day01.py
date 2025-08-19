@@ -46,4 +46,4 @@ print(f"Part 1: {ans_p1}")
 
 ans_p2 = calc_fuel_required(input_list, negative=True)
 
-print(f"Part 1: {ans_p2}")
+print(f"Part 2: {ans_p2}")

@@ -3,7 +3,7 @@ Second attempt at completing, tougher in a sene and required a lot of inspiratio
 Especially enjoyed the shortest path problems and opportunity to switch through different languages.
 Probably return to solve a couple of the problems again, focusing on speed.
 
-![2016 Full Run Time Plot](2016_Log_plot.png)
+![2016 Full Run Time Plot](analysis/AOC_2016_log.png)
 
 ## Day-by-Day Coding Overview
 

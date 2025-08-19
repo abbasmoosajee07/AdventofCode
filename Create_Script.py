@@ -1,88 +1,45 @@
+from pathlib import Path
+from typing import Optional, Dict, Any, Tuple
+from challenge_utils.ScriptBuilder import ScriptBuilder
 
-import sys, os, time
+# Constants
+PROBLEM_NO = 100
+CHALLENGE = "2024"
+CHOSEN_LANGUAGE = "js"
 
-# Import individual setup functions for each language
-from Polyglot_Setups.Setup_C      import create_c_script
-from Polyglot_Setups.Setup_Txt    import create_txt_file
-from Polyglot_Setups.Setup_Ruby   import create_ruby_script
-from Polyglot_Setups.Setup_Julia  import create_julia_script
-from Polyglot_Setups.Setup_Python import create_python_script
+AUTHOR = "Abbas Moosajee"
 
-# Define default values for the Advent of Code challenge
-advent_day  = 1
-advent_year = 2019
-author_name = "abbasmoosajee07"
-selected_language = "python"  # Options: "python", "c", "julia", "ruby"
-
-# Dictionary mapping language names to their corresponding setup functions
-language_script_create_functions = {
-    "c"     : create_c_script,
-    "ruby"  : create_ruby_script,
-    "julia" : create_julia_script,
-    "python": create_python_script,
+CONFIG_DICT = {
+    "2024": ("2024", "AOC_2024.json"),
+    "2023": ("2023", "AOC_2023.json"),
+    "2022": ("2022", "AOC_2022.json"),
+    "2021": ("2021", "AOC_2021.json"),
+    "2020": ("2020", "AOC_2020.json"),
+    "2019": ("2019", "AOC_2019.json"),
+    "2018": ("2018", "AOC_2018.json"),
+    "2017": ("2017", "AOC_2017.json"),
+    "2016": ("2016", "AOC_2016.json"),
+    "2015": ("2015", "AOC_2015.json"),
 }
 
-# Get the directory of the current script
-repo_dir = os.path.dirname(os.path.abspath(__file__))
+def main() -> None:
+    """Main function to create challenge files."""
 
-def generate_header(day, year, author):
-    """
-    Generate the header for the script, including metadata and formatting.
+    repo_dir = Path(__file__).parent
+    folder, config_file = CONFIG_DICT[CHALLENGE]
+    challenge_dir = repo_dir / folder
 
-    Parameters:
-        day (int): The day of the Advent of Code challenge.
-        year (int): The year of the Advent of Code challenge.
-        author (str): The author's name.
+    try:
+        builder = ScriptBuilder(AUTHOR, challenge_dir, config_file)
 
-    Returns:
-        str: The formatted header string for the script.
-    """
-    # Get the current local time
-    current_time = time.localtime()
-    month = time.strftime('%b', current_time)  # Get abbreviated month name
+        filepath = builder.create_files(
+            prob_no=PROBLEM_NO,
+            language=CHOSEN_LANGUAGE,
+            txt_files=1,
+        )
 
-    # Construct the header content for the script
-    header = f"""Advent of Code - Day {day}, Year {year}
-Solution Started: {month} {current_time.tm_mday}, {current_time.tm_year}
-Puzzle Link: https://adventofcode.com/{year}/day/{day}
-Solution by: {author}
-Brief: [Code/Problem Description]
-"""
-    return header
-
-def main():
-    """
-    Main function to orchestrate the creation of necessary files:
-    - Always creates the .txt file first
-    - Then creates the selected language-specific script.
-    """
-    print(f"\nAdvent of Code - Day {advent_day}, Year {advent_year}")
-
-    # Always start by creating the text file setup
-    print("\nSetting up Txt file...")
-    create_txt_file(day=advent_day, year=advent_year, author=author_name, repo_dir=repo_dir)
-
-    # Get the setup function for the selected language
-    language_create_function = language_script_create_functions.get(selected_language)
-
-    # If a valid setup function is found for the selected language, proceed
-    if language_create_function:
-        print(f"\nSetting up {selected_language.capitalize()} script...")
-
-        # Generate the header content for the script
-        header = generate_header(advent_day, advent_year, author_name)
-
-        # Pass the header to the language-specific setup function to create the script
-        language_create_function(day=advent_day, year=advent_year, author=author_name,
-                                    header_text=header, repo_dir=repo_dir)
-    else:
-        # If no valid setup function is found, exit with an error message
-        print(f"Error: No setup function found for {selected_language}. Exiting.")
-        sys.exit(1)
-
-    # Notify the user that all files were created
-    print(f"\nAll necessary files have been created.")
+    except Exception as e:
+        print(f"An error occurred: {e}")
 
 if __name__ == "__main__":
-    # Run the main function if the script is executed directly
     main()
