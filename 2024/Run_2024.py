@@ -7,7 +7,7 @@
 
 #!/usr/bin/env python3
 from pathlib import Path
-from challenge_utils.ChallengeBenchmarks import ChallengeBenchmarks
+from challenge_utils import ChallengeBenchmarks
 
 if __name__ == "__main__":
 
@@ -25,8 +25,8 @@ if __name__ == "__main__":
 
     results = analyzer.analyze(
         problems_to_run= PROBLEMS_TO_RUN,
-        iterations=3,
-        save_results=True,
+        iterations=1,
+        save_results=False,
         custom_dir= script_dir / "analysis"
     )
 

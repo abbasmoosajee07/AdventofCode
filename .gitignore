@@ -2,4 +2,5 @@
 *.exe
 __pycache__/
 *.egg-info
+**/target/
 # git rm --cached *.exe remove existing files
