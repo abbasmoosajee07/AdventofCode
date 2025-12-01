@@ -3,13 +3,14 @@ from typing import Optional, Dict, Any, Tuple
 from challenge_utils import ScriptBuilder
 
 # Constants
-PROBLEM_NO = 100
-CHALLENGE = "2024"
-CHOSEN_LANGUAGE = "js"
+PROBLEM_NO = 1
+CHALLENGE = "2025"
+CHOSEN_LANGUAGE = "python"
 
 AUTHOR = "Abbas Moosajee"
 
 CONFIG_DICT = {
+    "2025": ("2025", "AOC_2025.json"),
     "2024": ("2024", "AOC_2024.json"),
     "2023": ("2023", "AOC_2023.json"),
     "2022": ("2022", "AOC_2022.json"),
