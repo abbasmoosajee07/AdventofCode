@@ -25,7 +25,7 @@ if __name__ == "__main__":
 
     results = analyzer.analyze(
         problems_to_run= PROBLEMS_TO_RUN,
-        iterations=1,
+        iterations=3,
         save_results=True,
         custom_dir= script_dir / "analysis"
     )
