@@ -23,7 +23,6 @@ def count_invalid_ids_p1(product_range):
             id_half = len(id_str) // 2
             if id_str[:id_half] == id_str[id_half:]:
                 invalid_ids.add(test_id)
-                break
     return sum(invalid_ids)
 
 def count_invalid_ids_p2(product_range):
@@ -33,7 +32,7 @@ def count_invalid_ids_p2(product_range):
         for test_id in range(int(id_start), int(id_end) + 1):
             id_str = str(test_id)
             id_len = len(id_str)
-            for pattern_len in range(1, id_len):
+            for pattern_len in range(id_len):
                 pattern = id_str[:pattern_len]
                 if id_str.count(pattern) * pattern_len == id_len:
                     invalid_ids.add(test_id)
