@@ -7,3 +7,4 @@ This repository contains coding solutions for the 2025 Advent of Code.
 1. **Day 1- Secret Entrance**: *Python* | Basic python code for rotating a list representing a dial, BUT basic is good.
 2. **Day 2 - Gift Shop** *Python* | Identifying and counting invalid ids, but remember duplicating can be avoided using sets.
 3. **Day 3 - Lobby** | *Python* | Maximising the number built in a list of numbers
+4. **Day 4 - Printing Department**: *Python* | Pretty simple grid problem, and if you dont compute unnecessary things it runs faster.
