@@ -8,3 +8,4 @@ This repository contains coding solutions for the 2025 Advent of Code.
 2. **Day 2 - Gift Shop** *Python* | Identifying and counting invalid ids, but remember duplicating can be avoided using sets.
 3. **Day 3 - Lobby** | *Python* | Maximising the number built in a list of numbers
 4. **Day 4 - Printing Department**: *Python* | Pretty simple grid problem, and if you dont compute unnecessary things it runs faster.
+5. **Day 5 - Cafeteria**: *Python* | Validating a set of numbers through a series of ranges, and then counting all the numbers.
