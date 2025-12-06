@@ -16,8 +16,8 @@ with input_path.open("r", encoding="utf-8") as f:
 
 class AOC_Cafeteria:
     def __init__(self, inp_data):
-        self.fresh_range = [tuple(map(int, id_range.split("-"))) for id_range in data[0].split("\n")]
-        self.ingredients = list(map(int, data[1].split("\n")))
+        self.fresh_range = [tuple(map(int, id_range.split("-"))) for id_range in inp_data[0].split("\n")]
+        self.ingredients = list(map(int, inp_data[1].split("\n")))
 
     def check_freshness(self, ingr):
         for start, end in self.fresh_range:
