@@ -10,3 +10,4 @@ This repository contains coding solutions for the 2025 Advent of Code.
 4. **Day 4 - Printing Department**: *Python* | Pretty simple grid problem, and if you dont compute unnecessary things it runs faster.
 5. **Day 5 - Cafeteria**: *Python* | Validating a set of numbers through a series of ranges, and then counting all the numbers.
 6. **Day 6 - Trash Compactor**: *Python* | Reading a list of strings into numbers in a desired order is far from simple.
+7. **Day 7 - Laboratories**: *Python* | BFS and DFS, the good ole AOC algorithms back to use.
