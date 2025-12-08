@@ -11,3 +11,4 @@ This repository contains coding solutions for the 2025 Advent of Code.
 5. **Day 5 - Cafeteria**: *Python* | Validating a set of numbers through a series of ranges, and then counting all the numbers.
 6. **Day 6 - Trash Compactor**: *Python* | Reading a list of strings into numbers in a desired order is far from simple.
 7. **Day 7 - Laboratories**: *Python* | BFS and DFS, the good ole AOC algorithms back to use.
+8.**Day * - Playground**: *Python* | Union find is the name of the game.
