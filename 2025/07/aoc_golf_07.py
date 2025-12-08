@@ -1,8 +1,4 @@
-map_dict_p1 = {
-    (row_no, col_no): cell
-    for row_no, row_data in enumerate(open(0))
-    for col_no, cell in enumerate(row_data)
-}
+
 map_dict_p1 = {}
 for row_no, row_data in enumerate(open(0)):
     for col_no, cell in enumerate(row_data):
