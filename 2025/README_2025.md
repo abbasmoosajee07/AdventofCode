@@ -14,3 +14,4 @@ This repository contains coding solutions for the 2025 Advent of Code.
 8.**Day 8 - Playground**: *Python* | Union find is the name of the game.
 9. **Day 9 - Movie Theater**: *Python* | Identify the largest rectangles by area from a s group of coordinates.
 10. **Day 10 - Factory**: *Python* | BFS for buttons, and then add some z3 in
+11. **Day 11 - Reactor**: *Python* | BFS with nodes and networks and then add a bitmask for counting.
