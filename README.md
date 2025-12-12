@@ -20,6 +20,7 @@ In this repository, you’ll find:
 ## How to Use
 | Year | Stars | Time (s) | Languages        | Repository |
 |------|-------|-----------------|------------------|------------|
+| 2025 |24\*   |19.48 s |Python| [GitHub](https://github.com/abbasmoosajee07/AdventofCode/tree/main/2025) |
 | 2024 |50\*   |64.63 s |Julia/Python/Ruby| [GitHub](https://github.com/abbasmoosajee07/AdventofCode/tree/main/2024) |
 | 2023 |50\*    |69.18 s|Python\Ruby| [GitHub](https://github.com/abbasmoosajee07/AdventofCode/tree/main/2023) |
 | 2022 | 50\*  |107.55 s|Julia/Python/Ruby| [GitHub](https://github.com/abbasmoosajee07/AdventofCode/tree/main/2022) |
@@ -30,6 +31,6 @@ In this repository, you’ll find:
 | 2017 | 50\*  |131.25 s| Python/Ruby/C    | [GitHub](https://github.com/abbasmoosajee07/AdventofCode/tree/main/2017) |
 | 2016 | 50\*  |264.24 s| Python/Ruby/C    | [GitHub](https://github.com/abbasmoosajee07/AdventofCode/tree/main/2016) |
 | 2015 | 50\*  |530.01 s| Python/Ruby/C/R  | [GitHub](https://github.com/abbasmoosajee07/AdventofCode/tree/main/2015) |
-| **Total** | **500\*** |                 |                  |            |
+| **Total** | **524\*** |                 |                  |            |
 
-![alt text](analyse_AOC/overall_summary.png)
+![Overall Summary](analyse_AOC/overall_summary.png)

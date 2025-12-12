@@ -15,3 +15,6 @@ This repository contains coding solutions for the 2025 Advent of Code.
 9. **Day 9 - Movie Theater**: *Python* | Identify the largest rectangles by area from a s group of coordinates.
 10. **Day 10 - Factory**: *Python* | BFS for buttons, and then add some z3 in
 11. **Day 11 - Reactor**: *Python* | BFS with nodes and networks and then add a bitmask for counting.
+12. **Day 12 - Christmas Tree Farm**: *Python* | Fitting a specific shape into a an empty square spaced region.
+
+![2025 AOC Advent Calendar](2025_Advent_Calendar.png)
